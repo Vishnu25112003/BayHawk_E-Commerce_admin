@@ -208,46 +208,48 @@ export function CustomRolesPage() {
   }, {} as Record<string, typeof availablePermissions>);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold truncate">
             {user?.loginType === 'hub' ? 'Hub Custom Roles Management' : 
              user?.loginType === 'store' ? 'Store Custom Roles Management' : 
              'Custom Roles Management'}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600 mt-1">
             {user?.loginType === 'hub' ? 'Create and customize hub roles with specific permissions' : 
              user?.loginType === 'store' ? 'Create and customize store roles with specific permissions' : 
              'Create and customize roles with specific permissions'}
           </p>
         </div>
-        <Button onClick={() => setShowAddModal(true)} className="w-full sm:w-auto">
-          <Plus className="mr-2 h-4 w-4" /> Create Role
+        <Button onClick={() => setShowAddModal(true)} className="w-full sm:w-auto flex-shrink-0">
+          <Plus className="mr-2 h-4 w-4" /> 
+          <span className="hidden sm:inline">Create Role</span>
+          <span className="sm:hidden">Create</span>
         </Button>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Users className="h-5 w-5 text-blue-600" />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
+              <Users className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
             </div>
-            <div>
-              <p className="text-sm text-gray-600">Total Roles</p>
-              <p className="text-xl font-bold">{mockRoles.length}</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-gray-600 truncate">Total Roles</p>
+              <p className="text-lg sm:text-xl font-bold">{mockRoles.length}</p>
             </div>
           </div>
         </Card>
         <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Shield className="h-5 w-5 text-green-600" />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
+              <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
             </div>
-            <div>
-              <p className="text-sm text-gray-600">Active Roles</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-gray-600 truncate">Active Roles</p>
               <p className="text-xl font-bold">{mockRoles.filter(r => r.isActive).length}</p>
             </div>
           </div>
@@ -277,7 +279,7 @@ export function CustomRolesPage() {
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="p-4 sm:p-6">
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -285,7 +287,7 @@ export function CustomRolesPage() {
               placeholder="Search roles..." 
               value={search} 
               onChange={e => setSearch(e.target.value)} 
-              className="pl-10" 
+              className="pl-10 text-sm" 
             />
           </div>
           <Select 
@@ -314,8 +316,8 @@ export function CustomRolesPage() {
         {filteredRoles.map(role => {
           const IconComponent = getIcon(role.icon);
           return (
-            <Card key={role.id} className="p-6">
-              <div className="flex items-start justify-between gap-4">
+            <Card key={role.id} className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                 <div className="flex items-start gap-4 flex-1">
                   <div className={`p-3 rounded-lg ${getColorClass(role.color)}`}>
                     <IconComponent className="h-6 w-6" />

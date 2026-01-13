@@ -282,7 +282,7 @@ export function PreOrderPage() {
   // For specific user types, show only their relevant section
   if (user?.loginType === "hub") {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
         <PageHeader
           title="Hub Pre-Order Creation"
           description="Create advance bookings for fish products and rare items"
@@ -299,7 +299,7 @@ export function PreOrderPage() {
 
   if (user?.loginType === "store") {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
         <PageHeader
           title="Store Pre-Order Creation"
           description="Create advance bookings for all products and bulk orders"
@@ -316,7 +316,7 @@ export function PreOrderPage() {
 
   // Super Admin sees both Hub and Store in tabs
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
       <PageHeader
         title="Pre-Order Management"
         description="Create advance bookings for both hub and store operations"
@@ -325,11 +325,11 @@ export function PreOrderPage() {
       {/* Tab Navigation */}
       <Card className="p-0 overflow-hidden">
         <div className="border-b border-gray-200">
-          <nav className="flex space-x-8 px-6" aria-label="Tabs">
+          <nav className="flex flex-wrap sm:flex-nowrap overflow-x-auto px-4 sm:px-6" aria-label="Tabs">
             <button
               onClick={() => setActiveTab("hub")}
               className={`
-                flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors
+                flex items-center gap-2 py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap
                 ${
                   activeTab === "hub"
                     ? "border-blue-500 text-blue-600"
@@ -337,13 +337,15 @@ export function PreOrderPage() {
                 }
               `}
             >
-              <Fish className="h-5 w-5" />
-              Hub Pre-Orders
+              <Fish className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="hidden sm:inline">Hub Pre-Orders</span>
+              <span className="sm:hidden">Hub</span>
               <Badge
                 variant={activeTab === "hub" ? "info" : "default"}
-                className="ml-1"
+                className="ml-1 text-xs"
               >
-                Fish & Rare Items
+                <span className="hidden sm:inline">Fish & Rare Items</span>
+                <span className="sm:hidden">Fish</span>
               </Badge>
             </button>
             <button

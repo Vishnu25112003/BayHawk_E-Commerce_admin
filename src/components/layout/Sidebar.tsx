@@ -7,9 +7,10 @@ import { getFilteredMenuByUser, type MenuItem } from '../../utils/menuConfig';
 interface SidebarProps {
   collapsed: boolean;
   onToggleCollapse: (collapsed: boolean) => void;
+  isMobile: boolean;
 }
 
-export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
+export function Sidebar({ collapsed, onToggleCollapse, isMobile }: SidebarProps) {
   const { user, logout } = useAuth();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
@@ -32,11 +33,11 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
           <button
             onClick={() => toggleExpand(item.id)}
             className={`w-full flex items-center rounded-lg px-3 py-2.5 transition-all duration-200 ${
-              collapsed ? 'justify-center' : 'gap-3'
+              (collapsed && !isMobile) ? 'justify-center' : 'gap-3'
             } text-slate-400 hover:bg-slate-800 hover:text-white`}
           >
             <item.icon size={20} />
-            {!collapsed && (
+            {!(collapsed && !isMobile) && (
               <>
                 <span className="font-medium flex-1 text-left">{item.label}</span>
                 {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
@@ -44,7 +45,7 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
             )}
           </button>
           {/* Submenu items */}
-          {isExpanded && !collapsed && (
+          {isExpanded && !(collapsed && !isMobile) && (
             <div className="ml-8 mt-1 space-y-1">
               {item.children.map(child => (
                 <NavLink
@@ -74,7 +75,7 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
         to={item.path}
         className={({ isActive }) => `
           flex items-center rounded-lg px-3 py-2.5 transition-all duration-200 ${
-            collapsed ? 'justify-center' : 'gap-3'
+            (collapsed && !isMobile) ? 'justify-center' : 'gap-3'
           }
           ${isActive 
             ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
@@ -83,20 +84,22 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
         `}
       >
         <item.icon size={20} />
-        {!collapsed && <span className="font-medium">{item.label}</span>}
+        {!(collapsed && !isMobile) && <span className="font-medium">{item.label}</span>}
       </NavLink>
     );
   };
 
   return (
     <aside 
-      className={`fixed left-0 top-0 z-40 h-screen bg-slate-900 text-white transition-all duration-300 ${
-        collapsed ? 'w-20' : 'w-64'
+      className={`fixed left-0 top-0 z-50 h-screen bg-slate-900 text-white transition-all duration-300 ${
+        isMobile 
+          ? 'w-64 transform' // Always full width on mobile, use transform for show/hide
+          : (collapsed ? 'w-20' : 'w-64') // Desktop behavior
       }`}
     >
       {/* Logo */}
       <div className="relative flex h-16 items-center border-b border-slate-700 px-4">
-        {collapsed ? (
+        {(collapsed && !isMobile) ? (
           /* Collapsed state - Show only logo icon centered with toggle button positioned properly */
           <>
             <div className="flex items-center justify-center w-full">
@@ -123,12 +126,14 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
                 className="h-8 w-auto"
               />
             </div>
-            <button 
-              onClick={() => onToggleCollapse(!collapsed)} 
-              className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
-            >
-              <X size={20} />
-            </button>
+            {!isMobile && (
+              <button 
+                onClick={() => onToggleCollapse(!collapsed)} 
+                className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            )}
           </>
         )}
       </div>
@@ -153,7 +158,9 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
       )}
       
       {/* Navigation */}
-      <nav className={`mt-4 px-3 space-y-1 overflow-y-auto ${collapsed ? 'h-[calc(100vh-260px)]' : 'h-[calc(100vh-220px)]'}`}>
+      <nav className={`mt-4 px-3 space-y-1 overflow-y-auto ${
+        (collapsed && !isMobile) ? 'h-[calc(100vh-260px)]' : 'h-[calc(100vh-220px)]'
+      }`}>
         {menuItems.map(renderMenuItem)}
       </nav>
 
@@ -163,18 +170,18 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
           onClick={logout}
           title="Logout"
           className={`w-full flex items-center rounded-lg px-3 py-2.5 transition-all duration-200 ${
-            collapsed ? 'justify-center' : 'gap-3'
+            (collapsed && !isMobile) ? 'justify-center' : 'gap-3'
           } text-slate-400 hover:bg-slate-800 hover:text-red-500`}
         >
           <LogOut size={20} />
-          {!collapsed && <span className="font-medium">Logout</span>}
+          {!(collapsed && !isMobile) && <span className="font-medium">Logout</span>}
         </button>
       </div>
     </aside>
   );
 }
 
-export function Header() {
+export function Header({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
   const { user } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
@@ -238,14 +245,24 @@ export function Header() {
   const unreadCount = notifications.filter(n => n.unread).length;
   
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6 shadow-sm">
-      <div>
-        <h1 className="text-lg font-semibold text-gray-900">
-          {user?.loginType === 'hub' ? 'Hub Admin' : user?.loginType === 'store' ? 'Store Admin' : 'Super Admin'} Panel
-        </h1>
-        <p className="text-sm text-gray-500">
-          {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}
-        </p>
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 sm:px-6 shadow-sm">
+      <div className="flex items-center gap-4">
+        {/* Mobile Menu Button */}
+        <button
+          onClick={onToggleSidebar}
+          className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          <Menu size={20} className="text-gray-600" />
+        </button>
+        
+        <div>
+          <h1 className="text-base sm:text-lg font-semibold text-gray-900">
+            {user?.loginType === 'hub' ? 'Hub Admin' : user?.loginType === 'store' ? 'Store Admin' : 'Super Admin'} Panel
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
+            {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}
+          </p>
+        </div>
       </div>
       
       <div className="flex items-center gap-4">

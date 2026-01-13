@@ -202,39 +202,39 @@ export function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Welcome back, {user?.name || 'Admin'}! 👋</h1>
-        <p className="text-gray-500 mt-1">Here's what's happening with your business today.</p>
+      <div className="text-center sm:text-left">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Welcome back, {user?.name || 'Admin'}! 👋</h1>
+        <p className="text-gray-500 mt-1 text-sm sm:text-base">Here's what's happening with your business today.</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat) => {
           const colors = colorMap[stat.color];
           return (
-            <Card key={stat.label} className="relative overflow-hidden">
+            <Card key={stat.label} className="relative overflow-hidden p-4 sm:p-6">
               <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">{stat.label}</p>
-                  <p className="mt-2 text-3xl font-bold text-gray-900">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">{stat.label}</p>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-gray-900">
                     {stat.isCurrency ? formatCurrency(stat.value) : stat.value.toLocaleString()}
                   </p>
                   <div className="mt-2 flex items-center gap-1">
                     {stat.up ? (
-                      <ArrowUpRight className="h-4 w-4 text-green-600" />
+                      <ArrowUpRight className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
                     ) : (
-                      <ArrowDownRight className="h-4 w-4 text-red-600" />
+                      <ArrowDownRight className="h-3 w-3 sm:h-4 sm:w-4 text-red-600" />
                     )}
-                    <span className={`text-sm font-medium ${stat.up ? 'text-green-600' : 'text-red-600'}`}>
+                    <span className={`text-xs sm:text-sm font-medium ${stat.up ? 'text-green-600' : 'text-red-600'}`}>
                       {stat.change}
                     </span>
-                    <span className="text-sm text-gray-400">vs yesterday</span>
+                    <span className="text-xs sm:text-sm text-gray-400 hidden sm:inline">vs yesterday</span>
                   </div>
                 </div>
-                <div className={`p-3 rounded-xl ${colors.light}`}>
-                  <stat.icon className={`h-6 w-6 ${colors.icon}`} />
+                <div className={`p-2 sm:p-3 rounded-xl ${colors.light} flex-shrink-0`}>
+                  <stat.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${colors.icon}`} />
                 </div>
               </div>
               <div className={`absolute bottom-0 left-0 right-0 h-1 ${colors.bg}`} />
@@ -244,21 +244,21 @@ export function DashboardPage() {
       </div>
 
       {/* Charts Row */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-3">
         {/* Sales Chart */}
-        <Card className="lg:col-span-2">
-          <div className="flex items-center justify-between mb-6">
+        <Card className="lg:col-span-2 p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Sales Overview</h2>
-              <p className="text-sm text-gray-500">Last 7 days performance</p>
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900">Sales Overview</h2>
+              <p className="text-xs sm:text-sm text-gray-500">Last 7 days performance</p>
             </div>
-            <select className="text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select className="text-xs sm:text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto">
               <option>Last 7 days</option>
               <option>Last 30 days</option>
               <option>Last 90 days</option>
             </select>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250}>
             <AreaChart data={salesData}>
               <defs>
                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
@@ -267,8 +267,8 @@ export function DashboardPage() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
-              <XAxis dataKey="date" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `₹${v / 1000}k`} />
+              <XAxis dataKey="date" stroke="#9ca3af" fontSize={10} tickLine={false} axisLine={false} />
+              <YAxis stroke="#9ca3af" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(v) => `₹${v / 1000}k`} />
               <Tooltip 
                 formatter={(value) => [formatCurrency(Number(value)), 'Revenue']}
                 contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb' }}
@@ -279,12 +279,12 @@ export function DashboardPage() {
         </Card>
 
         {/* Order Status Pie */}
-        <Card>
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">Order Status</h2>
-          <p className="text-sm text-gray-500 mb-4">Distribution today</p>
-          <ResponsiveContainer width="100%" height={220}>
+        <Card className="p-4 sm:p-6">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Order Status</h2>
+          <p className="text-xs sm:text-sm text-gray-500 mb-4">Distribution today</p>
+          <ResponsiveContainer width="100%" height={180}>
             <PieChart>
-              <Pie data={orderStatusData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
+              <Pie data={orderStatusData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={3} dataKey="value">
                 {orderStatusData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
@@ -292,10 +292,10 @@ export function DashboardPage() {
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
-          <div className="flex flex-wrap justify-center gap-3 mt-2">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mt-2">
             {orderStatusData.map((item) => (
               <div key={item.name} className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
                 <span className="text-xs text-gray-600">{item.name}</span>
               </div>
             ))}
@@ -304,18 +304,18 @@ export function DashboardPage() {
       </div>
 
       {/* Orders Bar Chart */}
-      <Card>
-        <div className="flex items-center justify-between mb-6">
+      <Card className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Orders Trend</h2>
-            <p className="text-sm text-gray-500">Daily order count</p>
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900">Orders Trend</h2>
+            <p className="text-xs sm:text-sm text-gray-500">Daily order count</p>
           </div>
         </div>
-        <ResponsiveContainer width="100%" height={250}>
+        <ResponsiveContainer width="100%" height={200}>
           <BarChart data={salesData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
-            <XAxis dataKey="date" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
+            <XAxis dataKey="date" stroke="#9ca3af" fontSize={10} tickLine={false} axisLine={false} />
+            <YAxis stroke="#9ca3af" fontSize={10} tickLine={false} axisLine={false} />
             <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb' }} />
             <Bar dataKey="orders" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
           </BarChart>
@@ -323,9 +323,9 @@ export function DashboardPage() {
       </Card>
 
       {/* Bottom Row */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-3">
         {/* Recent Orders */}
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 p-4 sm:p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>

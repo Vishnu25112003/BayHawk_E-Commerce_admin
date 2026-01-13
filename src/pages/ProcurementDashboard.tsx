@@ -48,44 +48,44 @@ const ProcurementDashboard: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 text-white">
-        <h1 className="text-2xl font-bold">Procurement Dashboard</h1>
-        <p className="text-blue-100">{isHub ? 'Hub' : 'Store'} Procurement Operations</p>
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-4 sm:p-6 text-white">
+        <h1 className="text-xl sm:text-2xl font-bold">Procurement Dashboard</h1>
+        <p className="text-blue-100 text-sm sm:text-base">{isHub ? 'Hub' : 'Store'} Procurement Operations</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-white rounded-lg p-6 border">
+          <div key={index} className="bg-white rounded-lg p-4 sm:p-6 border">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">{stat.title}</p>
-                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                <p className="text-sm text-green-600">{stat.change}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-gray-600 truncate">{stat.title}</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{stat.value}</p>
+                <p className="text-xs sm:text-sm text-green-600">{stat.change}</p>
               </div>
-              <div className={`p-3 rounded-lg ${stat.bg}`}>
-                <stat.icon className={`h-6 w-6 ${stat.color}`} />
+              <div className={`p-2 sm:p-3 rounded-lg ${stat.bg} flex-shrink-0`}>
+                <stat.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${stat.color}`} />
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Recent Orders */}
-        <div className="bg-white rounded-lg p-6 border">
-          <h3 className="text-lg font-semibold mb-4">Recent Purchase Orders</h3>
+        <div className="bg-white rounded-lg p-4 sm:p-6 border">
+          <h3 className="text-base sm:text-lg font-semibold mb-4">Recent Purchase Orders</h3>
           <div className="space-y-3">
             {recentOrders.map((order) => (
               <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                <div>
-                  <p className="font-medium">{order.id}</p>
-                  <p className="text-sm text-gray-600">{order.supplier}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm sm:text-base truncate">{order.id}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">{order.supplier}</p>
                 </div>
-                <div className="text-right">
-                  <p className="font-medium">{order.amount}</p>
+                <div className="text-right flex-shrink-0 ml-2">
+                  <p className="font-medium text-sm sm:text-base">{order.amount}</p>
                   <span className={`text-xs px-2 py-1 rounded ${
                     order.status === 'Approved' ? 'bg-green-100 text-green-800' :
                     order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :

@@ -58,23 +58,23 @@ const DeliveryDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg p-6 text-white">
-        <h1 className="text-2xl font-bold">Delivery Dashboard</h1>
-        <p className="text-purple-100">{isHub ? 'Hub' : 'Store'} Delivery Operations</p>
+      <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg p-4 sm:p-6 text-white">
+        <h1 className="text-xl sm:text-2xl font-bold">Delivery Dashboard</h1>
+        <p className="text-purple-100 text-sm sm:text-base">{isHub ? 'Hub' : 'Store'} Delivery Operations</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-white rounded-lg p-6 border">
+          <div key={index} className="bg-white rounded-lg p-4 sm:p-6 border">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">{stat.title}</p>
-                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                <p className="text-sm text-green-600">{stat.change}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-gray-600 truncate">{stat.title}</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{stat.value}</p>
+                <p className="text-xs sm:text-sm text-green-600">{stat.change}</p>
               </div>
-              <div className={`p-3 rounded-lg ${stat.bg}`}>
-                <stat.icon className={`h-6 w-6 ${stat.color}`} />
+              <div className={`p-2 sm:p-3 rounded-lg ${stat.bg} flex-shrink-0`}>
+                <stat.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${stat.color}`} />
               </div>
             </div>
           </div>

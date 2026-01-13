@@ -307,40 +307,41 @@ export function TeamPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold truncate">
             {user?.loginType === 'hub' ? 'Hub Team & User Management' : 
              user?.loginType === 'store' ? 'Store Team & User Management' : 
              'Team & User Management'}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600 mt-1">
             {user?.loginType === 'hub' ? 'Manage hub team members, customers, and delivery agents' : 
              user?.loginType === 'store' ? 'Manage store team members, customers, and delivery agents' : 
              'Manage team members, customers, and delivery agents'}
           </p>
         </div>
-        <Button onClick={() => setShowAddModal(true)} className="w-full sm:w-auto">
+        <Button onClick={() => setShowAddModal(true)} className="w-full sm:w-auto flex-shrink-0">
           <Plus className="mr-2 h-4 w-4" /> 
-          Add {activeTab === 'team' ? 'Team Member' : activeTab === 'customers' ? 'Customer' : 'Delivery Agent'}
+          <span className="hidden sm:inline">Add {activeTab === 'team' ? 'Team Member' : activeTab === 'customers' ? 'Customer' : 'Delivery Agent'}</span>
+          <span className="sm:hidden">Add {activeTab === 'team' ? 'Member' : activeTab === 'customers' ? 'Customer' : 'Agent'}</span>
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {tabs.map(tab => {
           const Icon = tab.icon;
           return (
             <Card key={tab.id} className="p-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">{tab.label}</p>
-                  <p className="text-2xl font-bold">{tab.count}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">{tab.label}</p>
+                  <p className="text-xl sm:text-2xl font-bold">{tab.count}</p>
                 </div>
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <Icon className="h-6 w-6 text-blue-600" />
+                <div className="p-2 sm:p-3 bg-blue-100 rounded-lg flex-shrink-0">
+                  <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                 </div>
               </div>
             </Card>
@@ -349,24 +350,25 @@ export function TeamPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b overflow-x-auto">
+      <div className="flex gap-1 sm:gap-2 border-b overflow-x-auto">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as typeof activeTab)}
-            className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors whitespace-nowrap ${
+            className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 border-b-2 transition-colors whitespace-nowrap text-xs sm:text-sm ${
               activeTab === tab.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
-            <tab.icon className="h-4 w-4" />
-            {tab.label}
-            <Badge variant="bg-gray-100 text-gray-600">{tab.count}</Badge>
+            <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">{tab.label}</span>
+            <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+            <Badge variant="bg-gray-100 text-gray-600" className="text-xs">{tab.count}</Badge>
           </button>
         ))}
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="p-4 sm:p-6">
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -374,7 +376,7 @@ export function TeamPage() {
               placeholder="Search..." 
               value={search} 
               onChange={e => setSearch(e.target.value)} 
-              className="pl-10" 
+              className="pl-10 text-sm" 
             />
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
@@ -386,6 +388,7 @@ export function TeamPage() {
                 { value: 'active', label: 'Active' }, 
                 { value: 'inactive', label: 'Inactive' }
               ]} 
+              className="text-sm"
             />
             {activeTab === 'team' && (
               <>

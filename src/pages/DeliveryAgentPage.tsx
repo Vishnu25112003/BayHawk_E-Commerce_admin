@@ -139,12 +139,12 @@ export function DeliveryAgentPage() {
   if (isDeliveryEmployee) {
     // Delivery Employee View - My Delivery Orders
     return (
-      <div className="p-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="p-4 sm:p-6">
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
             My Delivery Orders
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             View and manage your assigned delivery orders
           </p>
         </div>
@@ -271,26 +271,27 @@ export function DeliveryAgentPage() {
 
   // Admin View - Delivery Agent Management
   return (
-    <div className="p-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 sm:mb-6">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 truncate">
             Delivery Agent Management
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Manage delivery agents and track their performance
           </p>
         </div>
         {isAdmin && (
-          <Button>
+          <Button className="w-full sm:w-auto flex-shrink-0">
             <Plus className="h-4 w-4 mr-2" />
-            Add Agent
+            <span className="hidden sm:inline">Add Agent</span>
+            <span className="sm:hidden">Add</span>
           </Button>
         )}
       </div>
 
       {/* Search and Filter */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 mb-4 sm:mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <input
@@ -298,13 +299,13 @@ export function DeliveryAgentPage() {
             placeholder="Search agents..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-auto"
         >
           <option value="all">All Status</option>
           <option value="available">Available</option>
@@ -313,7 +314,7 @@ export function DeliveryAgentPage() {
       </div>
 
       {/* Delivery Agents Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {deliveryAgents.map((agent) => (
           <Card key={agent.id} className="p-6">
             <div className="flex items-center justify-between mb-4">

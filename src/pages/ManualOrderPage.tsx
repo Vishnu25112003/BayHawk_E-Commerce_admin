@@ -202,7 +202,7 @@ export function ManualOrderPage() {
   // For specific user types, show only their relevant section
   if (user?.loginType === "hub") {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
         <PageHeader
           title="Hub Manual Order Creation"
           description="Create manual orders for fish products with next-day delivery"
@@ -219,7 +219,7 @@ export function ManualOrderPage() {
 
   if (user?.loginType === "store") {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
         <PageHeader
           title="Store Manual Order Creation"
           description="Create manual orders for all products with same-day/next-day delivery"
@@ -236,7 +236,7 @@ export function ManualOrderPage() {
 
   // Super Admin sees both Hub and Store in tabs
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
       <PageHeader
         title="Manual Order Creation"
         description="Create manual orders for both hub and store operations"
@@ -245,11 +245,11 @@ export function ManualOrderPage() {
       {/* Tab Navigation */}
       <Card className="p-0 overflow-hidden">
         <div className="border-b border-gray-200">
-          <nav className="flex space-x-8 px-6" aria-label="Tabs">
+          <nav className="flex flex-wrap sm:flex-nowrap overflow-x-auto px-4 sm:px-6" aria-label="Tabs">
             <button
               onClick={() => setActiveTab("hub")}
               className={`
-                flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors
+                flex items-center gap-2 py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap
                 ${
                   activeTab === "hub"
                     ? "border-blue-500 text-blue-600"
@@ -257,19 +257,21 @@ export function ManualOrderPage() {
                 }
               `}
             >
-              <Fish className="h-5 w-5" />
-              Hub Orders
+              <Fish className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="hidden sm:inline">Hub Orders</span>
+              <span className="sm:hidden">Hub</span>
               <Badge
                 variant={activeTab === "hub" ? "info" : "default"}
-                className="ml-1"
+                className="ml-1 text-xs"
               >
-                Fish Products
+                <span className="hidden sm:inline">Fish Products</span>
+                <span className="sm:hidden">Fish</span>
               </Badge>
             </button>
             <button
               onClick={() => setActiveTab("store")}
               className={`
-                flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors
+                flex items-center gap-2 py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap
                 ${
                   activeTab === "store"
                     ? "border-green-500 text-green-600"
@@ -277,7 +279,7 @@ export function ManualOrderPage() {
                 }
               `}
             >
-              <Store className="h-5 w-5" />
+              <Store className="h-4 w-4 sm:h-5 sm:w-5" />
               Store Orders
               <Badge
                 variant={activeTab === "store" ? "success" : "default"}
