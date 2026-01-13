@@ -1,0 +1,113 @@
+import { Button } from '../ui';
+import { Eye, Edit, Trash2, Download, Plus, RefreshCw } from 'lucide-react';
+
+interface ActionButtonsProps {
+  onView?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  onDownload?: () => void;
+  onAdd?: () => void;
+  onRefresh?: () => void;
+  viewLabel?: string;
+  editLabel?: string;
+  deleteLabel?: string;
+  downloadLabel?: string;
+  addLabel?: string;
+  refreshLabel?: string;
+  size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'compact';
+  className?: string;
+}
+
+export function ActionButtons({
+  onView,
+  onEdit,
+  onDelete,
+  onDownload,
+  onAdd,
+  onRefresh,
+  viewLabel = 'View',
+  editLabel = 'Edit',
+  deleteLabel = 'Delete',
+  downloadLabel = 'Download',
+  addLabel = 'Add New',
+  refreshLabel = 'Refresh',
+  size = 'sm',
+  variant = 'default',
+  className = ''
+}: ActionButtonsProps) {
+  const isCompact = variant === 'compact';
+
+  return (
+    <div className={`flex items-center gap-2 ${className}`}>
+      {onAdd && (
+        <Button
+          onClick={onAdd}
+          size={size}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          {!isCompact && addLabel}
+        </Button>
+      )}
+      
+      {onRefresh && (
+        <Button
+          onClick={onRefresh}
+          variant="secondary"
+          size={size}
+        >
+          <RefreshCw className="h-4 w-4 mr-2" />
+          {!isCompact && refreshLabel}
+        </Button>
+      )}
+      
+      {onDownload && (
+        <Button
+          onClick={onDownload}
+          variant="secondary"
+          size={size}
+        >
+          <Download className="h-4 w-4 mr-2" />
+          {!isCompact && downloadLabel}
+        </Button>
+      )}
+      
+      {onView && (
+        <Button
+          onClick={onView}
+          variant="ghost"
+          size={size}
+          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+        >
+          <Eye className="h-4 w-4 mr-2" />
+          {!isCompact && viewLabel}
+        </Button>
+      )}
+      
+      {onEdit && (
+        <Button
+          onClick={onEdit}
+          variant="ghost"
+          size={size}
+          className="text-green-600 hover:text-green-700 hover:bg-green-50"
+        >
+          <Edit className="h-4 w-4 mr-2" />
+          {!isCompact && editLabel}
+        </Button>
+      )}
+      
+      {onDelete && (
+        <Button
+          onClick={onDelete}
+          variant="ghost"
+          size={size}
+          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+        >
+          <Trash2 className="h-4 w-4 mr-2" />
+          {!isCompact && deleteLabel}
+        </Button>
+      )}
+    </div>
+  );
+}
