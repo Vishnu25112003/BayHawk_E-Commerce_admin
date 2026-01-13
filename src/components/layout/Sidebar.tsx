@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { LogOut, Menu, X, Bell, ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
-import { getMenuByLoginType, type MenuItem } from '../../utils/menuConfig';
+import { getFilteredMenuByUser, type MenuItem } from '../../utils/menuConfig';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -13,7 +13,7 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
   const { user, logout } = useAuth();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
-  const menuItems = user ? getMenuByLoginType(user.loginType) : [];
+  const menuItems = user ? getFilteredMenuByUser(user.loginType, user.role) : [];
 
   const toggleExpand = (id: string) => {
     setExpandedItems(prev => 

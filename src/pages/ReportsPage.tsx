@@ -1,6 +1,8 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { Card, Button } from '../components/ui';
 import { Download, BarChart3, Package, Truck, Users, IndianRupee, ArrowRight } from 'lucide-react';
+import { ProcurementReportsPage } from './ProcurementReportsPage';
 
 const reportTypes = [
   { 
@@ -53,6 +55,104 @@ const reportTypes = [
 export function ReportsPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
+
+  // If user is procurement role, show procurement-specific reports page
+  if (user?.role === 'hub_procurement' || user?.role === 'store_procurement') {
+    return <ProcurementReportsPage />;
+  }
+
+  // If user is packing role, show packing-specific reports
+  if (user?.role === 'hub_packing' || user?.role === 'store_packing') {
+    const packingReports = [
+      {
+        id: 'packing',
+        title: 'Packing Reports',
+        description: 'View packing performance, processing times, and team efficiency',
+        icon: Package,
+        path: location.pathname.startsWith('/hub/') ? '/hub/reports/packing' : '/store/reports/packing',
+        color: 'bg-orange-500',
+      },
+    ];
+
+    return (
+      <div className="p-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Packing Reports</h1>
+          <p className="text-gray-600">
+            Access reports related to packing operations and performance
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {packingReports.map((report) => {
+            const IconComponent = report.icon;
+            return (
+              <div
+                key={report.id}
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => navigate(report.path)}
+              >
+                <div className="flex items-center mb-4">
+                  <div className={`${report.color} p-3 rounded-lg text-white mr-4`}>
+                    <IconComponent className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">{report.title}</h3>
+                </div>
+                <p className="text-gray-600 text-sm">{report.description}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // If user is delivery role, show delivery-specific reports
+  if (user?.role === 'hub_delivery' || user?.role === 'store_delivery') {
+    const deliveryReports = [
+      {
+        id: 'delivery',
+        title: 'Delivery Reports',
+        description: 'View delivery performance, on-time rates, and route efficiency',
+        icon: Truck,
+        path: location.pathname.startsWith('/hub/') ? '/hub/reports/delivery' : '/store/reports/delivery',
+        color: 'bg-purple-500',
+      },
+    ];
+
+    return (
+      <div className="p-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Delivery Reports</h1>
+          <p className="text-gray-600">
+            Access reports related to delivery operations and performance
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {deliveryReports.map((report) => {
+            const IconComponent = report.icon;
+            return (
+              <div
+                key={report.id}
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => navigate(report.path)}
+              >
+                <div className="flex items-center mb-4">
+                  <div className={`${report.color} p-3 rounded-lg text-white mr-4`}>
+                    <IconComponent className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">{report.title}</h3>
+                </div>
+                <p className="text-gray-600 text-sm">{report.description}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   // Determine the current module based on the path
   const getCurrentModule = () => {

@@ -25,12 +25,29 @@ export const PERMISSIONS = {
   HUB_RECIPES_VIEW: 'hub_recipes_view',
   HUB_RECIPES_MANAGE: 'hub_recipes_manage',
   
+  // Hub Labeling
+  HUB_LABELING_VIEW: 'hub_labeling_view',
+  HUB_LABELING_MANAGE: 'hub_labeling_manage',
+  
+  // Hub Marketing
+  HUB_MARKETING_VIEW: 'hub_marketing_view',
+  HUB_MARKETING_MANAGE: 'hub_marketing_manage',
+  HUB_SCRATCH_CARD: 'hub_scratch_card',
+  HUB_SPIN_WHEEL: 'hub_spin_wheel',
+  HUB_FLASH_SALE: 'hub_flash_sale',
+  HUB_SUBSCRIPTION: 'hub_subscription',
+  HUB_OFFER_NOTIFICATION: 'hub_offer_notification',
+  HUB_COUPON: 'hub_coupon',
+  HUB_IN_APP_CURRENCY: 'hub_in_app_currency',
+  HUB_REFERRAL: 'hub_referral',
+  
   // Hub Reports
   HUB_REPORTS_SALES: 'hub_reports_sales',
   HUB_REPORTS_PACKING: 'hub_reports_packing',
   HUB_REPORTS_DELIVERY: 'hub_reports_delivery',
   HUB_REPORTS_STOCK: 'hub_reports_stock',
   HUB_REPORTS_CUSTOMER: 'hub_reports_customer',
+  HUB_REPORTS_PROCUREMENT: 'hub_reports_procurement',
   
   // Hub Audit
   HUB_AUDIT_LOGS: 'hub_audit_logs',
@@ -46,6 +63,11 @@ export const PERMISSIONS = {
   // Store Products
   STORE_PRODUCTS_VIEW: 'store_products_view',
   STORE_STOCK_MANAGE: 'store_stock_manage',
+  
+  // Store Delivery Agents
+  STORE_DELIVERY_AGENTS_VIEW: 'store_delivery_agents_view',
+  STORE_TEAM_VIEW: 'store_team_view',
+  STORE_TEAM_MANAGE: 'store_team_manage',
   
   // Super Admin
   PRODUCT_APPROVAL: 'product_approval',
@@ -94,11 +116,24 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
       PERMISSIONS.HUB_CATEGORIES_MANAGE,
       PERMISSIONS.HUB_RECIPES_VIEW,
       PERMISSIONS.HUB_RECIPES_MANAGE,
+      PERMISSIONS.HUB_LABELING_VIEW,
+      PERMISSIONS.HUB_LABELING_MANAGE,
+      PERMISSIONS.HUB_MARKETING_VIEW,
+      PERMISSIONS.HUB_MARKETING_MANAGE,
+      PERMISSIONS.HUB_SCRATCH_CARD,
+      PERMISSIONS.HUB_SPIN_WHEEL,
+      PERMISSIONS.HUB_FLASH_SALE,
+      PERMISSIONS.HUB_SUBSCRIPTION,
+      PERMISSIONS.HUB_OFFER_NOTIFICATION,
+      PERMISSIONS.HUB_COUPON,
+      PERMISSIONS.HUB_IN_APP_CURRENCY,
+      PERMISSIONS.HUB_REFERRAL,
       PERMISSIONS.HUB_REPORTS_SALES,
       PERMISSIONS.HUB_REPORTS_PACKING,
       PERMISSIONS.HUB_REPORTS_DELIVERY,
       PERMISSIONS.HUB_REPORTS_STOCK,
       PERMISSIONS.HUB_REPORTS_CUSTOMER,
+      PERMISSIONS.HUB_REPORTS_PROCUREMENT,
       PERMISSIONS.HUB_AUDIT_LOGS,
       PERMISSIONS.PROCUREMENT_VIEW,
       PERMISSIONS.PROCUREMENT_MANAGE,
@@ -118,13 +153,33 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
     color: 'bg-green-500',
     icon: 'Package',
     permissions: [
-      PERMISSIONS.HUB_ORDERS_VIEW,
+      // Products & Stock - Full Access
       PERMISSIONS.HUB_PRODUCTS_VIEW,
+      PERMISSIONS.HUB_PRODUCTS_MANAGE,
       PERMISSIONS.HUB_STOCK_VIEW,
       PERMISSIONS.HUB_STOCK_MANAGE,
+      PERMISSIONS.HUB_CATEGORIES_VIEW,
+      PERMISSIONS.HUB_CATEGORIES_MANAGE,
+      PERMISSIONS.HUB_RECIPES_VIEW,
+      PERMISSIONS.HUB_RECIPES_MANAGE,
       PERMISSIONS.PROCUREMENT_VIEW,
       PERMISSIONS.PROCUREMENT_MANAGE,
+      
+      // Marketing - Full Access
+      PERMISSIONS.HUB_MARKETING_VIEW,
+      PERMISSIONS.HUB_MARKETING_MANAGE,
+      PERMISSIONS.HUB_SCRATCH_CARD,
+      PERMISSIONS.HUB_SPIN_WHEEL, 
+      PERMISSIONS.HUB_FLASH_SALE,
+      PERMISSIONS.HUB_SUBSCRIPTION,
+      PERMISSIONS.HUB_OFFER_NOTIFICATION,
+      PERMISSIONS.HUB_COUPON,
+      PERMISSIONS.HUB_IN_APP_CURRENCY,
+      PERMISSIONS.HUB_REFERRAL,
+      
+      // Reports - Procurement Related Only
       PERMISSIONS.HUB_REPORTS_STOCK,
+      PERMISSIONS.HUB_REPORTS_PROCUREMENT,
     ],
   },
   
@@ -137,10 +192,17 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
     color: 'bg-orange-500',
     icon: 'Box',
     permissions: [
+      // Orders - Limited Access
       PERMISSIONS.HUB_ORDERS_VIEW,
       PERMISSIONS.HUB_ORDERS_EDIT,
       PERMISSIONS.PACKING_VIEW,
       PERMISSIONS.PACKING_MANAGE,
+      
+      // Labeling - Full Access
+      'HUB_LABELING_VIEW',
+      'HUB_LABELING_MANAGE',
+      
+      // Reports - Packing Related Only
       PERMISSIONS.HUB_REPORTS_PACKING,
     ],
   },
@@ -154,9 +216,15 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
     color: 'bg-purple-500',
     icon: 'Truck',
     permissions: [
+      // Orders - View Only for Delivery
       PERMISSIONS.HUB_ORDERS_VIEW,
-      PERMISSIONS.HUB_DELIVERY_AGENTS_VIEW,
       PERMISSIONS.DELIVERY_VIEW,
+      
+      // Team - Limited Access
+      PERMISSIONS.HUB_TEAM_VIEW,
+      PERMISSIONS.HUB_DELIVERY_AGENTS_VIEW,
+      
+      // Reports - Delivery Related Only
       PERMISSIONS.HUB_REPORTS_DELIVERY,
     ],
   },
@@ -175,8 +243,31 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
       PERMISSIONS.STORE_ORDERS_CREATE,
       PERMISSIONS.STORE_TEAM_VIEW,
       PERMISSIONS.STORE_TEAM_MANAGE,
+      PERMISSIONS.STORE_DELIVERY_AGENTS_VIEW,
       PERMISSIONS.STORE_PRODUCTS_VIEW,
       PERMISSIONS.STORE_STOCK_MANAGE,
+      PERMISSIONS.HUB_CATEGORIES_VIEW,
+      PERMISSIONS.HUB_CATEGORIES_MANAGE,
+      PERMISSIONS.HUB_RECIPES_VIEW,
+      PERMISSIONS.HUB_RECIPES_MANAGE,
+      PERMISSIONS.HUB_LABELING_VIEW,
+      PERMISSIONS.HUB_LABELING_MANAGE,
+      PERMISSIONS.HUB_MARKETING_VIEW,
+      PERMISSIONS.HUB_MARKETING_MANAGE,
+      PERMISSIONS.HUB_SCRATCH_CARD,
+      PERMISSIONS.HUB_SPIN_WHEEL,
+      PERMISSIONS.HUB_FLASH_SALE,
+      PERMISSIONS.HUB_SUBSCRIPTION,
+      PERMISSIONS.HUB_OFFER_NOTIFICATION,
+      PERMISSIONS.HUB_COUPON,
+      PERMISSIONS.HUB_IN_APP_CURRENCY,
+      PERMISSIONS.HUB_REFERRAL,
+      PERMISSIONS.HUB_REPORTS_SALES,
+      PERMISSIONS.HUB_REPORTS_PACKING,
+      PERMISSIONS.HUB_REPORTS_DELIVERY,
+      PERMISSIONS.HUB_REPORTS_STOCK,
+      PERMISSIONS.HUB_REPORTS_CUSTOMER,
+      PERMISSIONS.HUB_REPORTS_PROCUREMENT,
       PERMISSIONS.PROCUREMENT_VIEW,
       PERMISSIONS.PROCUREMENT_MANAGE,
       PERMISSIONS.PACKING_VIEW,
@@ -195,11 +286,31 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
     color: 'bg-green-500',
     icon: 'Package',
     permissions: [
-      PERMISSIONS.STORE_ORDERS_VIEW,
+      // Products & Stock - Full Access
       PERMISSIONS.STORE_PRODUCTS_VIEW,
       PERMISSIONS.STORE_STOCK_MANAGE,
+      PERMISSIONS.HUB_CATEGORIES_VIEW,
+      PERMISSIONS.HUB_CATEGORIES_MANAGE,
+      PERMISSIONS.HUB_RECIPES_VIEW,
+      PERMISSIONS.HUB_RECIPES_MANAGE,
       PERMISSIONS.PROCUREMENT_VIEW,
       PERMISSIONS.PROCUREMENT_MANAGE,
+      
+      // Marketing - Full Access
+      PERMISSIONS.HUB_MARKETING_VIEW,
+      PERMISSIONS.HUB_MARKETING_MANAGE,
+      PERMISSIONS.HUB_SCRATCH_CARD,
+      PERMISSIONS.HUB_SPIN_WHEEL,
+      PERMISSIONS.HUB_FLASH_SALE,
+      PERMISSIONS.HUB_SUBSCRIPTION,
+      PERMISSIONS.HUB_OFFER_NOTIFICATION,
+      PERMISSIONS.HUB_COUPON,
+      PERMISSIONS.HUB_IN_APP_CURRENCY,
+      PERMISSIONS.HUB_REFERRAL,
+      
+      // Reports - Procurement Related Only
+      PERMISSIONS.HUB_REPORTS_STOCK,
+      PERMISSIONS.HUB_REPORTS_PROCUREMENT,
     ],
   },
   
@@ -212,9 +323,17 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
     color: 'bg-orange-500',
     icon: 'Box',
     permissions: [
+      // Orders - Limited Access
       PERMISSIONS.STORE_ORDERS_VIEW,
       PERMISSIONS.PACKING_VIEW,
       PERMISSIONS.PACKING_MANAGE,
+      
+      // Labeling - Full Access
+      'HUB_LABELING_VIEW',
+      'HUB_LABELING_MANAGE',
+      
+      // Reports - Packing Related Only
+      PERMISSIONS.HUB_REPORTS_PACKING,
     ],
   },
   
@@ -227,8 +346,16 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
     color: 'bg-purple-500',
     icon: 'Truck',
     permissions: [
+      // Orders - View Only for Delivery
       PERMISSIONS.STORE_ORDERS_VIEW,
       PERMISSIONS.DELIVERY_VIEW,
+      
+      // Team - Limited Access
+      PERMISSIONS.STORE_TEAM_VIEW,
+      PERMISSIONS.STORE_DELIVERY_AGENTS_VIEW,
+      
+      // Reports - Delivery Related Only
+      PERMISSIONS.HUB_REPORTS_DELIVERY,
     ],
   },
 };

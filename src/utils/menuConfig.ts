@@ -25,10 +25,11 @@ export const HUB_MENU: MenuItem[] = [
     icon: ShoppingCart,
     path: '/hub/orders',
     module: 'hub',
+    requiredRoles: ['hub_main_admin', 'hub_packing', 'hub_delivery'], // Allow delivery access to orders
     children: [
-      { id: 'hub-all-orders', label: 'All Orders', icon: null, path: '/hub/orders', module: 'hub' },
-      { id: 'hub-manual-order', label: 'Manual Order Creation', icon: null, path: '/hub/orders/manual', module: 'hub' },
-      { id: 'hub-pre-orders', label: 'Pre Orders', icon: null, path: '/hub/orders/pre-orders', module: 'hub' },
+      { id: 'hub-all-orders', label: 'All Orders', icon: null, path: '/hub/orders', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_packing', 'hub_delivery'] },
+      { id: 'hub-manual-order', label: 'Manual Order Creation', icon: null, path: '/hub/orders/manual', module: 'hub', requiredRoles: ['hub_main_admin'] },
+      { id: 'hub-pre-orders', label: 'Pre Orders', icon: null, path: '/hub/orders/pre-orders', module: 'hub', requiredRoles: ['hub_main_admin'] },
     ],
   },
   {
@@ -37,10 +38,10 @@ export const HUB_MENU: MenuItem[] = [
     icon: Users,
     path: '/hub/team',
     module: 'hub',
-    requiredRoles: ['hub_main_admin'], // Only main admin can access team management
+    requiredRoles: ['hub_main_admin', 'hub_delivery'], // Allow delivery access to see the menu
     children: [
       { id: 'hub-team-overview', label: 'Team Members', icon: null, path: '/hub/team', module: 'hub', requiredRoles: ['hub_main_admin'] },
-      { id: 'hub-delivery-agents', label: 'Delivery Agents', icon: null, path: '/hub/team/delivery-agents', module: 'hub' }, // All roles can access
+      { id: 'hub-delivery-agents', label: 'Delivery Agents', icon: null, path: '/hub/team/delivery-agents', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_delivery'] },
     ],
   },
   {
@@ -50,11 +51,11 @@ export const HUB_MENU: MenuItem[] = [
     path: '/hub/products',
     module: 'hub',
     children: [
-      { id: 'hub-all-products', label: 'All Products', icon: null, path: '/hub/products', module: 'hub' },
+      { id: 'hub-all-products', label: 'All Products', icon: null, path: '/hub/products', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
       { id: 'hub-stock', label: 'Stock Management', icon: null, path: '/hub/products/stock', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
-      { id: 'hub-categories', label: 'Categories', icon: null, path: '/hub/products/categories', module: 'hub', requiredRoles: ['hub_main_admin'] },
-      { id: 'hub-cutting-types', label: 'Cutting Types', icon: null, path: '/hub/products/cutting-types', module: 'hub', requiredRoles: ['hub_main_admin'] },
-      { id: 'hub-recipes', label: 'Recipes', icon: null, path: '/hub/products/recipes', module: 'hub', requiredRoles: ['hub_main_admin'] },
+      { id: 'hub-categories', label: 'Categories', icon: null, path: '/hub/products/categories', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
+      { id: 'hub-cutting-types', label: 'Cutting Types', icon: null, path: '/hub/products/cutting-types', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
+      { id: 'hub-recipes', label: 'Recipes', icon: null, path: '/hub/products/recipes', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
     ],
   },
   {
@@ -63,7 +64,7 @@ export const HUB_MENU: MenuItem[] = [
     icon: Tag,
     path: '/hub/labeling',
     module: 'hub',
-    requiredRoles: ['hub_main_admin'], // Only main admin can access labeling
+    requiredRoles: ['hub_main_admin', 'hub_packing'], // Allow packing access to labeling
   },
   {
     id: 'hub-marketing',
@@ -71,16 +72,16 @@ export const HUB_MENU: MenuItem[] = [
     icon: Megaphone,
     path: '/hub/marketing',
     module: 'hub',
-    requiredRoles: ['hub_main_admin'], // Only main admin can access marketing
+    requiredRoles: ['hub_main_admin', 'hub_procurement'], // Allow procurement access
     children: [
-      { id: 'hub-scratch-card', label: 'Scratch Card', icon: null, path: '/hub/scratch-card', module: 'hub', requiredRoles: ['hub_main_admin'] },
-      { id: 'hub-spin-wheel', label: 'Spin Wheel', icon: null, path: '/hub/spin-wheel', module: 'hub', requiredRoles: ['hub_main_admin'] },
-      { id: 'hub-flash-sale', label: 'Flash Sale', icon: null, path: '/hub/flash-sale', module: 'hub', requiredRoles: ['hub_main_admin'] },
-      { id: 'hub-subscription', label: 'Subscription', icon: null, path: '/hub/subscription', module: 'hub', requiredRoles: ['hub_main_admin'] },
-      { id: 'hub-offer-notification', label: 'Offer Notification', icon: null, path: '/hub/offer-notification', module: 'hub', requiredRoles: ['hub_main_admin'] },
-      { id: 'hub-coupon', label: 'Coupon', icon: null, path: '/hub/coupon', module: 'hub', requiredRoles: ['hub_main_admin'] },
-      { id: 'hub-in-app-currency', label: 'In-App Currency', icon: null, path: '/hub/in-app-currency', module: 'hub', requiredRoles: ['hub_main_admin'] },
-      { id: 'hub-referral', label: 'Referral', icon: null, path: '/hub/referral', module: 'hub', requiredRoles: ['hub_main_admin'] },
+      { id: 'hub-scratch-card', label: 'Scratch Card', icon: null, path: '/hub/scratch-card', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
+      { id: 'hub-spin-wheel', label: 'Spin Wheel', icon: null, path: '/hub/spin-wheel', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
+      { id: 'hub-flash-sale', label: 'Flash Sale', icon: null, path: '/hub/flash-sale', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
+      { id: 'hub-subscription', label: 'Subscription', icon: null, path: '/hub/subscription', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
+      { id: 'hub-offer-notification', label: 'Offer Notification', icon: null, path: '/hub/offer-notification', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
+      { id: 'hub-coupon', label: 'Coupon', icon: null, path: '/hub/coupon', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
+      { id: 'hub-in-app-currency', label: 'In-App Currency', icon: null, path: '/hub/in-app-currency', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
+      { id: 'hub-referral', label: 'Referral', icon: null, path: '/hub/referral', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
     ],
   },
   {
@@ -94,6 +95,7 @@ export const HUB_MENU: MenuItem[] = [
       { id: 'hub-packing-reports', label: 'Packing Reports', icon: null, path: '/hub/reports/packing', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_packing'] },
       { id: 'hub-delivery-reports', label: 'Delivery Reports', icon: null, path: '/hub/reports/delivery', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_delivery'] },
       { id: 'hub-stock-reports', label: 'Stock Reports', icon: null, path: '/hub/reports/stock', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
+      { id: 'hub-procurement-reports', label: 'Procurement Reports', icon: null, path: '/hub/reports/procurement', module: 'hub', requiredRoles: ['hub_main_admin', 'hub_procurement'] },
       { id: 'hub-customer-reports', label: 'Customer Reports', icon: null, path: '/hub/reports/customer', module: 'hub', requiredRoles: ['hub_main_admin'] },
     ],
   },
@@ -121,10 +123,11 @@ export const STORE_MENU: MenuItem[] = [
     icon: ShoppingCart,
     path: '/store/orders',
     module: 'store',
+    requiredRoles: ['store_main_admin', 'store_packing', 'store_delivery'], // Allow delivery access to orders
     children: [
-      { id: 'store-all-orders', label: 'All Orders', icon: null, path: '/store/orders', module: 'store' },
-      { id: 'store-manual-order', label: 'Manual Order Creation', icon: null, path: '/store/orders/manual', module: 'store' },
-      { id: 'store-pre-orders', label: 'Pre Orders', icon: null, path: '/store/orders/pre-orders', module: 'store' },
+      { id: 'store-all-orders', label: 'All Orders', icon: null, path: '/store/orders', module: 'store', requiredRoles: ['store_main_admin', 'store_packing', 'store_delivery'] },
+      { id: 'store-manual-order', label: 'Manual Order Creation', icon: null, path: '/store/orders/manual', module: 'store', requiredRoles: ['store_main_admin'] },
+      { id: 'store-pre-orders', label: 'Pre Orders', icon: null, path: '/store/orders/pre-orders', module: 'store', requiredRoles: ['store_main_admin'] },
     ],
   },
   {
@@ -133,9 +136,10 @@ export const STORE_MENU: MenuItem[] = [
     icon: Users,
     path: '/store/team',
     module: 'store',
+    requiredRoles: ['store_main_admin', 'store_delivery'], // Allow delivery access to see the menu
     children: [
-      { id: 'store-team-members', label: 'Team Members', icon: null, path: '/store/team', module: 'store' },
-      { id: 'store-delivery-agents', label: 'Delivery Agents', icon: null, path: '/store/team/delivery-agents', module: 'store' },
+      { id: 'store-team-members', label: 'Team Members', icon: null, path: '/store/team', module: 'store', requiredRoles: ['store_main_admin'] },
+      { id: 'store-delivery-agents', label: 'Delivery Agents', icon: null, path: '/store/team/delivery-agents', module: 'store', requiredRoles: ['store_main_admin', 'store_delivery'] },
     ],
   },
   {
@@ -145,11 +149,11 @@ export const STORE_MENU: MenuItem[] = [
     path: '/store/products',
     module: 'store',
     children: [
-      { id: 'store-all-products', label: 'All Products', icon: null, path: '/store/products', module: 'store' },
-      { id: 'store-stock', label: 'Stock Management', icon: null, path: '/store/products/stock', module: 'store' },
-      { id: 'store-categories', label: 'Categories', icon: null, path: '/store/products/categories', module: 'store' },
-      { id: 'store-cutting-types', label: 'Cutting Types', icon: null, path: '/store/products/cutting-types', module: 'store' },
-      { id: 'store-recipes', label: 'Recipes', icon: null, path: '/store/products/recipes', module: 'store' },
+      { id: 'store-all-products', label: 'All Products', icon: null, path: '/store/products', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-stock', label: 'Stock Management', icon: null, path: '/store/products/stock', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-categories', label: 'Categories', icon: null, path: '/store/products/categories', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-cutting-types', label: 'Cutting Types', icon: null, path: '/store/products/cutting-types', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-recipes', label: 'Recipes', icon: null, path: '/store/products/recipes', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
     ],
   },
   {
@@ -158,6 +162,7 @@ export const STORE_MENU: MenuItem[] = [
     icon: Tag,
     path: '/store/labeling',
     module: 'store',
+    requiredRoles: ['store_main_admin', 'store_packing'], // Allow packing access to labeling
   },
   {
     id: 'store-marketing',
@@ -165,15 +170,16 @@ export const STORE_MENU: MenuItem[] = [
     icon: Megaphone,
     path: '/store/marketing',
     module: 'store',
+    requiredRoles: ['store_main_admin', 'store_procurement'], // Allow procurement access
     children: [
-      { id: 'store-scratch-card', label: 'Scratch Card', icon: null, path: '/store/scratch-card', module: 'store' },
-      { id: 'store-spin-wheel', label: 'Spin Wheel', icon: null, path: '/store/spin-wheel', module: 'store' },
-      { id: 'store-flash-sale', label: 'Flash Sale', icon: null, path: '/store/flash-sale', module: 'store' },
-      { id: 'store-subscription', label: 'Subscription', icon: null, path: '/store/subscription', module: 'store' },
-      { id: 'store-offer-notification', label: 'Offer Notification', icon: null, path: '/store/offer-notification', module: 'store' },
-      { id: 'store-coupon', label: 'Coupon', icon: null, path: '/store/coupon', module: 'store' },
-      { id: 'store-in-app-currency', label: 'In-App Currency', icon: null, path: '/store/in-app-currency', module: 'store' },
-      { id: 'store-referral', label: 'Referral', icon: null, path: '/store/referral', module: 'store' },
+      { id: 'store-scratch-card', label: 'Scratch Card', icon: null, path: '/store/scratch-card', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-spin-wheel', label: 'Spin Wheel', icon: null, path: '/store/spin-wheel', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-flash-sale', label: 'Flash Sale', icon: null, path: '/store/flash-sale', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-subscription', label: 'Subscription', icon: null, path: '/store/subscription', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-offer-notification', label: 'Offer Notification', icon: null, path: '/store/offer-notification', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-coupon', label: 'Coupon', icon: null, path: '/store/coupon', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-in-app-currency', label: 'In-App Currency', icon: null, path: '/store/in-app-currency', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-referral', label: 'Referral', icon: null, path: '/store/referral', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
     ],
   },
   {
@@ -183,11 +189,12 @@ export const STORE_MENU: MenuItem[] = [
     path: '/store/reports',
     module: 'store',
     children: [
-      { id: 'store-sales-reports', label: 'Sales Reports', icon: null, path: '/store/reports/sales', module: 'store' },
-      { id: 'store-packing-reports', label: 'Packing Reports', icon: null, path: '/store/reports/packing', module: 'store' },
-      { id: 'store-delivery-reports', label: 'Delivery Reports', icon: null, path: '/store/reports/delivery', module: 'store' },
-      { id: 'store-stock-reports', label: 'Stock Reports', icon: null, path: '/store/reports/stock', module: 'store' },
-      { id: 'store-customer-reports', label: 'Customer Reports', icon: null, path: '/store/reports/customer', module: 'store' },
+      { id: 'store-sales-reports', label: 'Sales Reports', icon: null, path: '/store/reports/sales', module: 'store', requiredRoles: ['store_main_admin'] },
+      { id: 'store-packing-reports', label: 'Packing Reports', icon: null, path: '/store/reports/packing', module: 'store', requiredRoles: ['store_main_admin', 'store_packing'] },
+      { id: 'store-delivery-reports', label: 'Delivery Reports', icon: null, path: '/store/reports/delivery', module: 'store', requiredRoles: ['store_main_admin', 'store_delivery'] },
+      { id: 'store-stock-reports', label: 'Stock Reports', icon: null, path: '/store/reports/stock', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-procurement-reports', label: 'Procurement Reports', icon: null, path: '/store/reports/procurement', module: 'store', requiredRoles: ['store_main_admin', 'store_procurement'] },
+      { id: 'store-customer-reports', label: 'Customer Reports', icon: null, path: '/store/reports/customer', module: 'store', requiredRoles: ['store_main_admin'] },
     ],
   },
   {
@@ -196,6 +203,7 @@ export const STORE_MENU: MenuItem[] = [
     icon: FileText,
     path: '/store/audit',
     module: 'store',
+    requiredRoles: ['store_main_admin'], // Only main admin can access audit logs
   },
 ];
 
@@ -335,37 +343,39 @@ export function getMenuByLoginType(loginType: LoginType): MenuItem[] {
 }
 
 export function filterMenuByRole(menu: MenuItem[], userRole: UserRole): MenuItem[] {
-  return menu.filter(item => {
-    // If no role restriction, show to all users
-    if (!item.requiredRoles) {
-      // Filter children if they exist
+  return menu.map(item => {
+    // If item has children, filter them first
+    if (item.children) {
+      const filteredChildren = filterMenuByRole(item.children, userRole);
+      return {
+        ...item,
+        children: filteredChildren
+      };
+    }
+    return item;
+  }).filter(item => {
+    // If no role restriction, show item
+    if (!item.requiredRoles || item.requiredRoles.length === 0) {
+      // If has children, only show if children exist after filtering
       if (item.children) {
-        const filteredChildren = filterMenuByRole(item.children, userRole);
-        // Only show parent if it has accessible children or no children
-        return filteredChildren.length > 0 || !item.children.length;
+        return item.children.length > 0;
       }
       return true;
     }
     
-    // Check if user role is in required roles
+    // Check if user has required role
     const hasAccess = item.requiredRoles.includes(userRole);
     
-    if (hasAccess && item.children) {
-      // Filter children and update the item
-      const filteredChildren = filterMenuByRole(item.children, userRole);
-      return filteredChildren.length > 0;
+    if (!hasAccess) {
+      return false; // Hide if no access
     }
     
-    return hasAccess;
-  }).map(item => {
-    // Return item with filtered children
+    // If has children, only show if children exist after filtering
     if (item.children) {
-      return {
-        ...item,
-        children: filterMenuByRole(item.children, userRole)
-      };
+      return item.children.length > 0;
     }
-    return item;
+    
+    return true;
   });
 }
 

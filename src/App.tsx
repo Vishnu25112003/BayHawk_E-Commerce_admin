@@ -1,6 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Layout } from './components/layout/Layout';
+import { ProtectedRoute as ProtectedRouteComponent } from './components/ProtectedRoute';
+import { ProcurementRoute } from './components/ProcurementRoute';
+import { PackingRoute } from './components/PackingRoute';
+import { DeliveryRoute } from './components/DeliveryRoute';
+import { MultiRoleRoute } from './components/MultiRoleRoute';
+import { ProcurementReportsPage } from './pages/ProcurementReportsPage';
+import { DeliveryAgentPage } from './pages/DeliveryAgentPage';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { OrdersPage } from './pages/OrdersPage';
@@ -25,7 +32,6 @@ import { ReferralPage } from './pages/ReferralPage';
 import { HubPage } from './pages/HubPage';
 import { StorePage } from './pages/StorePage';
 import { TeamPage } from './pages/TeamPage';
-import { DeliveryAgentPage } from './pages/DeliveryAgentPage';
 import { CustomRolesPage } from './pages/CustomRolesPage';
 import { CategoriesPage } from './pages/CategoriesPage';
 import { StockManagementPage } from './pages/StockManagementPage';
@@ -70,45 +76,123 @@ function AppRoutes() {
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         
-        {/* Hub Routes */}
-        <Route path="hub/orders/manual" element={<HubManualOrderPage />} />
-        <Route path="hub/orders/pre-orders" element={<HubPreOrderPage />} />
-        <Route path="hub/team/delivery-agents" element={<DeliveryAgentPage />} />
-        <Route path="hub/team/custom-roles" element={<CustomRolesPage />} />
-        <Route path="hub/products/categories" element={<CategoriesPage />} />
-        <Route path="hub/products/cutting-types" element={<CuttingTypePage />} />
-        <Route path="hub/products/stock" element={<StockManagementPage />} />
-        <Route path="hub/products/approval" element={<ProductApprovalPage />} />
-        <Route path="hub/scratch-card" element={<ScratchCardPage />} />
-        <Route path="hub/spin-wheel" element={<SpinWheelPage />} />
-        <Route path="hub/flash-sale" element={<FlashSalePage />} />
-        <Route path="hub/subscription" element={<SubscriptionPage />} />
-        <Route path="hub/offer-notification" element={<OfferNotificationPage />} />
-        <Route path="hub/coupon" element={<CouponPage />} />
-        <Route path="hub/in-app-currency" element={<InAppCurrencyPage />} />
-        <Route path="hub/referral" element={<ReferralPage />} />
-        <Route path="hub/products/recipes" element={<RecipesPage />} />
-        <Route path="hub/labeling" element={<LabelingPage />} />
-        <Route path="hub/audit" element={<AuditLogsPage />} />
+        {/* Hub Products Routes - Procurement Accessible */}
+        <Route path="hub/products/categories" element={<ProcurementRoute><CategoriesPage /></ProcurementRoute>} />
+        <Route path="hub/products/cutting-types" element={<ProcurementRoute><CuttingTypePage /></ProcurementRoute>} />
+        <Route path="hub/products/stock" element={<ProcurementRoute><StockManagementPage /></ProcurementRoute>} />
+        <Route path="hub/products/approval" element={<ProtectedRouteComponent permission="PRODUCT_APPROVAL"><ProductApprovalPage /></ProtectedRouteComponent>} />
+        <Route path="hub/products/recipes" element={<ProcurementRoute><RecipesPage /></ProcurementRoute>} />
+        <Route path="hub/products/*" element={<ProcurementRoute><ProductsPage /></ProcurementRoute>} />
+        
+        {/* Hub Marketing Routes - Procurement Accessible */}
+        <Route path="hub/scratch-card" element={<ProcurementRoute><ScratchCardPage /></ProcurementRoute>} />
+        <Route path="hub/spin-wheel" element={<ProcurementRoute><SpinWheelPage /></ProcurementRoute>} />
+        <Route path="hub/flash-sale" element={<ProcurementRoute><FlashSalePage /></ProcurementRoute>} />
+        <Route path="hub/subscription" element={<ProcurementRoute><SubscriptionPage /></ProcurementRoute>} />
+        <Route path="hub/offer-notification" element={<ProcurementRoute><OfferNotificationPage /></ProcurementRoute>} />
+        <Route path="hub/coupon" element={<ProcurementRoute><CouponPage /></ProcurementRoute>} />
+        <Route path="hub/in-app-currency" element={<ProcurementRoute><InAppCurrencyPage /></ProcurementRoute>} />
+        <Route path="hub/referral" element={<ProcurementRoute><ReferralPage /></ProcurementRoute>} />
+        <Route path="hub/marketing/*" element={<ProcurementRoute><MarketingPage /></ProcurementRoute>} />
+        
+        {/* Hub Reports Routes - Limited Procurement Access */}
+        <Route path="hub/reports/stock" element={<ProcurementRoute><StockReportPage /></ProcurementRoute>} />
+        <Route path="hub/reports/procurement" element={<ProcurementRoute><ProcurementReportsPage /></ProcurementRoute>} />
+        <Route path="hub/reports/sales" element={<ProtectedRouteComponent permission="HUB_REPORTS_SALES"><SalesReportPage /></ProtectedRouteComponent>} />
+        <Route path="hub/reports/packing" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_packing']}><PackingReportPage /></MultiRoleRoute>} />
+        <Route path="hub/reports/delivery" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_delivery']}><DeliveryReportPage /></MultiRoleRoute>} />
+        <Route path="hub/reports/customer" element={<ProtectedRouteComponent permission="HUB_REPORTS_CUSTOMER"><CustomerReportPage /></ProtectedRouteComponent>} />
         <Route path="hub/reports" element={<ReportsPage />} />
-        <Route path="hub/reports/sales" element={<SalesReportPage />} />
-        <Route path="hub/reports/packing" element={<PackingReportPage />} />
-        <Route path="hub/reports/delivery" element={<DeliveryReportPage />} />
-        <Route path="hub/reports/stock" element={<StockReportPage />} />
-        <Route path="hub/reports/customer" element={<CustomerReportPage />} />
-        <Route path="hub/settings" element={<GeneralSettingsPage />} />
-        <Route path="hub/settings/delivery-slots" element={<DeliverySlotsPage />} />
-        <Route path="hub/settings/shipping-charges" element={<ShippingChargesPage />} />
-        <Route path="hub/settings/integrations" element={<IntegrationsPage />} />
-        <Route path="hub/settings/weather" element={<WeatherCustomizationPage />} />
-        <Route path="hub/settings/notification" element={<NotificationCustomizationPage />} />
-        <Route path="hub/settings/legal" element={<LegalPage />} />
-        <Route path="hub/settings/advertisement" element={<AdvertisementPage />} />
-        <Route path="hub/orders/*" element={<HubOrdersPage />} />
-        <Route path="hub/team/*" element={<TeamPage />} />
-        <Route path="hub/products/*" element={<ProductsPage />} />
-        <Route path="hub/marketing/*" element={<MarketingPage />} />
-        <Route path="hub/settings/*" element={<SettingsPage />} />
+        
+        {/* Hub Orders Routes - Multiple Roles Accessible */}
+        <Route path="hub/orders/*" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_packing', 'hub_delivery']}><HubOrdersPage /></MultiRoleRoute>} />
+        
+        {/* Hub Team Routes - Delivery Accessible */}
+        <Route path="hub/team/delivery-agents" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
+        <Route path="hub/team/*" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><TeamPage /></ProtectedRouteComponent>} />
+        
+        {/* Hub Labeling Routes - Packing Accessible */}
+        <Route path="hub/labeling" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_packing']}><LabelingPage /></MultiRoleRoute>} />
+        
+        {/* Hub Reports Routes - Role Specific */}
+        <Route path="hub/reports/packing" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_packing']}><PackingReportPage /></MultiRoleRoute>} />
+        <Route path="hub/reports/delivery" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_delivery']}><DeliveryReportPage /></MultiRoleRoute>} />
+        <Route path="hub/reports" element={<PackingRoute><ReportsPage /></PackingRoute>} />
+        
+        {/* Hub Admin-Only Routes */}
+        <Route path="hub/orders/manual" element={<ProtectedRouteComponent permission="HUB_ORDERS_CREATE"><HubManualOrderPage /></ProtectedRouteComponent>} />
+        <Route path="hub/orders/pre-orders" element={<ProtectedRouteComponent permission="HUB_PRE_ORDERS"><HubPreOrderPage /></ProtectedRouteComponent>} />
+        <Route path="hub/settings" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><GeneralSettingsPage /></ProtectedRouteComponent>} />
+        <Route path="hub/settings/delivery-slots" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><DeliverySlotsPage /></ProtectedRouteComponent>} />
+        <Route path="hub/settings/shipping-charges" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><ShippingChargesPage /></ProtectedRouteComponent>} />
+        <Route path="hub/settings/integrations" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><IntegrationsPage /></ProtectedRouteComponent>} />
+        <Route path="hub/settings/weather" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><WeatherCustomizationPage /></ProtectedRouteComponent>} />
+        <Route path="hub/settings/notification" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><NotificationCustomizationPage /></ProtectedRouteComponent>} />
+        <Route path="hub/settings/legal" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><LegalPage /></ProtectedRouteComponent>} />
+        <Route path="hub/settings/advertisement" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><AdvertisementPage /></ProtectedRouteComponent>} />
+        <Route path="hub/settings/*" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><SettingsPage /></ProtectedRouteComponent>} />
+        
+        {/* Store Products Routes - Procurement Accessible */}
+        <Route path="store/products/categories" element={<ProcurementRoute><CategoriesPage /></ProcurementRoute>} />
+        <Route path="store/products/cutting-types" element={<ProcurementRoute><CuttingTypePage /></ProcurementRoute>} />
+        <Route path="store/products/stock" element={<ProcurementRoute><StockManagementPage /></ProcurementRoute>} />
+        <Route path="store/products/approval" element={<ProtectedRouteComponent permission="PRODUCT_APPROVAL"><ProductApprovalPage /></ProtectedRouteComponent>} />
+        <Route path="store/products/recipes" element={<ProcurementRoute><RecipesPage /></ProcurementRoute>} />
+        <Route path="store/products/*" element={<ProcurementRoute><ProductsPage /></ProcurementRoute>} />
+        
+        {/* Store Marketing Routes - Procurement Accessible */}
+        <Route path="store/scratch-card" element={<ProcurementRoute><ScratchCardPage /></ProcurementRoute>} />
+        <Route path="store/spin-wheel" element={<ProcurementRoute><SpinWheelPage /></ProcurementRoute>} />
+        <Route path="store/flash-sale" element={<ProcurementRoute><FlashSalePage /></ProcurementRoute>} />
+        <Route path="store/subscription" element={<ProcurementRoute><SubscriptionPage /></ProcurementRoute>} />
+        <Route path="store/offer-notification" element={<ProcurementRoute><OfferNotificationPage /></ProcurementRoute>} />
+        <Route path="store/coupon" element={<ProcurementRoute><CouponPage /></ProcurementRoute>} />
+        <Route path="store/in-app-currency" element={<ProcurementRoute><InAppCurrencyPage /></ProcurementRoute>} />
+        <Route path="store/referral" element={<ProcurementRoute><ReferralPage /></ProcurementRoute>} />
+        <Route path="store/marketing/*" element={<ProcurementRoute><MarketingPage /></ProcurementRoute>} />
+        
+        {/* Store Reports Routes - Limited Procurement Access */}
+        <Route path="store/reports/stock" element={<ProcurementRoute><StockReportPage /></ProcurementRoute>} />
+        <Route path="store/reports/procurement" element={<ProcurementRoute><ProcurementReportsPage /></ProcurementRoute>} />
+        <Route path="store/reports/sales" element={<ProtectedRouteComponent permission="HUB_REPORTS_SALES"><SalesReportPage /></ProtectedRouteComponent>} />
+        <Route path="store/reports/packing" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_packing']}><PackingReportPage /></MultiRoleRoute>} />
+        <Route path="store/reports/delivery" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_delivery']}><DeliveryReportPage /></MultiRoleRoute>} />
+        <Route path="store/reports/customer" element={<ProtectedRouteComponent permission="HUB_REPORTS_CUSTOMER"><CustomerReportPage /></ProtectedRouteComponent>} />
+        <Route path="store/reports" element={<ReportsPage />} />
+        
+        {/* Store Orders Routes - Multiple Roles Accessible */}
+        <Route path="store/orders/*" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_packing', 'store_delivery']}><OrdersPage /></MultiRoleRoute>} />
+        
+        {/* Store Team Routes - Delivery Accessible */}
+        <Route path="store/team/delivery-agents" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
+        <Route path="store/team/*" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><TeamPage /></ProtectedRouteComponent>} />
+        
+        {/* Store Labeling Routes - Packing Accessible */}
+        <Route path="store/labeling" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_packing']}><LabelingPage /></MultiRoleRoute>} />
+        
+        {/* Store Reports Routes - Role Specific */}
+        <Route path="store/reports/packing" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_packing']}><PackingReportPage /></MultiRoleRoute>} />
+        <Route path="store/reports/delivery" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_delivery']}><DeliveryReportPage /></MultiRoleRoute>} />
+        <Route path="store/reports" element={<ReportsPage />} />
+        
+        {/* Store Admin-Only Routes */}
+        <Route path="store/orders/manual" element={<ProtectedRouteComponent permission="STORE_ORDERS_CREATE"><StoreManualOrderPage /></ProtectedRouteComponent>} />
+        <Route path="store/orders/pre-orders" element={<ProtectedRouteComponent permission="STORE_ORDERS_CREATE"><StorePreOrderPage /></ProtectedRouteComponent>} />
+        <Route path="store/team/delivery-agents" element={<ProtectedRouteComponent permission="STORE_TEAM_VIEW"><DeliveryAgentPage /></ProtectedRouteComponent>} />
+        <Route path="store/team/custom-roles" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><CustomRolesPage /></ProtectedRouteComponent>} />
+        <Route path="store/labeling" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><LabelingPage /></ProtectedRouteComponent>} />
+        <Route path="store/audit" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><AuditLogsPage /></ProtectedRouteComponent>} />
+        <Route path="store/orders/*" element={<ProtectedRouteComponent permission="STORE_ORDERS_VIEW"><OrdersPage /></ProtectedRouteComponent>} />
+        <Route path="store/team/*" element={<ProtectedRouteComponent permission="STORE_TEAM_VIEW"><TeamPage /></ProtectedRouteComponent>} />
+        <Route path="store/settings" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><GeneralSettingsPage /></ProtectedRouteComponent>} />
+        <Route path="store/settings/delivery-slots" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><DeliverySlotsPage /></ProtectedRouteComponent>} />
+        <Route path="store/settings/shipping-charges" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><ShippingChargesPage /></ProtectedRouteComponent>} />
+        <Route path="store/settings/integrations" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><IntegrationsPage /></ProtectedRouteComponent>} />
+        <Route path="store/settings/weather" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><WeatherCustomizationPage /></ProtectedRouteComponent>} />
+        <Route path="store/settings/notification" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><NotificationCustomizationPage /></ProtectedRouteComponent>} />
+        <Route path="store/settings/legal" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><LegalPage /></ProtectedRouteComponent>} />
+        <Route path="store/settings/advertisement" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><AdvertisementPage /></ProtectedRouteComponent>} />
+        <Route path="store/settings/*" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><SettingsPage /></ProtectedRouteComponent>} />
         
         {/* Store Routes */}
         <Route path="store/orders/manual" element={<StoreManualOrderPage />} />

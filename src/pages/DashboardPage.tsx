@@ -149,8 +149,11 @@ export function DashboardPage() {
     );
   }
 
-  // Show role-based dashboard only for main admins
-  if (user?.role === 'hub_main_admin' || user?.role === 'store_main_admin') {
+  // Show role-based dashboard for main admins and employee roles
+  if (user?.role === 'hub_main_admin' || user?.role === 'store_main_admin' || 
+      user?.role === 'hub_procurement' || user?.role === 'store_procurement' ||
+      user?.role === 'hub_packing' || user?.role === 'store_packing' ||
+      user?.role === 'hub_delivery' || user?.role === 'store_delivery') {
     return <RoleDashboard />;
   }
 
