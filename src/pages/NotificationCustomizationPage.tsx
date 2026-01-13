@@ -1,11 +1,20 @@
-import { useState } from 'react';
-import { Card, Button, Input, Select } from '../components/ui';
-import { Save, Bell, Mail, Smartphone, Settings, Eye, Edit, Plus, Volume2 } from 'lucide-react';
+import { useState } from "react";
+import { Card, Button, Input, Select } from "../components/ui";
+import {
+  Save,
+  Bell,
+  Mail,
+  Smartphone,
+  Eye,
+  Edit,
+  Plus,
+  Volume2,
+} from "lucide-react";
 
 interface NotificationTemplate {
   id: string;
   name: string;
-  type: 'email' | 'sms' | 'push' | 'whatsapp';
+  type: "email" | "sms" | "push" | "whatsapp";
   trigger: string;
   subject?: string;
   content: string;
@@ -22,77 +31,92 @@ export function NotificationCustomizationPage() {
     dailySummaryEmail: true,
     orderStatusUpdates: true,
     promotionalEmails: false,
-    maintenanceAlerts: true
+    maintenanceAlerts: true,
   });
 
   const [templates, setTemplates] = useState<NotificationTemplate[]>([
     {
-      id: '1',
-      name: 'Order Confirmation',
-      type: 'email',
-      trigger: 'order_placed',
-      subject: 'Order Confirmed - #{order_id}',
-      content: 'Dear {customer_name}, your order #{order_id} has been confirmed. Total amount: {order_total}. Expected delivery: {delivery_date}.',
+      id: "1",
+      name: "Order Confirmation",
+      type: "email",
+      trigger: "order_placed",
+      subject: "Order Confirmed - #{order_id}",
+      content:
+        "Dear {customer_name}, your order #{order_id} has been confirmed. Total amount: {order_total}. Expected delivery: {delivery_date}.",
       isActive: true,
-      variables: ['customer_name', 'order_id', 'order_total', 'delivery_date']
+      variables: ["customer_name", "order_id", "order_total", "delivery_date"],
     },
     {
-      id: '2',
-      name: 'Order Status Update',
-      type: 'sms',
-      trigger: 'order_status_changed',
-      content: 'Hi {customer_name}, your order #{order_id} is now {order_status}. Track: {tracking_url}',
+      id: "2",
+      name: "Order Status Update",
+      type: "sms",
+      trigger: "order_status_changed",
+      content:
+        "Hi {customer_name}, your order #{order_id} is now {order_status}. Track: {tracking_url}",
       isActive: true,
-      variables: ['customer_name', 'order_id', 'order_status', 'tracking_url']
+      variables: ["customer_name", "order_id", "order_status", "tracking_url"],
     },
     {
-      id: '3',
-      name: 'Low Stock Alert',
-      type: 'email',
-      trigger: 'low_stock',
-      subject: 'Low Stock Alert - {product_name}',
-      content: 'Product {product_name} is running low. Current stock: {current_stock}. Minimum threshold: {min_threshold}.',
+      id: "3",
+      name: "Low Stock Alert",
+      type: "email",
+      trigger: "low_stock",
+      subject: "Low Stock Alert - {product_name}",
+      content:
+        "Product {product_name} is running low. Current stock: {current_stock}. Minimum threshold: {min_threshold}.",
       isActive: true,
-      variables: ['product_name', 'current_stock', 'min_threshold']
+      variables: ["product_name", "current_stock", "min_threshold"],
     },
     {
-      id: '4',
-      name: 'Payment Failed',
-      type: 'push',
-      trigger: 'payment_failed',
-      content: 'Payment failed for order #{order_id}. Please try again or contact support.',
+      id: "4",
+      name: "Payment Failed",
+      type: "push",
+      trigger: "payment_failed",
+      content:
+        "Payment failed for order #{order_id}. Please try again or contact support.",
       isActive: true,
-      variables: ['order_id', 'customer_name']
-    }
+      variables: ["order_id", "customer_name"],
+    },
   ]);
 
-  const [selectedTemplate, setSelectedTemplate] = useState<NotificationTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<NotificationTemplate | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   const notificationTypes = [
-    { value: 'email', label: 'Email', icon: Mail, color: 'text-blue-600' },
-    { value: 'sms', label: 'SMS', icon: Smartphone, color: 'text-green-600' },
-    { value: 'push', label: 'Push Notification', icon: Bell, color: 'text-purple-600' },
-    { value: 'whatsapp', label: 'WhatsApp', icon: Smartphone, color: 'text-green-600' }
+    { value: "email", label: "Email", icon: Mail, color: "text-blue-600" },
+    { value: "sms", label: "SMS", icon: Smartphone, color: "text-green-600" },
+    {
+      value: "push",
+      label: "Push Notification",
+      icon: Bell,
+      color: "text-purple-600",
+    },
+    {
+      value: "whatsapp",
+      label: "WhatsApp",
+      icon: Smartphone,
+      color: "text-green-600",
+    },
   ];
 
   const toggleNotificationSetting = (key: string) => {
-    setNotificationSettings(prev => ({
+    setNotificationSettings((prev) => ({
       ...prev,
-      [key]: !prev[key as keyof typeof prev]
+      [key]: !prev[key as keyof typeof prev],
     }));
   };
 
   const addNewTemplate = () => {
     const newTemplate: NotificationTemplate = {
       id: Date.now().toString(),
-      name: 'New Template',
-      type: 'email',
-      trigger: 'custom',
-      subject: '',
-      content: '',
+      name: "New Template",
+      type: "email",
+      trigger: "custom",
+      subject: "",
+      content: "",
       isActive: false,
-      variables: []
+      variables: [],
     };
     setTemplates([...templates, newTemplate]);
     setSelectedTemplate(newTemplate);
@@ -104,7 +128,9 @@ export function NotificationCustomizationPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Notification Customization</h1>
-          <p className="text-gray-600">Configure notification settings and templates</p>
+          <p className="text-gray-600">
+            Configure notification settings and templates
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={addNewTemplate}>
@@ -126,22 +152,59 @@ export function NotificationCustomizationPage() {
           </div>
           <div>
             <h2 className="text-lg font-semibold">Notification Settings</h2>
-            <p className="text-sm text-gray-600">Enable or disable notification types</p>
+            <p className="text-sm text-gray-600">
+              Enable or disable notification types
+            </p>
           </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           {[
-            { key: 'newOrderAlerts', label: 'New Order Alerts', desc: 'Get notified when a new order is placed' },
-            { key: 'lowStockAlerts', label: 'Low Stock Alerts', desc: 'Alert when product stock falls below threshold' },
-            { key: 'paymentFailureAlerts', label: 'Payment Failure Alerts', desc: 'Notify on payment failures' },
-            { key: 'customerSupportAlerts', label: 'Customer Support Alerts', desc: 'New support tickets and messages' },
-            { key: 'dailySummaryEmail', label: 'Daily Summary Email', desc: 'Receive daily sales and order summary' },
-            { key: 'orderStatusUpdates', label: 'Order Status Updates', desc: 'Notify customers about order status changes' },
-            { key: 'promotionalEmails', label: 'Promotional Emails', desc: 'Send marketing and promotional content' },
-            { key: 'maintenanceAlerts', label: 'Maintenance Alerts', desc: 'System maintenance and downtime notifications' }
+            {
+              key: "newOrderAlerts",
+              label: "New Order Alerts",
+              desc: "Get notified when a new order is placed",
+            },
+            {
+              key: "lowStockAlerts",
+              label: "Low Stock Alerts",
+              desc: "Alert when product stock falls below threshold",
+            },
+            {
+              key: "paymentFailureAlerts",
+              label: "Payment Failure Alerts",
+              desc: "Notify on payment failures",
+            },
+            {
+              key: "customerSupportAlerts",
+              label: "Customer Support Alerts",
+              desc: "New support tickets and messages",
+            },
+            {
+              key: "dailySummaryEmail",
+              label: "Daily Summary Email",
+              desc: "Receive daily sales and order summary",
+            },
+            {
+              key: "orderStatusUpdates",
+              label: "Order Status Updates",
+              desc: "Notify customers about order status changes",
+            },
+            {
+              key: "promotionalEmails",
+              label: "Promotional Emails",
+              desc: "Send marketing and promotional content",
+            },
+            {
+              key: "maintenanceAlerts",
+              label: "Maintenance Alerts",
+              desc: "System maintenance and downtime notifications",
+            },
           ].map((setting) => (
-            <div key={setting.key} className="flex items-center justify-between p-4 border rounded-lg">
+            <div
+              key={setting.key}
+              className="flex items-center justify-between p-4 border rounded-lg"
+            >
               <div>
                 <p className="font-medium text-sm">{setting.label}</p>
                 <p className="text-xs text-gray-500">{setting.desc}</p>
@@ -149,7 +212,11 @@ export function NotificationCustomizationPage() {
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={notificationSettings[setting.key as keyof typeof notificationSettings]}
+                  checked={
+                    notificationSettings[
+                      setting.key as keyof typeof notificationSettings
+                    ]
+                  }
                   onChange={() => toggleNotificationSetting(setting.key)}
                   className="sr-only peer"
                 />
@@ -168,15 +235,21 @@ export function NotificationCustomizationPage() {
           </div>
           <div>
             <h2 className="text-lg font-semibold">Notification Templates</h2>
-            <p className="text-sm text-gray-600">Customize notification messages and content</p>
+            <p className="text-sm text-gray-600">
+              Customize notification messages and content
+            </p>
           </div>
         </div>
 
         <div className="space-y-4">
           {templates.map((template) => {
-            const TypeIcon = notificationTypes.find(t => t.value === template.type)?.icon || Bell;
-            const typeColor = notificationTypes.find(t => t.value === template.type)?.color || 'text-gray-600';
-            
+            const TypeIcon =
+              notificationTypes.find((t) => t.value === template.type)?.icon ||
+              Bell;
+            const typeColor =
+              notificationTypes.find((t) => t.value === template.type)?.color ||
+              "text-gray-600";
+
             return (
               <div key={template.id} className="border rounded-lg p-4">
                 <div className="flex items-center justify-between mb-3">
@@ -186,9 +259,13 @@ export function NotificationCustomizationPage() {
                         type="checkbox"
                         checked={template.isActive}
                         onChange={(e) => {
-                          setTemplates(templates.map(t => 
-                            t.id === template.id ? { ...t, isActive: e.target.checked } : t
-                          ));
+                          setTemplates(
+                            templates.map((t) =>
+                              t.id === template.id
+                                ? { ...t, isActive: e.target.checked }
+                                : t,
+                            ),
+                          );
                         }}
                         className="rounded"
                       />
@@ -199,17 +276,25 @@ export function NotificationCustomizationPage() {
                       {template.type}
                     </span>
                     <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">
-                      {template.trigger.replace('_', ' ')}
+                      {template.trigger.replace("_", " ")}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" onClick={() => setSelectedTemplate(template)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedTemplate(template)}
+                    >
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => {
-                      setSelectedTemplate(template);
-                      setIsEditing(true);
-                    }}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedTemplate(template);
+                        setIsEditing(true);
+                      }}
+                    >
                       <Edit className="h-4 w-4" />
                     </Button>
                   </div>
@@ -224,12 +309,17 @@ export function NotificationCustomizationPage() {
 
                 <div className="mb-3">
                   <span className="text-xs text-gray-500">Content:</span>
-                  <p className="text-sm text-gray-700 line-clamp-2">{template.content}</p>
+                  <p className="text-sm text-gray-700 line-clamp-2">
+                    {template.content}
+                  </p>
                 </div>
 
                 <div className="flex flex-wrap gap-1">
                   {template.variables.map((variable) => (
-                    <span key={variable} className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">
+                    <span
+                      key={variable}
+                      className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs"
+                    >
                       {`{${variable}}`}
                     </span>
                   ))}
@@ -248,7 +338,9 @@ export function NotificationCustomizationPage() {
           </div>
           <div>
             <h2 className="text-lg font-semibold">Email Configuration</h2>
-            <p className="text-sm text-gray-600">Configure email sender settings</p>
+            <p className="text-sm text-gray-600">
+              Configure email sender settings
+            </p>
           </div>
         </div>
 
@@ -266,7 +358,7 @@ export function NotificationCustomizationPage() {
               placeholder="noreply@yourdomain.com"
             />
           </div>
-          
+
           <div className="grid gap-4 sm:grid-cols-2">
             <Input
               label="Reply-To Email"
@@ -277,16 +369,18 @@ export function NotificationCustomizationPage() {
             <Select
               label="Email Provider"
               options={[
-                { value: 'sendgrid', label: 'SendGrid' },
-                { value: 'mailgun', label: 'Mailgun' },
-                { value: 'ses', label: 'Amazon SES' },
-                { value: 'smtp', label: 'Custom SMTP' }
+                { value: "sendgrid", label: "SendGrid" },
+                { value: "mailgun", label: "Mailgun" },
+                { value: "ses", label: "Amazon SES" },
+                { value: "smtp", label: "Custom SMTP" },
               ]}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Email Signature</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Email Signature
+            </label>
             <textarea
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               rows={4}
@@ -304,7 +398,9 @@ export function NotificationCustomizationPage() {
           </div>
           <div>
             <h2 className="text-lg font-semibold">SMS Configuration</h2>
-            <p className="text-sm text-gray-600">Configure SMS notification settings</p>
+            <p className="text-sm text-gray-600">
+              Configure SMS notification settings
+            </p>
           </div>
         </div>
 
@@ -319,10 +415,10 @@ export function NotificationCustomizationPage() {
             <Select
               label="SMS Provider"
               options={[
-                { value: 'twilio', label: 'Twilio' },
-                { value: 'textlocal', label: 'TextLocal' },
-                { value: 'msg91', label: 'MSG91' },
-                { value: 'custom', label: 'Custom Gateway' }
+                { value: "twilio", label: "Twilio" },
+                { value: "textlocal", label: "TextLocal" },
+                { value: "msg91", label: "MSG91" },
+                { value: "custom", label: "Custom Gateway" },
               ]}
             />
             <Input
@@ -337,13 +433,19 @@ export function NotificationCustomizationPage() {
           <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
               <Volume2 className="h-4 w-4 text-yellow-600" />
-              <span className="font-medium text-yellow-800">SMS Usage Guidelines</span>
+              <span className="font-medium text-yellow-800">
+                SMS Usage Guidelines
+              </span>
             </div>
             <ul className="text-sm text-yellow-700 space-y-1">
               <li>• Keep messages under 160 characters for single SMS</li>
-              <li>• Use approved sender ID registered with telecom operators</li>
+              <li>
+                • Use approved sender ID registered with telecom operators
+              </li>
               <li>• Include opt-out instructions for promotional messages</li>
-              <li>• Avoid sending messages during restricted hours (9 PM - 9 AM)</li>
+              <li>
+                • Avoid sending messages during restricted hours (9 PM - 9 AM)
+              </li>
             </ul>
           </div>
         </div>
@@ -353,23 +455,32 @@ export function NotificationCustomizationPage() {
       {selectedTemplate && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex min-h-screen items-center justify-center p-4">
-            <div className="fixed inset-0 bg-black/50 transition-opacity" onClick={() => {
-              setSelectedTemplate(null);
-              setIsEditing(false);
-            }} />
+            <div
+              className="fixed inset-0 bg-black/50 transition-opacity"
+              onClick={() => {
+                setSelectedTemplate(null);
+                setIsEditing(false);
+              }}
+            />
             <Card className="relative w-full max-w-3xl">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-xl font-semibold">
-                    {isEditing ? 'Edit' : 'View'} Template: {selectedTemplate.name}
+                    {isEditing ? "Edit" : "View"} Template:{" "}
+                    {selectedTemplate.name}
                   </h2>
                   <p className="text-sm text-gray-600">
-                    {selectedTemplate.type.toUpperCase()} • {selectedTemplate.trigger.replace('_', ' ')}
+                    {selectedTemplate.type.toUpperCase()} •{" "}
+                    {selectedTemplate.trigger.replace("_", " ")}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   {!isEditing && (
-                    <Button variant="secondary" size="sm" onClick={() => setIsEditing(true)}>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setIsEditing(true)}
+                    >
                       <Edit className="h-4 w-4 mr-1" />
                       Edit
                     </Button>
@@ -398,21 +509,26 @@ export function NotificationCustomizationPage() {
                     label="Notification Type"
                     value={selectedTemplate.type}
                     disabled={!isEditing}
-                    options={notificationTypes.map(type => ({ value: type.value, label: type.label }))}
+                    options={notificationTypes.map((type) => ({
+                      value: type.value,
+                      label: type.label,
+                    }))}
                   />
                 </div>
 
-                {(selectedTemplate.type === 'email') && (
+                {selectedTemplate.type === "email" && (
                   <Input
                     label="Subject Line"
-                    value={selectedTemplate.subject || ''}
+                    value={selectedTemplate.subject || ""}
                     disabled={!isEditing}
                     placeholder="Enter email subject"
                   />
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Message Content</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Message Content
+                  </label>
                   <textarea
                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50"
                     rows={6}
@@ -423,7 +539,9 @@ export function NotificationCustomizationPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Available Variables</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Available Variables
+                  </label>
                   <div className="flex flex-wrap gap-2">
                     {selectedTemplate.variables.map((variable) => (
                       <button
@@ -442,7 +560,10 @@ export function NotificationCustomizationPage() {
 
                 {isEditing && (
                   <div className="flex justify-end gap-2 pt-4 border-t">
-                    <Button variant="secondary" onClick={() => setIsEditing(false)}>
+                    <Button
+                      variant="secondary"
+                      onClick={() => setIsEditing(false)}
+                    >
                       Cancel
                     </Button>
                     <Button>

@@ -23,7 +23,7 @@ export function DetailedSection({ title, icon: Icon, data, type }: DetailedSecti
       </div>
       
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-        {data.metrics.map((metric: any, index: number) => (
+        {data.metrics.map((metric: any) => (
           <div key={metric.title} className="bg-white p-3 rounded-lg">
             <p className="text-xs text-gray-600 mb-1">{metric.title}</p>
             <p className="text-lg font-bold text-gray-900">{metric.value}</p>

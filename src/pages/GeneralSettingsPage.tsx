@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import { Card, Button, Input, Select } from '../components/ui';
-import { Save, Upload, Building, Mail, Phone, Globe, FileText, Calendar } from 'lucide-react';
+import { useState } from "react";
+import { Card, Button, Input, Select } from "../components/ui";
+import { Save, Upload, Building, Mail, FileText, Calendar } from "lucide-react";
 
 export function GeneralSettingsPage() {
   const [businessInfo, setBusinessInfo] = useState({
-    name: 'BAYHAWK',
-    email: 'support@bayhawk.com',
-    phone: '+91 9876543210',
-    language: 'en',
-    currency: 'INR',
-    timezone: 'IST'
+    name: "BAYHAWK",
+    email: "support@bayhawk.com",
+    phone: "+91 9876543210",
+    language: "en",
+    currency: "INR",
+    timezone: "IST",
   });
 
   const [fssaiInfo, setFssaiInfo] = useState({
-    licenseNumber: '',
-    validityDate: ''
+    licenseNumber: "",
+    validityDate: "",
   });
 
   return (
@@ -22,7 +22,9 @@ export function GeneralSettingsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">General Settings</h1>
-          <p className="text-gray-600">Configure your business information and basic settings</p>
+          <p className="text-gray-600">
+            Configure your business information and basic settings
+          </p>
         </div>
         <Button>
           <Save className="mr-2 h-4 w-4" />
@@ -38,13 +40,17 @@ export function GeneralSettingsPage() {
           </div>
           <div>
             <h2 className="text-lg font-semibold">Business Information</h2>
-            <p className="text-sm text-gray-600">Basic details about your business</p>
+            <p className="text-sm text-gray-600">
+              Basic details about your business
+            </p>
           </div>
         </div>
 
         <div className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Business Logo</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Business Logo
+            </label>
             <div className="flex items-center gap-4">
               <div className="h-20 w-20 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-xl">B</span>
@@ -54,7 +60,9 @@ export function GeneralSettingsPage() {
                   <Upload className="h-4 w-4 mr-2" />
                   Upload New Logo
                 </Button>
-                <p className="text-xs text-gray-500 mt-1">Recommended: 200x200px, PNG or JPG</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Recommended: 200x200px, PNG or JPG
+                </p>
               </div>
             </div>
           </div>
@@ -63,14 +71,18 @@ export function GeneralSettingsPage() {
             <Input
               label="Business Name"
               value={businessInfo.name}
-              onChange={(e) => setBusinessInfo({...businessInfo, name: e.target.value})}
+              onChange={(e) =>
+                setBusinessInfo({ ...businessInfo, name: e.target.value })
+              }
               placeholder="Enter business name"
             />
             <Input
               label="Support Email"
               type="email"
               value={businessInfo.email}
-              onChange={(e) => setBusinessInfo({...businessInfo, email: e.target.value})}
+              onChange={(e) =>
+                setBusinessInfo({ ...businessInfo, email: e.target.value })
+              }
               placeholder="support@example.com"
             />
           </div>
@@ -80,19 +92,23 @@ export function GeneralSettingsPage() {
               label="Support Phone"
               type="tel"
               value={businessInfo.phone}
-              onChange={(e) => setBusinessInfo({...businessInfo, phone: e.target.value})}
+              onChange={(e) =>
+                setBusinessInfo({ ...businessInfo, phone: e.target.value })
+              }
               placeholder="+91 9876543210"
             />
             <Select
               label="Default Language"
               value={businessInfo.language}
-              onChange={(e) => setBusinessInfo({...businessInfo, language: e.target.value})}
+              onChange={(e) =>
+                setBusinessInfo({ ...businessInfo, language: e.target.value })
+              }
               options={[
-                { value: 'en', label: 'English' },
-                { value: 'ta', label: 'Tamil' },
-                { value: 'hi', label: 'Hindi' },
-                { value: 'te', label: 'Telugu' },
-                { value: 'kn', label: 'Kannada' }
+                { value: "en", label: "English" },
+                { value: "ta", label: "Tamil" },
+                { value: "hi", label: "Hindi" },
+                { value: "te", label: "Telugu" },
+                { value: "kn", label: "Kannada" },
               ]}
             />
           </div>
@@ -101,21 +117,25 @@ export function GeneralSettingsPage() {
             <Select
               label="Currency"
               value={businessInfo.currency}
-              onChange={(e) => setBusinessInfo({...businessInfo, currency: e.target.value})}
+              onChange={(e) =>
+                setBusinessInfo({ ...businessInfo, currency: e.target.value })
+              }
               options={[
-                { value: 'INR', label: 'INR (₹)' },
-                { value: 'USD', label: 'USD ($)' },
-                { value: 'EUR', label: 'EUR (€)' }
+                { value: "INR", label: "INR (₹)" },
+                { value: "USD", label: "USD ($)" },
+                { value: "EUR", label: "EUR (€)" },
               ]}
             />
             <Select
               label="Timezone"
               value={businessInfo.timezone}
-              onChange={(e) => setBusinessInfo({...businessInfo, timezone: e.target.value})}
+              onChange={(e) =>
+                setBusinessInfo({ ...businessInfo, timezone: e.target.value })
+              }
               options={[
-                { value: 'IST', label: 'IST (UTC+5:30)' },
-                { value: 'UTC', label: 'UTC (UTC+0:00)' },
-                { value: 'EST', label: 'EST (UTC-5:00)' }
+                { value: "IST", label: "IST (UTC+5:30)" },
+                { value: "UTC", label: "UTC (UTC+0:00)" },
+                { value: "EST", label: "EST (UTC-5:00)" },
               ]}
             />
           </div>
@@ -130,7 +150,9 @@ export function GeneralSettingsPage() {
           </div>
           <div>
             <h2 className="text-lg font-semibold">FSSAI Certificate</h2>
-            <p className="text-sm text-gray-600">Food Safety and Standards Authority of India certification</p>
+            <p className="text-sm text-gray-600">
+              Food Safety and Standards Authority of India certification
+            </p>
           </div>
         </div>
 
@@ -139,7 +161,9 @@ export function GeneralSettingsPage() {
             <Input
               label="FSSAI License Number"
               value={fssaiInfo.licenseNumber}
-              onChange={(e) => setFssaiInfo({...fssaiInfo, licenseNumber: e.target.value})}
+              onChange={(e) =>
+                setFssaiInfo({ ...fssaiInfo, licenseNumber: e.target.value })
+              }
               placeholder="12345678901234"
               maxLength={14}
             />
@@ -147,19 +171,27 @@ export function GeneralSettingsPage() {
               label="Validity Date"
               type="date"
               value={fssaiInfo.validityDate}
-              onChange={(e) => setFssaiInfo({...fssaiInfo, validityDate: e.target.value})}
+              onChange={(e) =>
+                setFssaiInfo({ ...fssaiInfo, validityDate: e.target.value })
+              }
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Certificate Document</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Certificate Document
+            </label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
               <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm text-gray-600 mb-2">Upload FSSAI Certificate</p>
+              <p className="text-sm text-gray-600 mb-2">
+                Upload FSSAI Certificate
+              </p>
               <Button variant="secondary" size="sm">
                 Choose File
               </Button>
-              <p className="text-xs text-gray-500 mt-2">PDF, JPG, PNG up to 5MB</p>
+              <p className="text-xs text-gray-500 mt-2">
+                PDF, JPG, PNG up to 5MB
+              </p>
             </div>
           </div>
         </div>
@@ -179,15 +211,18 @@ export function GeneralSettingsPage() {
 
         <div className="space-y-4">
           {[
-            { day: 'Monday', open: '09:00', close: '21:00', enabled: true },
-            { day: 'Tuesday', open: '09:00', close: '21:00', enabled: true },
-            { day: 'Wednesday', open: '09:00', close: '21:00', enabled: true },
-            { day: 'Thursday', open: '09:00', close: '21:00', enabled: true },
-            { day: 'Friday', open: '09:00', close: '21:00', enabled: true },
-            { day: 'Saturday', open: '09:00', close: '21:00', enabled: true },
-            { day: 'Sunday', open: '10:00', close: '20:00', enabled: true },
-          ].map((schedule, index) => (
-            <div key={schedule.day} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+            { day: "Monday", open: "09:00", close: "21:00", enabled: true },
+            { day: "Tuesday", open: "09:00", close: "21:00", enabled: true },
+            { day: "Wednesday", open: "09:00", close: "21:00", enabled: true },
+            { day: "Thursday", open: "09:00", close: "21:00", enabled: true },
+            { day: "Friday", open: "09:00", close: "21:00", enabled: true },
+            { day: "Saturday", open: "09:00", close: "21:00", enabled: true },
+            { day: "Sunday", open: "10:00", close: "20:00", enabled: true },
+          ].map((schedule) => (
+            <div
+              key={schedule.day}
+              className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
+            >
               <div className="w-20">
                 <span className="font-medium text-sm">{schedule.day}</span>
               </div>
@@ -244,9 +279,11 @@ export function GeneralSettingsPage() {
               placeholder="care@bayhawk.com"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Business Address</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Business Address
+            </label>
             <textarea
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               rows={3}

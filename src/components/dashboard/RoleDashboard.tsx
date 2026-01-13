@@ -17,8 +17,8 @@ import {
   Activity,
   DollarSign,
   Target,
-  Eye,
-  Edit
+
+
 } from 'lucide-react';
 
 export function RoleDashboard() {

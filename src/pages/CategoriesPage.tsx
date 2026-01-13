@@ -223,12 +223,6 @@ export function CategoriesPage() {
     products: filteredHubCategories.reduce((sum, cat) => sum + cat.productCount, 0)
   };
 
-  const storeStats = {
-    total: filteredStoreCategories.length,
-    active: filteredStoreCategories.filter(cat => cat.isActive).length,
-    products: filteredStoreCategories.reduce((sum, cat) => sum + cat.productCount, 0)
-  };
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -262,28 +256,6 @@ export function CategoriesPage() {
             </div>
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-600">{hubStats.products}</p>
-              <p className="text-xs text-gray-500">Products</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Store Categories</p>
-              <p className="text-2xl font-bold">{storeStats.total}</p>
-            </div>
-            <div className="p-3 bg-green-100 rounded-lg">
-              <Store className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-2 mt-3">
-            <div className="text-center">
-              <p className="text-lg font-semibold text-green-600">{storeStats.active}</p>
-              <p className="text-xs text-gray-500">Active</p>
-            </div>
-            <div className="text-center">
-              <p className="text-lg font-semibold text-purple-600">{storeStats.products}</p>
               <p className="text-xs text-gray-500">Products</p>
             </div>
           </div>

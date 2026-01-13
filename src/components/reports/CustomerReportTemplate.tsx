@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Users, TrendingUp, IndianRupee, Heart, Building2, Store } from 'lucide-react';
+import { Users, IndianRupee, Heart, Building2, Store } from 'lucide-react';
 import { ReportHeader } from './ReportHeader';
 import { MetricCard } from './MetricCard';
 import { ChartSection } from './ChartSection';

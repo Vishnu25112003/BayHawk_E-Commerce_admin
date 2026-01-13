@@ -72,6 +72,9 @@ export interface Product {
   approvalStatus: 'pending' | 'approved' | 'rejected';
   approvedBy?: string;
   approvedAt?: string;
+  moduleType?: string;
+  hubId?: string;
+  storeId?: string;
 }
 
 export type ProductCategory = 'fish' | 'prawns' | 'crab' | 'squid' | 'lobster' | 'chicken' | 'mutton' | 'egg' | 'spices';
@@ -608,7 +611,7 @@ export interface Store {
   id: string;
   name: string;
   code: string;
-  description: string;
+  description?: string;
   storeType: 'retail' | 'warehouse' | 'pickup_point';
   address: {
     street: string;
@@ -641,6 +644,7 @@ export interface Store {
   isActive: boolean;
   createdBy: string;
   createdAt: string;
+  zoneId?: string;
 }
 
 export interface CuttingType {

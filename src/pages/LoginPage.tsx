@@ -10,7 +10,7 @@ import { getRolesByModule } from '../utils/rbac';
 import { Fish, Store, Shield, Eye, EyeOff } from 'lucide-react';
 
 export function LoginPage() {
-  const [loginType, setLoginType] = useState<LoginType>('hub');
+  const [loginType, setLoginType] = useState<LoginType>('super_admin');
   const [selectedRole, setSelectedRole] = useState<UserRole | ''>('');
   const [showPassword, setShowPassword] = useState(false);
   const { login, isLoading } = useAuth();
@@ -18,7 +18,7 @@ export function LoginPage() {
 
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { loginType: 'hub' },
+    defaultValues: { loginType: 'super_admin' },
   });
 
   const onSubmit = async (data: LoginInput) => {
@@ -40,6 +40,13 @@ export function LoginPage() {
 
   const loginTypes = [
     { 
+      type: 'super_admin' as LoginType, 
+      icon: Shield, 
+      label: 'Super Admin', 
+      desc: 'Full access',
+      gradient: 'from-purple-500 to-purple-600'
+    },
+    { 
       type: 'hub' as LoginType, 
       icon: Fish, 
       label: 'Hub', 
@@ -52,13 +59,6 @@ export function LoginPage() {
       label: 'Store', 
       desc: 'All products',
       gradient: 'from-green-500 to-green-600'
-    },
-    { 
-      type: 'super_admin' as LoginType, 
-      icon: Shield, 
-      label: 'Super Admin', 
-      desc: 'Full access',
-      gradient: 'from-purple-500 to-purple-600'
     },
   ];
 
@@ -75,13 +75,11 @@ export function LoginPage() {
         
         <div className="relative z-10">
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 backdrop-blur flex items-center justify-center shadow-lg">
-              <Fish className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <span className="text-2xl font-bold text-white">BAYHAWK</span>
-              <p className="text-blue-200 text-xs">E-Commerce Admin Panel</p>
-            </div>
+            <img 
+              src="https://bayhawk.clientstagingdemo.com/_next/static/media/BayHawk.207595da.svg" 
+              alt="BayHawk" 
+              className="h-12 w-auto"
+            />
           </div>
         </div>
         
@@ -120,13 +118,11 @@ export function LoginPage() {
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-4 sm:mb-6">
             <div className="inline-flex items-center gap-2">
-              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                <Fish className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <span className="text-xl font-bold text-gray-900">BAYHAWK</span>
-                <p className="text-xs text-gray-600">Admin Panel</p>
-              </div>
+              <img 
+                src="https://bayhawk.clientstagingdemo.com/_next/static/media/BayHawk.207595da.svg" 
+                alt="BayHawk" 
+                className="h-10 w-auto"
+              />
             </div>
           </div>
 

@@ -352,7 +352,7 @@ export function ProductsList({
         totalItems={filteredProducts.length}
         onSelectAll={selectAll}
         onDeselectAll={deselectAll}
-        onToggleItem={toggleItem}
+
         actions={productBulkActions}
         onAction={handleBulkAction}
         itemName="products"

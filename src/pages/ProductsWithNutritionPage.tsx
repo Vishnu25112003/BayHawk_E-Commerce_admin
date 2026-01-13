@@ -54,7 +54,10 @@ export function ProductsWithNutritionPage() {
       </div>
 
       {showAddForm ? (
-        <ProductFormWithNutrition />
+        <ProductFormWithNutrition 
+          onSave={() => {}}
+          onCancel={() => {}}
+        />
       ) : (
         <>
           {/* Search and Filter */}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, Button, Select } from '../ui';
-import { Save, Upload, Package, Info, Scissors } from 'lucide-react';
+import { Save, Package, Info, Scissors } from 'lucide-react';
 import { NutritionCustomization } from './NutritionCustomization';
 import { useAuth } from '../../context/AuthContext';
 import type { CuttingType } from '../../types';
@@ -352,7 +352,7 @@ export function ProductFormWithCuttingType({ onSave, onCancel }: ProductFormProp
             <Scissors className="h-5 w-5 text-purple-600" />
             <h2 className="text-lg font-semibold">Product Variants & Cutting Types</h2>
           </div>
-          <Button onClick={addVariant} variant="outline" size="sm">
+          <Button onClick={addVariant} variant="secondary" size="sm">
             Add Variant
           </Button>
         </div>
@@ -365,7 +365,7 @@ export function ProductFormWithCuttingType({ onSave, onCancel }: ProductFormProp
                 {formData.variants.length > 1 && (
                   <Button 
                     onClick={() => removeVariant(index)} 
-                    variant="outline" 
+                    variant="secondary" 
                     size="sm"
                     className="text-red-600 hover:text-red-700"
                   >

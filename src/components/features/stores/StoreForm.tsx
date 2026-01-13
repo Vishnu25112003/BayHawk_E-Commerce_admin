@@ -127,7 +127,7 @@ export function StoreForm({ onSubmit, onCancel, isSubmitting = false, initialDat
             name="isActive"
             control={control}
             render={({ field }) => (
-                <Checkbox label="Store is active" checked={field.value} onCheckedChange={field.onChange} />
+                <Checkbox label="Store is active" checked={field.value} onChange={field.onChange} />
             )}
         />
       </fieldset>

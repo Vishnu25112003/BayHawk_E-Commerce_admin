@@ -8,9 +8,7 @@ import {
   Edit, 
   Download, 
   Archive, 
-  Eye, 
-  Send, 
-  Copy,
+  Send,
   MoreHorizontal,
   X,
   AlertTriangle
@@ -31,7 +29,6 @@ interface BulkActionsProps {
   totalItems: number;
   onSelectAll: () => void;
   onDeselectAll: () => void;
-  onToggleItem: (id: string) => void;
   actions: BulkAction[];
   onAction: (actionId: string, selectedItems: string[]) => void;
   className?: string;
@@ -43,7 +40,6 @@ export function BulkActions({
   totalItems,
   onSelectAll,
   onDeselectAll,
-  onToggleItem,
   actions,
   onAction,
   className = '',

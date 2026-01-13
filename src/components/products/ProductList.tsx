@@ -38,7 +38,6 @@ const mockStores = [
 
 export function ProductList({
   products,
-  sourceType = 'all',
   onAddProduct,
   onEditProduct,
   onViewProduct,

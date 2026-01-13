@@ -264,7 +264,7 @@ export function OrdersPage() {
 
     try {
       // Delete order via API
-      await ordersApi.delete(order.id);
+      await ordersApi.cancel(order.id, '');
       
       // Update local state
       setOrders(prev => prev.filter(o => o.id !== order.id));

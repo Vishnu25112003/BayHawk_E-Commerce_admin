@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Package, BarChart3, AlertTriangle, TrendingUp, Building2, Store, Fish, Scale, Calendar, Eye } from 'lucide-react';
+import { Package, BarChart3, AlertTriangle, TrendingUp, Building2, Store, Fish, Scale, Calendar } from 'lucide-react';
 import { ReportHeader } from './ReportHeader';
 import { MetricCard } from './MetricCard';
 import { ChartSection } from './ChartSection';

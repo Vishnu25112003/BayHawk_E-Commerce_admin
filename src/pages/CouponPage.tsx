@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, Button, Input, Select, Modal, Badge } from '../components/ui';
-import { Plus, Search, Eye, Trash2, Ticket, Copy, RefreshCw, Target, TrendingUp, Users, Calendar, Edit, Check } from 'lucide-react';
+import { Plus, Eye, Trash2, Ticket, Copy, Target, TrendingUp, Users, Edit, Check } from 'lucide-react';
 import { getStatusColor } from '../utils/helpers';
 import { useAuth } from '../context/AuthContext';
 import type { CouponCode } from '../types';
@@ -54,7 +54,7 @@ interface CouponFormProps {
 }
 
 function CouponForm({ initialData, isReadOnly, onSubmit, onCancel }: CouponFormProps) {
-  const [data, setData] = useState(initialData);
+  const [data] = useState(initialData);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,9 +127,9 @@ function CouponCard({ coupon, onCopy, onView, onEdit, onDelete }: CouponCardProp
         <div className="flex justify-between items-center mt-4">
           <div className="text-xs text-gray-500">Created: {new Date(coupon.createdAt).toLocaleDateString()}</div>
           <div className="flex gap-2">
-            <Button variant="icon" size="sm" onClick={() => onView(coupon)}><Eye className="h-4 w-4" /></Button>
-            <Button variant="icon" size="sm" onClick={() => onEdit(coupon)}><Edit className="h-4 w-4" /></Button>
-            <Button variant="icon" size="sm" onClick={() => onDelete(coupon.id)} className="text-red-600"><Trash2 className="h-4 w-4" /></Button>
+            <Button variant="ghost" size="sm" onClick={() => onView(coupon)}><Eye className="h-4 w-4" /></Button>
+            <Button variant="ghost" size="sm" onClick={() => onEdit(coupon)}><Edit className="h-4 w-4" /></Button>
+            <Button variant="ghost" size="sm" onClick={() => onDelete(coupon.id)} className="text-red-600"><Trash2 className="h-4 w-4" /></Button>
           </div>
         </div>
       </div>

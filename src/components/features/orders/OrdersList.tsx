@@ -305,7 +305,7 @@ export function OrdersList({
         totalItems={filteredOrders.length}
         onSelectAll={selectAll}
         onDeselectAll={deselectAll}
-        onToggleItem={toggleItem}
+
         actions={orderBulkActions}
         onAction={handleBulkAction}
         itemName="orders"

@@ -124,7 +124,8 @@ export const storeSchema = z.object({
   }),
   hubId: z.string().min(1, 'Hub is required'),
   deliveryRadius: z.number().min(0),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean(),
+  zoneId: z.string().optional(),
 });
 
 // Wallet credit schema

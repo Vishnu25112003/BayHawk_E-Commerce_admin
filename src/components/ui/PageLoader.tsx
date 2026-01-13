@@ -1,5 +1,4 @@
 import { LoadingSpinner } from './LoadingSpinner';
-import { Fish } from 'lucide-react';
 
 interface PageLoaderProps {
   text?: string;
@@ -18,13 +17,11 @@ export function PageLoader({
         {showLogo && (
           <div className="mb-8">
             <div className="inline-flex items-center gap-3 mb-4">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
-                <Fish className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <span className="text-2xl font-bold text-gray-900">BAYHAWK</span>
-                <p className="text-sm text-gray-600">Admin Panel</p>
-              </div>
+              <img 
+                src="https://bayhawk.clientstagingdemo.com/_next/static/media/BayHawk.207595da.svg" 
+                alt="BayHawk" 
+                className="h-12 w-auto"
+              />
             </div>
           </div>
         )}

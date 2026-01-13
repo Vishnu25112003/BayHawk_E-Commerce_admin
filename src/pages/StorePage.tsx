@@ -11,7 +11,8 @@ import { useAuth } from '../context/AuthContext';
 import { StoreForm, StoreDetails } from '../components/features/stores';
 import { ConfirmDialog, PageHeader, FormModal } from '../components/common';
 import { getStatusColor } from '../utils/helpers';
-import type { StoreInput, Store as StoreType } from '../utils/validations';
+import type { StoreInput } from '../utils/validations';
+import type { Store as StoreType } from '../types';
 
 const mockStores: StoreType[] = [
   {
@@ -56,6 +57,10 @@ const mockStores: StoreType[] = [
 
 // ... (rest of the components like StoreStats, StoreRow remain the same)
 
+interface StoreStatsProps {
+  stores: StoreType[];
+}
+
 function StoreStats({ stores }: StoreStatsProps) {
   const activeStores = stores.filter(store => store.isActive).length;
   const totalCapacity = stores.reduce((sum, store) => sum + store.capacity.storage, 0);
@@ -93,9 +98,9 @@ function StoreRow({ store, onView, onEdit, onDelete }: { store: StoreType; onVie
       <div className="flex-1 min-w-0"><p className="text-sm truncate">{store.address.city}, {store.address.state}</p></div>
       <div className="w-28 text-center"><Badge variant={getStatusColor(store.isActive ? 'active' : 'inactive')}>{store.isActive ? 'Active' : 'Inactive'}</Badge></div>
       <div className="flex items-center justify-end gap-2 w-32">
-        <Button variant="icon" size="sm" onClick={onView}><Eye className="h-4 w-4" /></Button>
-        <Button variant="icon" size="sm" onClick={onEdit}><Edit className="h-4 w-4" /></Button>
-        <Button variant="icon" size="sm" onClick={onDelete} className="text-red-600"><Trash2 className="h-4 w-4" /></Button>
+        <Button variant="ghost" size="sm" onClick={onView}><Eye className="h-4 w-4" /></Button>
+        <Button variant="ghost" size="sm" onClick={onEdit}><Edit className="h-4 w-4" /></Button>
+        <Button variant="ghost" size="sm" onClick={onDelete} className="text-red-600"><Trash2 className="h-4 w-4" /></Button>
       </div>
     </div>
   );

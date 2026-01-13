@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useState, useEffect, useRef } from 'react';
 import { LogOut, Menu, X, Bell, ChevronDown, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
 import { getFilteredMenuByUser, type MenuItem } from '../../utils/menuConfig';
 
 interface SidebarProps {
@@ -100,9 +100,11 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
           /* Collapsed state - Show only logo icon centered with toggle button positioned properly */
           <>
             <div className="flex items-center justify-center w-full">
-              <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">B</span>
-              </div>
+              <img 
+                src="https://bayhawk.clientstagingdemo.com/_next/static/media/BayHawk.207595da.svg" 
+                alt="BayHawk" 
+                className="h-8 w-8"
+              />
             </div>
             <button 
               onClick={() => onToggleCollapse(!collapsed)} 
@@ -114,11 +116,12 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
         ) : (
           /* Expanded state - Show full logo with toggle button */
           <>
-            <div className="flex items-center gap-2 flex-1">
-              <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">B</span>
-              </div>
-              <span className="text-xl font-bold text-white">BAYHAWK</span>
+            <div className="flex items-center gap-3 flex-1">
+              <img 
+                src="https://bayhawk.clientstagingdemo.com/_next/static/media/BayHawk.207595da.svg" 
+                alt="BayHawk" 
+                className="h-8 w-auto"
+              />
             </div>
             <button 
               onClick={() => onToggleCollapse(!collapsed)} 
@@ -173,6 +176,66 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
 
 export function Header() {
   const { user } = useAuth();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationRef = useRef<HTMLDivElement>(null);
+
+  // Close notification dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Dummy notification data
+  const notifications = [
+    {
+      id: 1,
+      title: "New Order Received",
+      message: "Order #ORD-2024-001 has been placed by customer John Doe",
+      time: "2 minutes ago",
+      type: "order",
+      unread: true
+    },
+    {
+      id: 2,
+      title: "Low Stock Alert",
+      message: "Fresh Salmon is running low in inventory (5 units left)",
+      time: "15 minutes ago",
+      type: "inventory",
+      unread: true
+    },
+    {
+      id: 3,
+      title: "Payment Received",
+      message: "Payment of ₹2,450 received for Order #ORD-2024-002",
+      time: "1 hour ago",
+      type: "payment",
+      unread: false
+    },
+    {
+      id: 4,
+      title: "Delivery Completed",
+      message: "Order #ORD-2024-003 has been successfully delivered",
+      time: "2 hours ago",
+      type: "delivery",
+      unread: false
+    },
+    {
+      id: 5,
+      title: "New Customer Registration",
+      message: "Sarah Wilson has registered as a new customer",
+      time: "3 hours ago",
+      type: "customer",
+      unread: false
+    }
+  ];
+
+  const unreadCount = notifications.filter(n => n.unread).length;
   
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6 shadow-sm">
@@ -187,10 +250,59 @@ export function Header() {
       
       <div className="flex items-center gap-4">
         {/* Notifications */}
-        <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
-          <Bell size={20} className="text-gray-600" />
-          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
-        </button>
+        <div className="relative" ref={notificationRef}>
+          <button 
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <Bell size={20} className="text-gray-600" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
+                {unreadCount}
+              </span>
+            )}
+          </button>
+
+          {/* Notification Dropdown */}
+          {showNotifications && (
+            <div className="absolute right-0 top-12 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+              <div className="p-4 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-gray-900">Notifications</h3>
+                  <span className="text-sm text-gray-500">{unreadCount} unread</span>
+                </div>
+              </div>
+              
+              <div className="max-h-96 overflow-y-auto">
+                {notifications.map((notification) => (
+                  <div 
+                    key={notification.id}
+                    className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer ${
+                      notification.unread ? 'bg-blue-50' : ''
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className={`w-2 h-2 rounded-full mt-2 ${
+                        notification.unread ? 'bg-blue-500' : 'bg-gray-300'
+                      }`}></div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 text-sm">{notification.title}</p>
+                        <p className="text-gray-600 text-sm mt-1">{notification.message}</p>
+                        <p className="text-gray-400 text-xs mt-2">{notification.time}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="p-3 border-t border-gray-200">
+                <button className="w-full text-center text-blue-600 text-sm font-medium hover:text-blue-700">
+                  View All Notifications
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
         
         {/* User Avatar */}
         <div className="flex items-center gap-3 pl-4 border-l border-gray-200">

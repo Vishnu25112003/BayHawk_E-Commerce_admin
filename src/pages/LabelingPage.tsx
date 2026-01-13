@@ -1,33 +1,31 @@
-import { useState, useRef } from 'react';
-import { Card, Button, Input, Select } from '../components/ui';
-import { 
-  Printer, 
-  Download, 
-  Eye, 
-  Settings, 
-  Plus, 
-  Minus, 
-  RotateCcw, 
+import { useState, useRef } from "react";
+import { Card, Button, Input, Select } from "../components/ui";
+import {
+  Printer,
+  Download,
+  Eye,
+  Settings,
+  Plus,
+  Minus,
+  RotateCcw,
   Save,
   FileText,
   Package,
-  User,
-  MapPin,
   Calendar,
   Barcode,
-  QrCode
-} from 'lucide-react';
-import { LabelPreview } from '../components/labeling/LabelPreview';
-import { LabelDesigner } from '../components/labeling/LabelDesigner';
-import { DataSelector } from '../components/labeling/DataSelector';
+  QrCode,
+} from "lucide-react";
+import { LabelPreview } from "../components/labeling/LabelPreview";
+import { LabelDesigner } from "../components/labeling/LabelDesigner";
+import { DataSelector } from "../components/labeling/DataSelector";
 
 interface LabelField {
   id: string;
   name: string;
-  type: 'text' | 'barcode' | 'qrcode' | 'image' | 'date' | 'number';
+  type: "text" | "barcode" | "qrcode" | "image" | "date" | "number";
   value: string;
   fontSize: number;
-  fontWeight: 'normal' | 'bold';
+  fontWeight: "normal" | "bold";
   position: { x: number; y: number };
   width: number;
   height: number;
@@ -41,175 +39,190 @@ interface LabelTemplate {
   height: number;
   fields: LabelField[];
   paperSize: string;
-  orientation: 'portrait' | 'landscape';
+  orientation: "portrait" | "landscape";
+}
+
+interface DataField {
+  id: string;
+  label: string;
+  type: "text" | "barcode" | "qrcode" | "image" | "date" | "number";
+}
+
+interface DataCategory {
+  category: string;
+  fields: DataField[];
 }
 
 const defaultFields: LabelField[] = [
   {
-    id: 'product_name',
-    name: 'Product Name',
-    type: 'text',
-    value: 'Fresh Salmon - 1kg',
+    id: "product_name",
+    name: "Product Name",
+    type: "text",
+    value: "Fresh Salmon - 1kg",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     position: { x: 10, y: 10 },
     width: 200,
     height: 25,
-    isVisible: true
+    isVisible: true,
   },
   {
-    id: 'product_code',
-    name: 'Product Code',
-    type: 'text',
-    value: 'SAL001',
+    id: "product_code",
+    name: "Product Code",
+    type: "text",
+    value: "SAL001",
     fontSize: 12,
-    fontWeight: 'normal',
+    fontWeight: "normal",
     position: { x: 10, y: 40 },
     width: 100,
     height: 20,
-    isVisible: true
+    isVisible: true,
   },
   {
-    id: 'price',
-    name: 'Price',
-    type: 'text',
-    value: '₹450.00',
+    id: "price",
+    name: "Price",
+    type: "text",
+    value: "₹450.00",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     position: { x: 120, y: 40 },
     width: 80,
     height: 20,
-    isVisible: true
+    isVisible: true,
   },
   {
-    id: 'barcode',
-    name: 'Barcode',
-    type: 'barcode',
-    value: '1234567890123',
+    id: "barcode",
+    name: "Barcode",
+    type: "barcode",
+    value: "1234567890123",
     fontSize: 10,
-    fontWeight: 'normal',
+    fontWeight: "normal",
     position: { x: 10, y: 70 },
     width: 150,
     height: 30,
-    isVisible: true
+    isVisible: true,
   },
   {
-    id: 'expiry_date',
-    name: 'Expiry Date',
-    type: 'date',
-    value: '2024-02-15',
+    id: "expiry_date",
+    name: "Expiry Date",
+    type: "date",
+    value: "2024-02-15",
     fontSize: 10,
-    fontWeight: 'normal',
+    fontWeight: "normal",
     position: { x: 10, y: 110 },
     width: 100,
     height: 15,
-    isVisible: true
+    isVisible: true,
   },
   {
-    id: 'batch_number',
-    name: 'Batch Number',
-    type: 'text',
-    value: 'B240115001',
+    id: "batch_number",
+    name: "Batch Number",
+    type: "text",
+    value: "B240115001",
     fontSize: 10,
-    fontWeight: 'normal',
+    fontWeight: "normal",
     position: { x: 120, y: 110 },
     width: 80,
     height: 15,
-    isVisible: true
-  }
+    isVisible: true,
+  },
 ];
 
-const availableDataSources = [
+const availableDataSources: DataCategory[] = [
   {
-    category: 'Product Information',
+    category: "Product Information",
     fields: [
-      { id: 'product_name', label: 'Product Name', type: 'text' },
-      { id: 'product_code', label: 'Product Code', type: 'text' },
-      { id: 'product_description', label: 'Description', type: 'text' },
-      { id: 'category', label: 'Category', type: 'text' },
-      { id: 'brand', label: 'Brand', type: 'text' },
-      { id: 'weight', label: 'Weight', type: 'text' },
-      { id: 'unit', label: 'Unit', type: 'text' }
-    ]
+      { id: "product_name", label: "Product Name", type: "text" },
+      { id: "product_code", label: "Product Code", type: "text" },
+      { id: "product_description", label: "Description", type: "text" },
+      { id: "category", label: "Category", type: "text" },
+      { id: "brand", label: "Brand", type: "text" },
+      { id: "weight", label: "Weight", type: "text" },
+      { id: "unit", label: "Unit", type: "text" },
+    ],
   },
   {
-    category: 'Pricing',
+    category: "Pricing",
     fields: [
-      { id: 'price', label: 'Price', type: 'text' },
-      { id: 'mrp', label: 'MRP', type: 'text' },
-      { id: 'discount', label: 'Discount', type: 'text' },
-      { id: 'tax_rate', label: 'Tax Rate', type: 'text' },
-      { id: 'final_price', label: 'Final Price', type: 'text' }
-    ]
+      { id: "price", label: "Price", type: "text" },
+      { id: "mrp", label: "MRP", type: "text" },
+      { id: "discount", label: "Discount", type: "text" },
+      { id: "tax_rate", label: "Tax Rate", type: "text" },
+      { id: "final_price", label: "Final Price", type: "text" },
+    ],
   },
   {
-    category: 'Inventory',
+    category: "Inventory",
     fields: [
-      { id: 'batch_number', label: 'Batch Number', type: 'text' },
-      { id: 'lot_number', label: 'Lot Number', type: 'text' },
-      { id: 'manufacturing_date', label: 'Manufacturing Date', type: 'date' },
-      { id: 'expiry_date', label: 'Expiry Date', type: 'date' },
-      { id: 'stock_quantity', label: 'Stock Quantity', type: 'number' }
-    ]
+      { id: "batch_number", label: "Batch Number", type: "text" },
+      { id: "lot_number", label: "Lot Number", type: "text" },
+      { id: "manufacturing_date", label: "Manufacturing Date", type: "date" },
+      { id: "expiry_date", label: "Expiry Date", type: "date" },
+      { id: "stock_quantity", label: "Stock Quantity", type: "number" },
+    ],
   },
   {
-    category: 'Barcodes & QR',
+    category: "Barcodes & QR",
     fields: [
-      { id: 'barcode', label: 'Barcode', type: 'barcode' },
-      { id: 'qr_code', label: 'QR Code', type: 'qrcode' },
-      { id: 'sku', label: 'SKU', type: 'text' }
-    ]
+      { id: "barcode", label: "Barcode", type: "barcode" },
+      { id: "qr_code", label: "QR Code", type: "qrcode" },
+      { id: "sku", label: "SKU", type: "text" },
+    ],
   },
   {
-    category: 'Business Info',
+    category: "Business Info",
     fields: [
-      { id: 'company_name', label: 'Company Name', type: 'text' },
-      { id: 'company_logo', label: 'Company Logo', type: 'image' },
-      { id: 'address', label: 'Address', type: 'text' },
-      { id: 'phone', label: 'Phone', type: 'text' },
-      { id: 'email', label: 'Email', type: 'text' }
-    ]
-  }
+      { id: "company_name", label: "Company Name", type: "text" },
+      { id: "company_logo", label: "Company Logo", type: "image" },
+      { id: "address", label: "Address", type: "text" },
+      { id: "phone", label: "Phone", type: "text" },
+      { id: "email", label: "Email", type: "text" },
+    ],
+  },
 ];
 
 export function LabelingPage() {
   const [currentTemplate, setCurrentTemplate] = useState<LabelTemplate>({
-    id: '1',
-    name: 'Product Label',
+    id: "1",
+    name: "Product Label",
     width: 220,
     height: 140,
     fields: defaultFields,
-    paperSize: 'A4',
-    orientation: 'portrait'
+    paperSize: "A4",
+    orientation: "portrait",
   });
 
-  const [activeTab, setActiveTab] = useState<'design' | 'data' | 'preview'>('design');
-  const [selectedFields, setSelectedFields] = useState<string[]>(defaultFields.map(f => f.id));
+  const [activeTab, setActiveTab] = useState<"design" | "data" | "preview">(
+    "design",
+  );
+  const [selectedFields, setSelectedFields] = useState<string[]>(
+    defaultFields.map((f) => f.id),
+  );
   const [labelQuantity, setLabelQuantity] = useState(1);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
   const paperSizes = [
-    { value: 'A4', label: 'A4 (210 × 297 mm)' },
-    { value: 'A5', label: 'A5 (148 × 210 mm)' },
-    { value: 'Letter', label: 'Letter (8.5 × 11 in)' },
-    { value: 'Custom', label: 'Custom Size' }
+    { value: "A4", label: "A4 (210 × 297 mm)" },
+    { value: "A5", label: "A5 (148 × 210 mm)" },
+    { value: "Letter", label: "Letter (8.5 × 11 in)" },
+    { value: "Custom", label: "Custom Size" },
   ];
 
   const labelTemplates = [
-    { value: 'product', label: 'Product Label' },
-    { value: 'shipping', label: 'Shipping Label' },
-    { value: 'barcode', label: 'Barcode Label' },
-    { value: 'price', label: 'Price Tag' },
-    { value: 'custom', label: 'Custom Template' }
+    { value: "product", label: "Product Label" },
+    { value: "shipping", label: "Shipping Label" },
+    { value: "barcode", label: "Barcode Label" },
+    { value: "price", label: "Price Tag" },
+    { value: "custom", label: "Custom Template" },
   ];
 
   const updateField = (fieldId: string, updates: Partial<LabelField>) => {
-    setCurrentTemplate(prev => ({
+    setCurrentTemplate((prev) => ({
       ...prev,
-      fields: prev.fields.map(field =>
-        field.id === fieldId ? { ...field, ...updates } : field
-      )
+      fields: prev.fields.map((field) =>
+        field.id === fieldId ? { ...field, ...updates } : field,
+      ),
     }));
   };
 
@@ -220,31 +233,31 @@ export function LabelingPage() {
       type: dataField.type,
       value: `Sample ${dataField.label}`,
       fontSize: 12,
-      fontWeight: 'normal',
+      fontWeight: "normal",
       position: { x: 10, y: 10 },
       width: 150,
       height: 20,
-      isVisible: true
+      isVisible: true,
     };
 
-    setCurrentTemplate(prev => ({
+    setCurrentTemplate((prev) => ({
       ...prev,
-      fields: [...prev.fields, newField]
+      fields: [...prev.fields, newField],
     }));
-    setSelectedFields(prev => [...prev, dataField.id]);
+    setSelectedFields((prev) => [...prev, dataField.id]);
   };
 
   const removeField = (fieldId: string) => {
-    setCurrentTemplate(prev => ({
+    setCurrentTemplate((prev) => ({
       ...prev,
-      fields: prev.fields.filter(field => field.id !== fieldId)
+      fields: prev.fields.filter((field) => field.id !== fieldId),
     }));
-    setSelectedFields(prev => prev.filter(id => id !== fieldId));
+    setSelectedFields((prev) => prev.filter((id) => id !== fieldId));
   };
 
   const handlePrint = () => {
     if (printRef.current) {
-      const printWindow = window.open('', '_blank');
+      const printWindow = window.open("", "_blank");
       if (printWindow) {
         printWindow.document.write(`
           <html>
@@ -273,20 +286,20 @@ export function LabelingPage() {
 
   const handleDownload = () => {
     // Implementation for downloading labels as PDF
-    console.log('Downloading labels...');
+    console.log("Downloading labels...");
   };
 
   const resetTemplate = () => {
     setCurrentTemplate({
-      id: '1',
-      name: 'Product Label',
+      id: "1",
+      name: "Product Label",
       width: 220,
       height: 140,
       fields: defaultFields,
-      paperSize: 'A4',
-      orientation: 'portrait'
+      paperSize: "A4",
+      orientation: "portrait",
     });
-    setSelectedFields(defaultFields.map(f => f.id));
+    setSelectedFields(defaultFields.map((f) => f.id));
   };
 
   return (
@@ -294,16 +307,21 @@ export function LabelingPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Label Generator</h1>
-          <p className="text-gray-600">Create and customize labels for your products</p>
+          <p className="text-gray-600">
+            Create and customize labels for your products
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={resetTemplate}>
             <RotateCcw className="mr-2 h-4 w-4" />
             Reset
           </Button>
-          <Button variant="secondary" onClick={() => setIsPreviewMode(!isPreviewMode)}>
+          <Button
+            variant="secondary"
+            onClick={() => setIsPreviewMode(!isPreviewMode)}
+          >
             <Eye className="mr-2 h-4 w-4" />
-            {isPreviewMode ? 'Edit' : 'Preview'}
+            {isPreviewMode ? "Edit" : "Preview"}
           </Button>
           <Button>
             <Save className="mr-2 h-4 w-4" />
@@ -320,7 +338,9 @@ export function LabelingPage() {
           </div>
           <div>
             <h2 className="text-lg font-semibold">Template Settings</h2>
-            <p className="text-sm text-gray-600">Configure label dimensions and layout</p>
+            <p className="text-sm text-gray-600">
+              Configure label dimensions and layout
+            </p>
           </div>
         </div>
 
@@ -328,25 +348,42 @@ export function LabelingPage() {
           <Input
             label="Template Name"
             value={currentTemplate.name}
-            onChange={(e) => setCurrentTemplate(prev => ({ ...prev, name: e.target.value }))}
+            onChange={(e) =>
+              setCurrentTemplate((prev) => ({ ...prev, name: e.target.value }))
+            }
           />
           <Select
             label="Paper Size"
             value={currentTemplate.paperSize}
-            onChange={(e) => setCurrentTemplate(prev => ({ ...prev, paperSize: e.target.value }))}
+            onChange={(e) =>
+              setCurrentTemplate((prev) => ({
+                ...prev,
+                paperSize: e.target.value,
+              }))
+            }
             options={paperSizes}
           />
           <Input
             label="Width (mm)"
             type="number"
             value={currentTemplate.width}
-            onChange={(e) => setCurrentTemplate(prev => ({ ...prev, width: parseInt(e.target.value) }))}
+            onChange={(e) =>
+              setCurrentTemplate((prev) => ({
+                ...prev,
+                width: parseInt(e.target.value),
+              }))
+            }
           />
           <Input
             label="Height (mm)"
             type="number"
             value={currentTemplate.height}
-            onChange={(e) => setCurrentTemplate(prev => ({ ...prev, height: parseInt(e.target.value) }))}
+            onChange={(e) =>
+              setCurrentTemplate((prev) => ({
+                ...prev,
+                height: parseInt(e.target.value),
+              }))
+            }
           />
         </div>
       </Card>
@@ -363,28 +400,30 @@ export function LabelingPage() {
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold">Label Designer</h2>
-                    <p className="text-sm text-gray-600">Design your label layout</p>
+                    <p className="text-sm text-gray-600">
+                      Design your label layout
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-2">
                   <Button
-                    variant={activeTab === 'design' ? 'primary' : 'secondary'}
+                    variant={activeTab === "design" ? "primary" : "secondary"}
                     size="sm"
-                    onClick={() => setActiveTab('design')}
+                    onClick={() => setActiveTab("design")}
                   >
                     Design
                   </Button>
                   <Button
-                    variant={activeTab === 'data' ? 'primary' : 'secondary'}
+                    variant={activeTab === "data" ? "primary" : "secondary"}
                     size="sm"
-                    onClick={() => setActiveTab('data')}
+                    onClick={() => setActiveTab("data")}
                   >
                     Data
                   </Button>
                 </div>
               </div>
 
-              {activeTab === 'design' && (
+              {activeTab === "design" && (
                 <LabelDesigner
                   template={currentTemplate}
                   onUpdateField={updateField}
@@ -392,7 +431,7 @@ export function LabelingPage() {
                 />
               )}
 
-              {activeTab === 'data' && (
+              {activeTab === "data" && (
                 <DataSelector
                   availableFields={availableDataSources}
                   selectedFields={selectedFields}
@@ -412,7 +451,9 @@ export function LabelingPage() {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold">Field Properties</h2>
-                  <p className="text-sm text-gray-600">Customize selected field</p>
+                  <p className="text-sm text-gray-600">
+                    Customize selected field
+                  </p>
                 </div>
               </div>
 
@@ -435,19 +476,35 @@ export function LabelingPage() {
               </div>
 
               <div className="space-y-3">
-                <Button variant="secondary" className="w-full justify-start" size="sm">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start"
+                  size="sm"
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Text Field
                 </Button>
-                <Button variant="secondary" className="w-full justify-start" size="sm">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start"
+                  size="sm"
+                >
                   <Barcode className="mr-2 h-4 w-4" />
                   Add Barcode
                 </Button>
-                <Button variant="secondary" className="w-full justify-start" size="sm">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start"
+                  size="sm"
+                >
                   <QrCode className="mr-2 h-4 w-4" />
                   Add QR Code
                 </Button>
-                <Button variant="secondary" className="w-full justify-start" size="sm">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start"
+                  size="sm"
+                >
                   <Calendar className="mr-2 h-4 w-4" />
                   Add Date Field
                 </Button>
@@ -467,7 +524,9 @@ export function LabelingPage() {
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold">Label Preview</h2>
-                    <p className="text-sm text-gray-600">Preview your labels before printing</p>
+                    <p className="text-sm text-gray-600">
+                      Preview your labels before printing
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -500,7 +559,9 @@ export function LabelingPage() {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold">Print Settings</h2>
-                  <p className="text-sm text-gray-600">Configure printing options</p>
+                  <p className="text-sm text-gray-600">
+                    Configure printing options
+                  </p>
                 </div>
               </div>
 
@@ -513,14 +574,20 @@ export function LabelingPage() {
                     <Button
                       variant="secondary"
                       size="sm"
-                      onClick={() => setLabelQuantity(Math.max(1, labelQuantity - 1))}
+                      onClick={() =>
+                        setLabelQuantity(Math.max(1, labelQuantity - 1))
+                      }
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
                     <Input
                       type="number"
                       value={labelQuantity}
-                      onChange={(e) => setLabelQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                      onChange={(e) =>
+                        setLabelQuantity(
+                          Math.max(1, parseInt(e.target.value) || 1),
+                        )
+                      }
                       className="text-center"
                       min="1"
                     />
@@ -537,18 +604,18 @@ export function LabelingPage() {
                 <Select
                   label="Print Quality"
                   options={[
-                    { value: 'draft', label: 'Draft' },
-                    { value: 'normal', label: 'Normal' },
-                    { value: 'high', label: 'High Quality' }
+                    { value: "draft", label: "Draft" },
+                    { value: "normal", label: "Normal" },
+                    { value: "high", label: "High Quality" },
                   ]}
                 />
 
                 <Select
                   label="Printer"
                   options={[
-                    { value: 'default', label: 'Default Printer' },
-                    { value: 'thermal', label: 'Thermal Printer' },
-                    { value: 'laser', label: 'Laser Printer' }
+                    { value: "default", label: "Default Printer" },
+                    { value: "thermal", label: "Thermal Printer" },
+                    { value: "laser", label: "Laser Printer" },
                   ]}
                 />
 
@@ -581,7 +648,7 @@ export function LabelingPage() {
               </div>
 
               <div className="space-y-2">
-                {labelTemplates.map(template => (
+                {labelTemplates.map((template) => (
                   <button
                     key={template.value}
                     className="w-full text-left p-2 rounded hover:bg-gray-50 text-sm"

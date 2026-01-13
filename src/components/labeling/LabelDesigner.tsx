@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Input, Button } from '../ui';
-import { Move, Trash2, Eye, EyeOff, Type, Maximize2 } from 'lucide-react';
+import { Move, Trash2, Eye, EyeOff, Type } from 'lucide-react';
 
 interface LabelField {
   id: string;

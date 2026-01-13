@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Input } from '../ui';
 import { Plus, Search, Package, DollarSign, Calendar, Barcode, Building, ChevronDown, ChevronRight } from 'lucide-react';
 

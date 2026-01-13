@@ -40,8 +40,8 @@ export function ZonesPage() {
           { id: '2', name: 'Chennai South', pincodes: ['600020', '600021'], storeIds: ['s3'], coordinates: [{ lat: 13.0027, lng: 80.2507 }, { lat: 13.0127, lng: 80.2607 }, { lat: 12.9927, lng: 80.2607 }] },
         ]);
         setStores([
-          { id: 's1', name: 'Store - Anna Nagar', address: '123, Anna Nagar Main Road', phone: '+91 9876543210', email: 'annanagar@bayhawk.com', zoneId: '1', isActive: true },
-          { id: 's2', name: 'Store - T Nagar', address: '456, Pondy Bazaar', phone: '+91 9876543211', email: 'tnagar@bayhawk.com', zoneId: '1', isActive: true },
+          { id: 's1', name: 'Store - Anna Nagar', address: { street: '123, Anna Nagar Main Road', city: 'Chennai', state: 'Tamil Nadu', pincode: '600040', country: 'India' }, contactInfo: { phone: '+91 9876543210', email: 'annanagar@bayhawk.com', manager: 'Suresh' }, zoneId: '1', isActive: true, code: 'AN001', storeType: 'retail', location: { latitude: 13.0878, longitude: 80.2176 }, operatingHours: { open: '08:00', close: '22:00', workingDays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] }, capacity: { storage: 100, dailyOrders: 50, staff: 5 }, hubId: '1', deliveryRadius: 5, createdBy: 'admin', createdAt: '2023-01-01' },
+          { id: 's2', name: 'Store - T Nagar', address: { street: '456, Pondy Bazaar', city: 'Chennai', state: 'Tamil Nadu', pincode: '600017', country: 'India' }, contactInfo: { phone: '+91 9876543211', email: 'tnagar@bayhawk.com', manager: 'Ramesh' }, zoneId: '1', isActive: true, code: 'TN001', storeType: 'retail', location: { latitude: 13.0418, longitude: 80.2341 }, operatingHours: { open: '08:00', close: '22:00', workingDays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] }, capacity: { storage: 120, dailyOrders: 60, staff: 6 }, hubId: '1', deliveryRadius: 5, createdBy: 'admin', createdAt: '2023-01-01' },
         ]);
       } finally {
         setLoading(false);
@@ -220,11 +220,11 @@ export function ZonesPage() {
               {stores.filter((s) => s.name.toLowerCase().includes(search.toLowerCase())).map((store) => (
                 <tr key={store.id} className="hover:bg-gray-50">
                   <Td><span className="font-medium">{store.name}</span></Td>
-                  <Td><span className="text-sm">{store.address}</span></Td>
+                  <Td><span className="text-sm">{`${store.address.street}, ${store.address.city}`}</span></Td>
                   <Td>
                     <div>
-                      <p className="text-sm">{store.phone}</p>
-                      <p className="text-xs text-gray-500">{store.email}</p>
+                      <p className="text-sm">{store.contactInfo.phone}</p>
+                      <p className="text-xs text-gray-500">{store.contactInfo.email}</p>
                     </div>
                   </Td>
                   <Td>{zones.find((z) => z.id === store.zoneId)?.name || '-'}</Td>
@@ -273,10 +273,10 @@ export function ZonesPage() {
       <Modal isOpen={showAddModal && activeTab === 'stores'} onClose={() => setShowAddModal(false)} title="Add New Store">
         <form onSubmit={storeForm.handleSubmit(onCreateStore)} className="space-y-4">
           <Input label="Store Name" {...storeForm.register('name')} placeholder="Store - Anna Nagar" error={storeForm.formState.errors.name?.message} />
-          <Input label="Address" {...storeForm.register('address')} placeholder="Full address" error={storeForm.formState.errors.address?.message} />
+          <Input label="Address" {...storeForm.register('address.street')} placeholder="Full address" error={storeForm.formState.errors.address?.street?.message} />
           <div className="grid grid-cols-2 gap-4">
-            <Input label="Phone" {...storeForm.register('phone')} placeholder="+91 9876543210" error={storeForm.formState.errors.phone?.message} />
-            <Input label="Email" {...storeForm.register('email')} type="email" placeholder="store@bayhawk.com" error={storeForm.formState.errors.email?.message} />
+            <Input label="Phone" {...storeForm.register('contactInfo.phone')} placeholder="+91 9876543210" error={storeForm.formState.errors.contactInfo?.phone?.message} />
+            <Input label="Email" {...storeForm.register('contactInfo.email')} type="email" placeholder="store@bayhawk.com" error={storeForm.formState.errors.contactInfo?.email?.message} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Zone</label>

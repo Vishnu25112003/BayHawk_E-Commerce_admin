@@ -1,83 +1,112 @@
-import { useState } from 'react';
-import { Card, Button, Input, Select, Modal, Badge } from '../components/ui';
-import { Plus, Search, Eye, Edit, Trash2, Building2, MapPin, Phone, Mail, Clock, Users, Package, Settings, Save, X } from 'lucide-react';
-import { getStatusColor } from '../utils/helpers';
-import { useAuth } from '../context/AuthContext';
-import type { Hub } from '../types';
+import { useState } from "react";
+import { Card, Button, Input, Select, Modal, Badge } from "../components/ui";
+import {
+  Plus,
+  Search,
+  Eye,
+  Edit,
+  Trash2,
+  Building2,
+  MapPin,
+  Phone,
+  Clock,
+  Users,
+  Package,
+  Save,
+  X,
+} from "lucide-react";
+import { getStatusColor } from "../utils/helpers";
+import { useAuth } from "../context/AuthContext";
+import type { Hub } from "../types";
 
 const mockHubs: Hub[] = [
   {
-    id: '1',
-    name: 'Chennai Central Hub',
-    code: 'HUB-CHN-001',
-    description: 'Main distribution hub for Chennai region',
+    id: "1",
+    name: "Chennai Central Hub",
+    code: "HUB-CHN-001",
+    description: "Main distribution hub for Chennai region",
     address: {
-      street: '123 Anna Salai',
-      city: 'Chennai',
-      state: 'Tamil Nadu',
-      pincode: '600002',
-      country: 'India'
+      street: "123 Anna Salai",
+      city: "Chennai",
+      state: "Tamil Nadu",
+      pincode: "600002",
+      country: "India",
     },
     location: {
       latitude: 13.0827,
-      longitude: 80.2707
+      longitude: 80.2707,
     },
     contactInfo: {
-      phone: '+91 9876543210',
-      email: 'chennai.hub@fishapp.com',
-      manager: 'Rajesh Kumar'
+      phone: "+91 9876543210",
+      email: "chennai.hub@fishapp.com",
+      manager: "Rajesh Kumar",
     },
     operatingHours: {
-      open: '06:00',
-      close: '22:00',
-      workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+      open: "06:00",
+      close: "22:00",
+      workingDays: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ],
     },
     capacity: {
       storage: 5000,
       dailyOrders: 1000,
-      staff: 25
+      staff: 25,
     },
     isActive: true,
-    connectedStores: ['store1', 'store2', 'store3'],
-    createdBy: 'Admin',
-    createdAt: '2024-01-01'
+    connectedStores: ["store1", "store2", "store3"],
+    createdBy: "Admin",
+    createdAt: "2024-01-01",
   },
   {
-    id: '2',
-    name: 'Bangalore North Hub',
-    code: 'HUB-BLR-001',
-    description: 'Primary hub serving North Bangalore',
+    id: "2",
+    name: "Bangalore North Hub",
+    code: "HUB-BLR-001",
+    description: "Primary hub serving North Bangalore",
     address: {
-      street: '456 MG Road',
-      city: 'Bangalore',
-      state: 'Karnataka',
-      pincode: '560001',
-      country: 'India'
+      street: "456 MG Road",
+      city: "Bangalore",
+      state: "Karnataka",
+      pincode: "560001",
+      country: "India",
     },
     location: {
       latitude: 12.9716,
-      longitude: 77.5946
+      longitude: 77.5946,
     },
     contactInfo: {
-      phone: '+91 9876543211',
-      email: 'bangalore.hub@fishapp.com',
-      manager: 'Priya Sharma'
+      phone: "+91 9876543211",
+      email: "bangalore.hub@fishapp.com",
+      manager: "Priya Sharma",
     },
     operatingHours: {
-      open: '05:30',
-      close: '23:00',
-      workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+      open: "05:30",
+      close: "23:00",
+      workingDays: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
     },
     capacity: {
       storage: 7500,
       dailyOrders: 1500,
-      staff: 35
+      staff: 35,
     },
     isActive: true,
-    connectedStores: ['store4', 'store5'],
-    createdBy: 'Admin',
-    createdAt: '2024-01-15'
-  }
+    connectedStores: ["store4", "store5"],
+    createdBy: "Admin",
+    createdAt: "2024-01-15",
+  },
 ];
 
 interface HubStatsProps {
@@ -85,10 +114,15 @@ interface HubStatsProps {
 }
 
 function HubStats({ hubs }: HubStatsProps) {
-  const activeHubs = hubs.filter(hub => hub.isActive).length;
-  const totalCapacity = hubs.reduce((sum, hub) => sum + hub.capacity.storage, 0);
-  const totalStores = hubs.reduce((sum, hub) => sum + hub.connectedStores.length, 0);
-  const totalStaff = hubs.reduce((sum, hub) => sum + hub.capacity.staff, 0);
+  const activeHubs = hubs.filter((hub) => hub.isActive).length;
+  const totalCapacity = hubs.reduce(
+    (sum, hub) => sum + hub.capacity.storage,
+    0,
+  );
+  const totalStores = hubs.reduce(
+    (sum, hub) => sum + hub.connectedStores.length,
+    0,
+  );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -132,7 +166,9 @@ function HubStats({ hubs }: HubStatsProps) {
           </div>
           <div>
             <p className="text-sm text-gray-600">Total Capacity</p>
-            <p className="text-xl font-bold">{totalCapacity.toLocaleString()}</p>
+            <p className="text-xl font-bold">
+              {totalCapacity.toLocaleString()}
+            </p>
           </div>
         </div>
       </Card>
@@ -148,29 +184,44 @@ interface HubFormProps {
 
 function HubForm({ hub, onSave, onCancel }: HubFormProps) {
   const [formData, setFormData] = useState({
-    name: hub?.name || '',
-    code: hub?.code || '',
-    description: hub?.description || '',
-    street: hub?.address.street || '',
-    city: hub?.address.city || '',
-    state: hub?.address.state || '',
-    pincode: hub?.address.pincode || '',
-    country: hub?.address.country || 'India',
-    phone: hub?.contactInfo.phone || '',
-    email: hub?.contactInfo.email || '',
-    manager: hub?.contactInfo.manager || '',
-    open: hub?.operatingHours.open || '06:00',
-    close: hub?.operatingHours.close || '22:00',
-    workingDays: hub?.operatingHours.workingDays || ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    name: hub?.name || "",
+    code: hub?.code || "",
+    description: hub?.description || "",
+    street: hub?.address.street || "",
+    city: hub?.address.city || "",
+    state: hub?.address.state || "",
+    pincode: hub?.address.pincode || "",
+    country: hub?.address.country || "India",
+    phone: hub?.contactInfo.phone || "",
+    email: hub?.contactInfo.email || "",
+    manager: hub?.contactInfo.manager || "",
+    open: hub?.operatingHours.open || "06:00",
+    close: hub?.operatingHours.close || "22:00",
+    workingDays: hub?.operatingHours.workingDays || [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ],
     storage: hub?.capacity.storage || 0,
     dailyOrders: hub?.capacity.dailyOrders || 0,
     staff: hub?.capacity.staff || 0,
     latitude: hub?.location.latitude || 0,
     longitude: hub?.location.longitude || 0,
-    isActive: hub?.isActive ?? true
+    isActive: hub?.isActive ?? true,
   });
 
-  const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const weekDays = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
 
   const handleSubmit = () => {
     const hubData: Partial<Hub> = {
@@ -182,38 +233,38 @@ function HubForm({ hub, onSave, onCancel }: HubFormProps) {
         city: formData.city,
         state: formData.state,
         pincode: formData.pincode,
-        country: formData.country
+        country: formData.country,
       },
       location: {
         latitude: formData.latitude,
-        longitude: formData.longitude
+        longitude: formData.longitude,
       },
       contactInfo: {
         phone: formData.phone,
         email: formData.email,
-        manager: formData.manager
+        manager: formData.manager,
       },
       operatingHours: {
         open: formData.open,
         close: formData.close,
-        workingDays: formData.workingDays
+        workingDays: formData.workingDays,
       },
       capacity: {
         storage: formData.storage,
         dailyOrders: formData.dailyOrders,
-        staff: formData.staff
+        staff: formData.staff,
       },
-      isActive: formData.isActive
+      isActive: formData.isActive,
     };
     onSave(hubData);
   };
 
   const toggleWorkingDay = (day: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       workingDays: prev.workingDays.includes(day)
-        ? prev.workingDays.filter(d => d !== day)
-        : [...prev.workingDays, day]
+        ? prev.workingDays.filter((d) => d !== day)
+        : [...prev.workingDays, day],
     }));
   };
 
@@ -226,37 +277,47 @@ function HubForm({ hub, onSave, onCancel }: HubFormProps) {
           Basic Information
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input 
-            label="Hub Name" 
+          <Input
+            label="Hub Name"
             value={formData.name}
-            onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            placeholder="Chennai Central Hub" 
-            required 
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, name: e.target.value }))
+            }
+            placeholder="Chennai Central Hub"
+            required
           />
-          <Input 
-            label="Hub Code" 
+          <Input
+            label="Hub Code"
             value={formData.code}
-            onChange={e => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            placeholder="HUB-CHN-001" 
-            required 
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, code: e.target.value }))
+            }
+            placeholder="HUB-CHN-001"
+            required
           />
         </div>
         <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <textarea 
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none" 
-            rows={2} 
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Description
+          </label>
+          <textarea
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
+            rows={2}
             value={formData.description}
-            onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            placeholder="Main distribution hub for Chennai region" 
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, description: e.target.value }))
+            }
+            placeholder="Main distribution hub for Chennai region"
           />
         </div>
         <div className="mt-4">
           <label className="flex items-center gap-2">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               checked={formData.isActive}
-              onChange={e => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, isActive: e.target.checked }))
+              }
               className="rounded border-gray-300"
             />
             <span className="text-sm text-gray-700">Active Hub</span>
@@ -271,56 +332,76 @@ function HubForm({ hub, onSave, onCancel }: HubFormProps) {
           Address & Location
         </h3>
         <div className="space-y-4">
-          <Input 
-            label="Street Address" 
+          <Input
+            label="Street Address"
             value={formData.street}
-            onChange={e => setFormData(prev => ({ ...prev, street: e.target.value }))}
-            placeholder="123 Anna Salai" 
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, street: e.target.value }))
+            }
+            placeholder="123 Anna Salai"
           />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input 
-              label="City" 
+            <Input
+              label="City"
               value={formData.city}
-              onChange={e => setFormData(prev => ({ ...prev, city: e.target.value }))}
-              placeholder="Chennai" 
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, city: e.target.value }))
+              }
+              placeholder="Chennai"
             />
-            <Input 
-              label="State" 
+            <Input
+              label="State"
               value={formData.state}
-              onChange={e => setFormData(prev => ({ ...prev, state: e.target.value }))}
-              placeholder="Tamil Nadu" 
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, state: e.target.value }))
+              }
+              placeholder="Tamil Nadu"
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input 
-              label="Pincode" 
+            <Input
+              label="Pincode"
               value={formData.pincode}
-              onChange={e => setFormData(prev => ({ ...prev, pincode: e.target.value }))}
-              placeholder="600002" 
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, pincode: e.target.value }))
+              }
+              placeholder="600002"
             />
-            <Input 
-              label="Country" 
+            <Input
+              label="Country"
               value={formData.country}
-              onChange={e => setFormData(prev => ({ ...prev, country: e.target.value }))}
-              placeholder="India" 
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, country: e.target.value }))
+              }
+              placeholder="India"
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input 
-              label="Latitude" 
-              type="number" 
+            <Input
+              label="Latitude"
+              type="number"
               step="any"
               value={formData.latitude}
-              onChange={e => setFormData(prev => ({ ...prev, latitude: parseFloat(e.target.value) }))}
-              placeholder="13.0827" 
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  latitude: parseFloat(e.target.value),
+                }))
+              }
+              placeholder="13.0827"
             />
-            <Input 
-              label="Longitude" 
-              type="number" 
+            <Input
+              label="Longitude"
+              type="number"
               step="any"
               value={formData.longitude}
-              onChange={e => setFormData(prev => ({ ...prev, longitude: parseFloat(e.target.value) }))}
-              placeholder="80.2707" 
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  longitude: parseFloat(e.target.value),
+                }))
+              }
+              placeholder="80.2707"
             />
           </div>
         </div>
@@ -333,26 +414,32 @@ function HubForm({ hub, onSave, onCancel }: HubFormProps) {
           Contact Information
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input 
-            label="Phone" 
+          <Input
+            label="Phone"
             value={formData.phone}
-            onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-            placeholder="+91 9876543210" 
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, phone: e.target.value }))
+            }
+            placeholder="+91 9876543210"
           />
-          <Input 
-            label="Email" 
+          <Input
+            label="Email"
             type="email"
             value={formData.email}
-            onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
-            placeholder="hub@fishapp.com" 
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, email: e.target.value }))
+            }
+            placeholder="hub@fishapp.com"
           />
         </div>
         <div className="mt-4">
-          <Input 
-            label="Manager Name" 
+          <Input
+            label="Manager Name"
             value={formData.manager}
-            onChange={e => setFormData(prev => ({ ...prev, manager: e.target.value }))}
-            placeholder="Rajesh Kumar" 
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, manager: e.target.value }))
+            }
+            placeholder="Rajesh Kumar"
           />
         </div>
       </div>
@@ -364,31 +451,37 @@ function HubForm({ hub, onSave, onCancel }: HubFormProps) {
           Operating Hours
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <Input 
-            label="Opening Time" 
+          <Input
+            label="Opening Time"
             type="time"
             value={formData.open}
-            onChange={e => setFormData(prev => ({ ...prev, open: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, open: e.target.value }))
+            }
           />
-          <Input 
-            label="Closing Time" 
+          <Input
+            label="Closing Time"
             type="time"
             value={formData.close}
-            onChange={e => setFormData(prev => ({ ...prev, close: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, close: e.target.value }))
+            }
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Working Days</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Working Days
+          </label>
           <div className="flex flex-wrap gap-2">
-            {weekDays.map(day => (
+            {weekDays.map((day) => (
               <button
                 key={day}
                 type="button"
                 onClick={() => toggleWorkingDay(day)}
                 className={`px-3 py-1 rounded-full text-sm transition-all ${
                   formData.workingDays.includes(day)
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                 }`}
               >
                 {day.slice(0, 3)}
@@ -405,46 +498,76 @@ function HubForm({ hub, onSave, onCancel }: HubFormProps) {
           Capacity & Resources
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Input 
-            label="Storage Capacity" 
+          <Input
+            label="Storage Capacity"
             type="number"
             value={formData.storage}
-            onChange={e => setFormData(prev => ({ ...prev, storage: parseInt(e.target.value) }))}
-            placeholder="5000" 
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                storage: parseInt(e.target.value),
+              }))
+            }
+            placeholder="5000"
           />
-          <Input 
-            label="Daily Orders Capacity" 
+          <Input
+            label="Daily Orders Capacity"
             type="number"
             value={formData.dailyOrders}
-            onChange={e => setFormData(prev => ({ ...prev, dailyOrders: parseInt(e.target.value) }))}
-            placeholder="1000" 
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                dailyOrders: parseInt(e.target.value),
+              }))
+            }
+            placeholder="1000"
           />
-          <Input 
-            label="Staff Count" 
+          <Input
+            label="Staff Count"
             type="number"
             value={formData.staff}
-            onChange={e => setFormData(prev => ({ ...prev, staff: parseInt(e.target.value) }))}
-            placeholder="25" 
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                staff: parseInt(e.target.value),
+              }))
+            }
+            placeholder="25"
           />
         </div>
       </div>
 
       {/* Form Actions */}
       <div className="flex gap-2 pt-4 border-t">
-        <Button type="button" variant="secondary" onClick={onCancel} className="flex-1">
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onCancel}
+          className="flex-1"
+        >
           <X className="mr-2 h-4 w-4" />
           Cancel
         </Button>
         <Button type="button" onClick={handleSubmit} className="flex-1">
           <Save className="mr-2 h-4 w-4" />
-          {hub ? 'Update Hub' : 'Create Hub'}
+          {hub ? "Update Hub" : "Create Hub"}
         </Button>
       </div>
     </div>
   );
 }
 
-function HubRow({ hub, onView, onEdit, onDelete }: { hub: Hub; onView: () => void; onEdit: () => void; onDelete: () => void }) {
+function HubRow({
+  hub,
+  onView,
+  onEdit,
+  onDelete,
+}: {
+  hub: Hub;
+  onView: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   return (
     <div className="grid grid-cols-12 gap-4 items-center p-4 border-b hover:bg-gray-50">
       {/* Hub Name & Code */}
@@ -461,25 +584,36 @@ function HubRow({ hub, onView, onEdit, onDelete }: { hub: Hub; onView: () => voi
 
       {/* Location */}
       <div className="col-span-2">
-        <p className="text-sm text-gray-700">{hub.address.city}, {hub.address.state}</p>
+        <p className="text-sm text-gray-700">
+          {hub.address.city}, {hub.address.state}
+        </p>
       </div>
 
       {/* Status */}
       <div className="col-span-2 flex justify-center">
-        <Badge variant={getStatusColor(hub.isActive ? 'active' : 'inactive')}>
-          {hub.isActive ? 'Active' : 'Inactive'}
+        <Badge variant={getStatusColor(hub.isActive ? "active" : "inactive")}>
+          {hub.isActive ? "Active" : "Inactive"}
         </Badge>
       </div>
 
       {/* Actions */}
       <div className="col-span-2 flex justify-end gap-2">
-        <button onClick={onView} className="p-2 hover:bg-gray-200 rounded-lg transition-colors">
+        <button
+          onClick={onView}
+          className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+        >
           <Eye className="h-4 w-4 text-gray-600" />
         </button>
-        <button onClick={onEdit} className="p-2 hover:bg-gray-200 rounded-lg transition-colors">
+        <button
+          onClick={onEdit}
+          className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+        >
           <Edit className="h-4 w-4 text-gray-600" />
         </button>
-        <button onClick={onDelete} className="p-2 hover:bg-red-100 rounded-lg transition-colors">
+        <button
+          onClick={onDelete}
+          className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+        >
           <Trash2 className="h-4 w-4 text-red-600" />
         </button>
       </div>
@@ -490,39 +624,44 @@ function HubRow({ hub, onView, onEdit, onDelete }: { hub: Hub; onView: () => voi
 export function HubPage() {
   const { user } = useAuth();
   const [hubs, setHubs] = useState<Hub[]>(mockHubs);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [editingHub, setEditingHub] = useState<Hub | undefined>();
   const [viewingHub, setViewingHub] = useState<Hub | undefined>();
 
-  const filteredHubs = hubs.filter(hub => {
-    const matchesSearch = hub.name.toLowerCase().includes(search.toLowerCase()) || 
-                         hub.code.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = !statusFilter || (statusFilter === 'active' ? hub.isActive : !hub.isActive);
+  const filteredHubs = hubs.filter((hub) => {
+    const matchesSearch =
+      hub.name.toLowerCase().includes(search.toLowerCase()) ||
+      hub.code.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus =
+      !statusFilter ||
+      (statusFilter === "active" ? hub.isActive : !hub.isActive);
     return matchesSearch && matchesStatus;
   });
 
   const handleSaveHub = (hubData: Partial<Hub>) => {
     if (editingHub) {
       // Update existing hub
-      setHubs(prev => prev.map(hub => 
-        hub.id === editingHub.id 
-          ? { ...hub, ...hubData, id: editingHub.id }
-          : hub
-      ));
+      setHubs((prev) =>
+        prev.map((hub) =>
+          hub.id === editingHub.id
+            ? { ...hub, ...hubData, id: editingHub.id }
+            : hub,
+        ),
+      );
       setEditingHub(undefined);
     } else {
       // Create new hub
       const newHub: Hub = {
-        ...hubData as Hub,
+        ...(hubData as Hub),
         id: Date.now().toString(),
         connectedStores: [],
-        createdBy: user?.name || 'Admin',
-        createdAt: new Date().toISOString().split('T')[0]
+        createdBy: user?.name || "Admin",
+        createdAt: new Date().toISOString().split("T")[0],
       };
-      setHubs(prev => [...prev, newHub]);
+      setHubs((prev) => [...prev, newHub]);
       setShowCreateModal(false);
     }
   };
@@ -537,8 +676,12 @@ export function HubPage() {
   };
 
   const handleDeleteHub = (hubId: string) => {
-    if (confirm('Are you sure you want to delete this hub? This action cannot be undone.')) {
-      setHubs(prev => prev.filter(hub => hub.id !== hubId));
+    if (
+      confirm(
+        "Are you sure you want to delete this hub? This action cannot be undone.",
+      )
+    ) {
+      setHubs((prev) => prev.filter((hub) => hub.id !== hubId));
     }
   };
 
@@ -547,7 +690,9 @@ export function HubPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Hub Management</h1>
-          <p className="text-gray-600">Manage distribution hubs and their operations</p>
+          <p className="text-gray-600">
+            Manage distribution hubs and their operations
+          </p>
         </div>
         <Button onClick={() => setShowCreateModal(true)}>
           <Plus className="mr-2 h-4 w-4" />
@@ -563,7 +708,7 @@ export function HubPage() {
         <Card>
           <div className="p-6">
             <h2 className="text-xl font-semibold mb-4">
-              {editingHub ? 'Edit Hub' : 'Create New Hub'}
+              {editingHub ? "Edit Hub" : "Create New Hub"}
             </h2>
             <HubForm
               hub={editingHub}
@@ -582,21 +727,21 @@ export function HubPage() {
         <div className="flex items-center gap-4 p-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-            <Input 
-              placeholder="Search hubs by name or code..." 
-              value={search} 
-              onChange={e => setSearch(e.target.value)} 
-              className="pl-10" 
+            <Input
+              placeholder="Search hubs by name or code..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
             />
           </div>
-          <Select 
-            value={statusFilter} 
-            onChange={e => setStatusFilter(e.target.value)} 
+          <Select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
             options={[
-              { value: '', label: 'All Status' }, 
-              { value: 'active', label: 'Active' }, 
-              { value: 'inactive', label: 'Inactive' }
-            ]} 
+              { value: "", label: "All Status" },
+              { value: "active", label: "Active" },
+              { value: "inactive", label: "Inactive" },
+            ]}
           />
         </div>
       </Card>
@@ -605,20 +750,30 @@ export function HubPage() {
       <Card>
         {/* Header */}
         <div className="grid grid-cols-12 gap-4 p-4 border-b bg-gray-50 rounded-t-lg">
-          <div className="col-span-3 font-semibold text-sm text-gray-600">Hub</div>
-          <div className="col-span-3 font-semibold text-sm text-gray-600">Contact</div>
-          <div className="col-span-2 font-semibold text-sm text-gray-600">Location</div>
-          <div className="col-span-2 font-semibold text-sm text-gray-600 text-center">Status</div>
-          <div className="col-span-2 font-semibold text-sm text-gray-600 text-right">Actions</div>
+          <div className="col-span-3 font-semibold text-sm text-gray-600">
+            Hub
+          </div>
+          <div className="col-span-3 font-semibold text-sm text-gray-600">
+            Contact
+          </div>
+          <div className="col-span-2 font-semibold text-sm text-gray-600">
+            Location
+          </div>
+          <div className="col-span-2 font-semibold text-sm text-gray-600 text-center">
+            Status
+          </div>
+          <div className="col-span-2 font-semibold text-sm text-gray-600 text-right">
+            Actions
+          </div>
         </div>
-        
+
         {/* Body */}
         <div>
           {filteredHubs.length > 0 ? (
-            filteredHubs.map(hub => (
-              <HubRow 
-                key={hub.id} 
-                hub={hub} 
+            filteredHubs.map((hub) => (
+              <HubRow
+                key={hub.id}
+                hub={hub}
                 onView={() => handleViewHub(hub)}
                 onEdit={() => handleEditHub(hub)}
                 onDelete={() => handleDeleteHub(hub.id)}
@@ -627,20 +782,24 @@ export function HubPage() {
           ) : (
             <div className="text-center py-12">
               <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No hubs found</h3>
-              <p className="text-gray-500">Your search or filter criteria did not match any hubs.</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No hubs found
+              </h3>
+              <p className="text-gray-500">
+                Your search or filter criteria did not match any hubs.
+              </p>
             </div>
           )}
         </div>
       </Card>
-      
+
       {/* View Hub Modal */}
-      <Modal 
-        isOpen={showViewModal} 
+      <Modal
+        isOpen={showViewModal}
         onClose={() => {
           setShowViewModal(false);
           setViewingHub(undefined);
-        }} 
+        }}
         title="Hub Details"
         size="xl"
       >
@@ -652,11 +811,15 @@ export function HubPage() {
                 <Building2 className="h-8 w-8 text-blue-600" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-gray-900">{viewingHub.name}</h3>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  {viewingHub.name}
+                </h3>
                 <p className="text-gray-600 font-mono">{viewingHub.code}</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <Badge variant={viewingHub.isActive ? 'success' : 'secondary'}>
-                    {viewingHub.isActive ? 'Active' : 'Inactive'}
+                  <Badge
+                    variant={viewingHub.isActive ? "success" : "secondary"}
+                  >
+                    {viewingHub.isActive ? "Active" : "Inactive"}
                   </Badge>
                 </div>
               </div>
@@ -666,7 +829,9 @@ export function HubPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Basic Information */}
               <div>
-                <h4 className="font-medium text-gray-900 mb-3">Basic Information</h4>
+                <h4 className="font-medium text-gray-900 mb-3">
+                  Basic Information
+                </h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Hub Code:</span>
@@ -682,14 +847,18 @@ export function HubPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Created:</span>
-                    <span>{new Date(viewingHub.createdAt).toLocaleDateString()}</span>
+                    <span>
+                      {new Date(viewingHub.createdAt).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Contact Information */}
               <div>
-                <h4 className="font-medium text-gray-900 mb-3">Contact Information</h4>
+                <h4 className="font-medium text-gray-900 mb-3">
+                  Contact Information
+                </h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Phone:</span>
@@ -707,24 +876,37 @@ export function HubPage() {
                 <h4 className="font-medium text-gray-900 mb-3">Address</h4>
                 <div className="text-sm text-gray-600">
                   <p>{viewingHub.address.street}</p>
-                  <p>{viewingHub.address.city}, {viewingHub.address.state}</p>
-                  <p>{viewingHub.address.pincode}, {viewingHub.address.country}</p>
+                  <p>
+                    {viewingHub.address.city}, {viewingHub.address.state}
+                  </p>
+                  <p>
+                    {viewingHub.address.pincode}, {viewingHub.address.country}
+                  </p>
                 </div>
               </div>
 
               {/* Operating Hours */}
               <div>
-                <h4 className="font-medium text-gray-900 mb-3">Operating Hours</h4>
+                <h4 className="font-medium text-gray-900 mb-3">
+                  Operating Hours
+                </h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Hours:</span>
-                    <span>{viewingHub.operatingHours.open} - {viewingHub.operatingHours.close}</span>
+                    <span>
+                      {viewingHub.operatingHours.open} -{" "}
+                      {viewingHub.operatingHours.close}
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-600">Working Days:</span>
                     <div className="flex flex-wrap gap-1 mt-1">
-                      {viewingHub.operatingHours.workingDays.map(day => (
-                        <Badge key={day} variant="secondary" className="text-xs">
+                      {viewingHub.operatingHours.workingDays.map((day) => (
+                        <Badge
+                          key={day}
+                          variant="secondary"
+                          className="text-xs"
+                        >
                           {day.slice(0, 3)}
                         </Badge>
                       ))}
@@ -736,32 +918,46 @@ export function HubPage() {
 
             {/* Capacity Information */}
             <div>
-              <h4 className="font-medium text-gray-900 mb-3">Capacity & Statistics</h4>
+              <h4 className="font-medium text-gray-900 mb-3">
+                Capacity & Statistics
+              </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <Package className="h-5 w-5 text-blue-600" />
-                    <span className="text-sm font-medium text-blue-900">Storage</span>
+                    <span className="text-sm font-medium text-blue-900">
+                      Storage
+                    </span>
                   </div>
-                  <p className="text-2xl font-bold text-blue-900">{viewingHub.capacity.storage.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-blue-900">
+                    {viewingHub.capacity.storage.toLocaleString()}
+                  </p>
                   <p className="text-xs text-blue-700">kg capacity</p>
                 </div>
-                
+
                 <div className="bg-green-50 p-4 rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <Package className="h-5 w-5 text-green-600" />
-                    <span className="text-sm font-medium text-green-900">Daily Orders</span>
+                    <span className="text-sm font-medium text-green-900">
+                      Daily Orders
+                    </span>
                   </div>
-                  <p className="text-2xl font-bold text-green-900">{viewingHub.capacity.dailyOrders.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-green-900">
+                    {viewingHub.capacity.dailyOrders.toLocaleString()}
+                  </p>
                   <p className="text-xs text-green-700">orders/day</p>
                 </div>
-                
+
                 <div className="bg-orange-50 p-4 rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <Users className="h-5 w-5 text-orange-600" />
-                    <span className="text-sm font-medium text-orange-900">Staff</span>
+                    <span className="text-sm font-medium text-orange-900">
+                      Staff
+                    </span>
                   </div>
-                  <p className="text-2xl font-bold text-orange-900">{viewingHub.capacity.staff}</p>
+                  <p className="text-2xl font-bold text-orange-900">
+                    {viewingHub.capacity.staff}
+                  </p>
                   <p className="text-xs text-orange-700">team members</p>
                 </div>
               </div>
@@ -769,11 +965,13 @@ export function HubPage() {
 
             {/* Connected Stores */}
             <div>
-              <h4 className="font-medium text-gray-900 mb-3">Connected Stores</h4>
+              <h4 className="font-medium text-gray-900 mb-3">
+                Connected Stores
+              </h4>
               <div className="flex flex-wrap gap-2">
-                {viewingHub.connectedStores.map(storeId => (
+                {viewingHub.connectedStores.map((storeId) => (
                   <Badge key={storeId} variant="info">
-                    Store {storeId.replace('store', '')}
+                    Store {storeId.replace("store", "")}
                   </Badge>
                 ))}
                 {viewingHub.connectedStores.length === 0 && (
@@ -784,7 +982,7 @@ export function HubPage() {
 
             {/* Action Buttons */}
             <div className="flex gap-3 pt-4 border-t">
-              <Button 
+              <Button
                 variant="secondary"
                 onClick={() => {
                   setShowViewModal(false);
@@ -794,7 +992,7 @@ export function HubPage() {
               >
                 Close
               </Button>
-              <Button 
+              <Button
                 onClick={() => {
                   setShowViewModal(false);
                   handleEditHub(viewingHub);

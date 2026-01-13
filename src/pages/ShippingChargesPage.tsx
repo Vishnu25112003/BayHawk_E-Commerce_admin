@@ -51,7 +51,7 @@ export function ShippingChargesPage() {
     }
   ]);
 
-  const [weightBasedCharges, setWeightBasedCharges] = useState([
+  const [weightBasedCharges] = useState([
     { minWeight: 0, maxWeight: 2, charge: 0 },
     { minWeight: 2, maxWeight: 5, charge: 10 },
     { minWeight: 5, maxWeight: 10, charge: 20 },

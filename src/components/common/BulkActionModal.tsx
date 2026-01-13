@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal, Button, Input, Select } from '../ui';
-import { AlertTriangle, CheckCircle, X } from 'lucide-react';
+import { AlertTriangle, CheckCircle } from 'lucide-react';
 
 interface BulkActionModalProps {
   isOpen: boolean;

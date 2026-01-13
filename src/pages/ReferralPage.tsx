@@ -1,96 +1,108 @@
-import { useState } from 'react';
-import { Card, Button, Input, Select, Modal, Badge } from '../components/ui';
-import { Plus, Search, Eye, Trash2, Share2, Users, Target, TrendingUp, Settings } from 'lucide-react';
-import { getStatusColor } from '../utils/helpers';
-import { useAuth } from '../context/AuthContext';
-import type { ReferralProgram, ReferralReward, ReferralConditions, ReferralCustomization } from '../types';
+import { useState } from "react";
+import { Card, Button, Input, Select, Modal, Badge } from "../components/ui";
+import {
+  Plus,
+  Search,
+  Eye,
+  Trash2,
+  Share2,
+  Users,
+  Target,
+  TrendingUp,
+  Settings,
+} from "lucide-react";
+import { getStatusColor } from "../utils/helpers";
+import type { ReferralProgram } from "../types";
 
 const mockReferralPrograms: ReferralProgram[] = [
   {
-    id: '1',
-    name: 'Fish Friends Referral',
-    description: 'Refer friends and earn rewards on fish orders',
+    id: "1",
+    name: "Fish Friends Referral",
+    description: "Refer friends and earn rewards on fish orders",
     isActive: true,
     referrerReward: {
-      type: 'cashback',
+      type: "cashback",
       value: 100,
-      unit: '₹',
-      conditions: ['Friend completes first order']
+      unit: "₹",
+      conditions: ["Friend completes first order"],
     },
     refereeReward: {
-      type: 'discount',
+      type: "discount",
       value: 20,
-      unit: '%',
+      unit: "%",
       maxReward: 200,
-      conditions: ['First order only']
+      conditions: ["First order only"],
     },
     conditions: {
       minOrderValue: 500,
       validityDays: 30,
       maxReferrals: 10,
       requireFirstOrder: true,
-      allowSelfReferral: false
+      allowSelfReferral: false,
     },
     customization: {
-      shareMessage: 'Join me on FishApp and get 20% off your first order! Use my referral code.',
-      landingPageTitle: 'Welcome to FishApp!',
-      landingPageDescription: 'Get fresh fish delivered to your doorstep with 20% off your first order.',
-      buttonText: 'Claim Your Discount',
+      shareMessage:
+        "Join me on FishApp and get 20% off your first order! Use my referral code.",
+      landingPageTitle: "Welcome to FishApp!",
+      landingPageDescription:
+        "Get fresh fish delivered to your doorstep with 20% off your first order.",
+      buttonText: "Claim Your Discount",
       colors: {
-        primary: '#3B82F6',
-        secondary: '#1E40AF',
-        background: '#F8FAFC'
+        primary: "#3B82F6",
+        secondary: "#1E40AF",
+        background: "#F8FAFC",
       },
-      socialPlatforms: ['whatsapp', 'facebook', 'twitter', 'instagram']
+      socialPlatforms: ["whatsapp", "facebook", "twitter", "instagram"],
     },
     totalReferrals: 1250,
     successfulReferrals: 890,
     totalRewards: 89000,
-    createdBy: 'Admin',
-    createdAt: '2024-01-01'
+    createdBy: "Admin",
+    createdAt: "2024-01-01",
   },
   {
-    id: '2',
-    name: 'Premium Member Referral',
-    description: 'Exclusive referral program for premium members',
+    id: "2",
+    name: "Premium Member Referral",
+    description: "Exclusive referral program for premium members",
     isActive: true,
     referrerReward: {
-      type: 'points',
+      type: "points",
       value: 500,
-      unit: 'pts',
-      conditions: ['Friend becomes premium member']
+      unit: "pts",
+      conditions: ["Friend becomes premium member"],
     },
     refereeReward: {
-      type: 'free_delivery',
+      type: "free_delivery",
       value: 3,
-      unit: 'deliveries',
-      conditions: ['Valid for 3 months']
+      unit: "deliveries",
+      conditions: ["Valid for 3 months"],
     },
     conditions: {
       minOrderValue: 1000,
       validityDays: 90,
       maxReferrals: 5,
       requireFirstOrder: false,
-      allowSelfReferral: false
+      allowSelfReferral: false,
     },
     customization: {
-      shareMessage: 'Upgrade to premium with me and get 3 free deliveries!',
-      landingPageTitle: 'Premium Fish Experience',
-      landingPageDescription: 'Join our premium membership and enjoy exclusive benefits.',
-      buttonText: 'Go Premium Now',
+      shareMessage: "Upgrade to premium with me and get 3 free deliveries!",
+      landingPageTitle: "Premium Fish Experience",
+      landingPageDescription:
+        "Join our premium membership and enjoy exclusive benefits.",
+      buttonText: "Go Premium Now",
       colors: {
-        primary: '#7C3AED',
-        secondary: '#5B21B6',
-        background: '#FAF5FF'
+        primary: "#7C3AED",
+        secondary: "#5B21B6",
+        background: "#FAF5FF",
       },
-      socialPlatforms: ['whatsapp', 'email']
+      socialPlatforms: ["whatsapp", "email"],
     },
     totalReferrals: 340,
     successfulReferrals: 245,
     totalRewards: 122500,
-    createdBy: 'Admin',
-    createdAt: '2024-01-15'
-  }
+    createdBy: "Admin",
+    createdAt: "2024-01-15",
+  },
 ];
 
 interface ReferralStatsProps {
@@ -98,10 +110,16 @@ interface ReferralStatsProps {
 }
 
 function ReferralStats({ programs }: ReferralStatsProps) {
-  const activePrograms = programs.filter(p => p.isActive).length;
+  const activePrograms = programs.filter((p) => p.isActive).length;
   const totalReferrals = programs.reduce((sum, p) => sum + p.totalReferrals, 0);
-  const successfulReferrals = programs.reduce((sum, p) => sum + p.successfulReferrals, 0);
-  const conversionRate = totalReferrals > 0 ? ((successfulReferrals / totalReferrals) * 100).toFixed(1) : '0';
+  const successfulReferrals = programs.reduce(
+    (sum, p) => sum + p.successfulReferrals,
+    0,
+  );
+  const conversionRate =
+    totalReferrals > 0
+      ? ((successfulReferrals / totalReferrals) * 100).toFixed(1)
+      : "0";
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -134,7 +152,9 @@ function ReferralStats({ programs }: ReferralStatsProps) {
           </div>
           <div>
             <p className="text-sm text-gray-600">Total Referrals</p>
-            <p className="text-xl font-bold">{totalReferrals.toLocaleString()}</p>
+            <p className="text-xl font-bold">
+              {totalReferrals.toLocaleString()}
+            </p>
           </div>
         </div>
       </Card>
@@ -154,17 +174,27 @@ function ReferralStats({ programs }: ReferralStatsProps) {
 }
 
 function ReferralCard({ program }: { program: ReferralProgram }) {
-  const conversionRate = program.totalReferrals > 0 ? 
-    ((program.successfulReferrals / program.totalReferrals) * 100).toFixed(1) : '0';
+  const conversionRate =
+    program.totalReferrals > 0
+      ? ((program.successfulReferrals / program.totalReferrals) * 100).toFixed(
+          1,
+        )
+      : "0";
 
   const getRewardIcon = (type: string) => {
     switch (type) {
-      case 'cashback': return '💸';
-      case 'discount': return '💰';
-      case 'free_delivery': return '🚚';
-      case 'points': return '⭐';
-      case 'free_item': return '🎁';
-      default: return '🎯';
+      case "cashback":
+        return "💸";
+      case "discount":
+        return "💰";
+      case "free_delivery":
+        return "🚚";
+      case "points":
+        return "⭐";
+      case "free_item":
+        return "🎁";
+      default:
+        return "🎯";
     }
   };
 
@@ -175,28 +205,40 @@ function ReferralCard({ program }: { program: ReferralProgram }) {
         <div className="flex-grow p-6 border-r">
           <div className="flex justify-between items-start mb-2">
             <h3 className="font-semibold text-lg">{program.name}</h3>
-            <Badge variant={getStatusColor(program.isActive ? 'active' : 'inactive')}>
-              {program.isActive ? 'Active' : 'Inactive'}
+            <Badge
+              variant={getStatusColor(program.isActive ? "active" : "inactive")}
+            >
+              {program.isActive ? "Active" : "Inactive"}
             </Badge>
           </div>
           <p className="text-sm text-gray-500 mb-4">{program.description}</p>
-          
+
           <div className="grid grid-cols-2 gap-4">
             {/* Referrer Reward */}
             <div className="border rounded-lg p-3 bg-green-50">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">{getRewardIcon(program.referrerReward.type)}</span>
+                <span className="text-lg">
+                  {getRewardIcon(program.referrerReward.type)}
+                </span>
                 <span className="font-semibold text-sm">Referrer</span>
               </div>
-              <p className="font-bold text-green-600">{program.referrerReward.value}{program.referrerReward.unit}</p>
+              <p className="font-bold text-green-600">
+                {program.referrerReward.value}
+                {program.referrerReward.unit}
+              </p>
             </div>
             {/* Referee Reward */}
             <div className="border rounded-lg p-3 bg-blue-50">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">{getRewardIcon(program.refereeReward.type)}</span>
+                <span className="text-lg">
+                  {getRewardIcon(program.refereeReward.type)}
+                </span>
                 <span className="font-semibold text-sm">Referee</span>
               </div>
-              <p className="font-bold text-blue-600">{program.refereeReward.value}{program.refereeReward.unit}</p>
+              <p className="font-bold text-blue-600">
+                {program.refereeReward.value}
+                {program.refereeReward.unit}
+              </p>
             </div>
           </div>
         </div>
@@ -208,22 +250,34 @@ function ReferralCard({ program }: { program: ReferralProgram }) {
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
                 <p className="text-sm text-gray-600">Total</p>
-                <p className="font-semibold text-lg">{program.totalReferrals}</p>
+                <p className="font-semibold text-lg">
+                  {program.totalReferrals}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Successful</p>
-                <p className="font-semibold text-lg text-green-600">{program.successfulReferrals}</p>
+                <p className="font-semibold text-lg text-green-600">
+                  {program.successfulReferrals}
+                </p>
               </div>
               <div className="col-span-2">
                 <p className="text-sm text-gray-600">Conversion Rate</p>
-                <p className="font-semibold text-lg text-blue-600">{conversionRate}%</p>
+                <p className="font-semibold text-lg text-blue-600">
+                  {conversionRate}%
+                </p>
               </div>
             </div>
           </div>
           <div className="flex justify-center gap-2 mt-4">
-            <Button variant="icon" size="sm"><Eye className="h-4 w-4" /></Button>
-            <Button variant="icon" size="sm"><Settings className="h-4 w-4" /></Button>
-            <Button variant="icon" size="sm" className="text-red-600"><Trash2 className="h-4 w-4" /></Button>
+            <Button variant="ghost" size="sm">
+              <Eye className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="sm">
+              <Settings className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="sm" className="text-red-600">
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </div>
@@ -232,15 +286,18 @@ function ReferralCard({ program }: { program: ReferralProgram }) {
 }
 
 export function ReferralPage() {
-  const { user } = useAuth();
   const [programs] = useState<ReferralProgram[]>(mockReferralPrograms);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const filteredPrograms = programs.filter(program => {
-    const matchesSearch = program.name.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = !statusFilter || (statusFilter === 'active' ? program.isActive : !program.isActive);
+  const filteredPrograms = programs.filter((program) => {
+    const matchesSearch = program.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
+    const matchesStatus =
+      !statusFilter ||
+      (statusFilter === "active" ? program.isActive : !program.isActive);
     return matchesSearch && matchesStatus;
   });
 
@@ -249,7 +306,9 @@ export function ReferralPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Referral Management</h1>
-          <p className="text-gray-600">Create and manage referral programs with custom rewards</p>
+          <p className="text-gray-600">
+            Create and manage referral programs with custom rewards
+          </p>
         </div>
         <div className="flex gap-2">
           <Button onClick={() => setShowCreateModal(true)}>
@@ -267,28 +326,28 @@ export function ReferralPage() {
         <div className="flex items-center gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-            <Input 
-              placeholder="Search referral programs..." 
-              value={search} 
-              onChange={e => setSearch(e.target.value)} 
-              className="pl-10" 
+            <Input
+              placeholder="Search referral programs..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
             />
           </div>
-          <Select 
-            value={statusFilter} 
-            onChange={e => setStatusFilter(e.target.value)} 
+          <Select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
             options={[
-              { value: '', label: 'All Status' }, 
-              { value: 'active', label: 'Active' }, 
-              { value: 'inactive', label: 'Inactive' }
-            ]} 
+              { value: "", label: "All Status" },
+              { value: "active", label: "Active" },
+              { value: "inactive", label: "Inactive" },
+            ]}
           />
         </div>
       </Card>
 
       {/* Programs List */}
       <div className="space-y-6">
-        {filteredPrograms.map(program => (
+        {filteredPrograms.map((program) => (
           <ReferralCard key={program.id} program={program} />
         ))}
       </div>
@@ -296,45 +355,57 @@ export function ReferralPage() {
       {filteredPrograms.length === 0 && (
         <Card className="text-center py-12">
           <Share2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No referral programs found</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No referral programs found
+          </h3>
           <p className="text-gray-500">Create your first referral program</p>
         </Card>
       )}
 
       {/* Create Modal */}
-      <Modal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} title="Create Referral Program">
+      <Modal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        title="Create Referral Program"
+      >
         <form className="space-y-4">
-          <Input label="Program Name" placeholder="Fish Friends Referral" required />
+          <Input
+            label="Program Name"
+            placeholder="Fish Friends Referral"
+            required
+          />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea 
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none" 
-              rows={2} 
-              placeholder="Refer friends and earn rewards" 
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
+            <textarea
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
+              rows={2}
+              placeholder="Refer friends and earn rewards"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h3 className="font-medium mb-2">Referrer Reward</h3>
-              <Select 
-                label="Reward Type" 
+              <Select
+                label="Reward Type"
                 options={[
-                  { value: 'cashback', label: 'Cashback' },
-                  { value: 'discount', label: 'Discount' },
-                  { value: 'points', label: 'Points' }
-                ]} 
+                  { value: "cashback", label: "Cashback" },
+                  { value: "discount", label: "Discount" },
+                  { value: "points", label: "Points" },
+                ]}
               />
               <Input label="Reward Value" type="number" placeholder="100" />
             </div>
             <div>
               <h3 className="font-medium mb-2">Referee Reward</h3>
-              <Select 
-                label="Reward Type" 
+              <Select
+                label="Reward Type"
                 options={[
-                  { value: 'discount', label: 'Discount' },
-                  { value: 'free_delivery', label: 'Free Delivery' },
-                  { value: 'cashback', label: 'Cashback' }
-                ]} 
+                  { value: "discount", label: "Discount" },
+                  { value: "free_delivery", label: "Free Delivery" },
+                  { value: "cashback", label: "Cashback" },
+                ]}
               />
               <Input label="Reward Value" type="number" placeholder="20" />
             </div>
@@ -344,10 +415,17 @@ export function ReferralPage() {
             <Input label="Validity (days)" type="number" placeholder="30" />
           </div>
           <div className="flex gap-2 pt-4 border-t">
-            <Button type="button" variant="secondary" onClick={() => setShowCreateModal(false)} className="flex-1">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setShowCreateModal(false)}
+              className="flex-1"
+            >
               Cancel
             </Button>
-            <Button type="submit" className="flex-1">Create Program</Button>
+            <Button type="submit" className="flex-1">
+              Create Program
+            </Button>
           </div>
         </form>
       </Modal>
