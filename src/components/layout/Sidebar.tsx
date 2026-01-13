@@ -5,16 +5,31 @@ import { LogOut, Menu, X, Bell, ChevronDown, ChevronRight } from 'lucide-react';
 import { getFilteredMenuByUser, type MenuItem } from '../../utils/menuConfig';
 
 interface SidebarProps {
-  collapsed: boolean;
-  onToggleCollapse: (collapsed: boolean) => void;
   isMobile: boolean;
+  isSidebarOpen: boolean;
+  toggleSidebar: () => void;
 }
 
-export function Sidebar({ collapsed, onToggleCollapse, isMobile }: SidebarProps) {
+export function Sidebar({ isMobile, isSidebarOpen, toggleSidebar }: SidebarProps) {
   const { user, logout } = useAuth();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const sidebarRef = useRef<HTMLElement>(null);
 
   const menuItems = user ? getFilteredMenuByUser(user.loginType, user.role) : [];
+
+  // Effect to handle clicks outside the sidebar on mobile
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMobile && isSidebarOpen && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        toggleSidebar();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobile, isSidebarOpen, toggleSidebar]);
 
   const toggleExpand = (id: string) => {
     setExpandedItems(prev => 
@@ -29,28 +44,23 @@ export function Sidebar({ collapsed, onToggleCollapse, isMobile }: SidebarProps)
     if (hasChildren && item.children) {
       return (
         <div key={item.id}>
-          {/* Single clickable div for the entire menu section */}
           <button
             onClick={() => toggleExpand(item.id)}
-            className={`w-full flex items-center rounded-lg px-3 py-2.5 transition-all duration-200 ${
-              (collapsed && !isMobile) ? 'justify-center' : 'gap-3'
-            } text-slate-400 hover:bg-slate-800 hover:text-white`}
+            className="w-full flex items-center justify-between rounded-lg px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white transition-all duration-200"
           >
-            <item.icon size={20} />
-            {!(collapsed && !isMobile) && (
-              <>
-                <span className="font-medium flex-1 text-left">{item.label}</span>
-                {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-              </>
-            )}
+            <div className="flex items-center gap-3">
+              <item.icon size={20} />
+              <span className="font-medium">{item.label}</span>
+            </div>
+            {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
           </button>
-          {/* Submenu items */}
-          {isExpanded && !(collapsed && !isMobile) && (
+          {isExpanded && (
             <div className="ml-8 mt-1 space-y-1">
               {item.children.map(child => (
                 <NavLink
                   key={child.id}
                   to={child.path}
+                  onClick={isMobile ? toggleSidebar : undefined}
                   className={({ isActive }) => `
                     flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200
                     ${isActive 
@@ -73,10 +83,9 @@ export function Sidebar({ collapsed, onToggleCollapse, isMobile }: SidebarProps)
       <NavLink
         key={item.id}
         to={item.path}
+        onClick={isMobile ? toggleSidebar : undefined}
         className={({ isActive }) => `
-          flex items-center rounded-lg px-3 py-2.5 transition-all duration-200 ${
-            (collapsed && !isMobile) ? 'justify-center' : 'gap-3'
-          }
+          flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all duration-200
           ${isActive 
             ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
             : 'text-slate-400 hover:bg-slate-800 hover:text-white'
@@ -84,100 +93,71 @@ export function Sidebar({ collapsed, onToggleCollapse, isMobile }: SidebarProps)
         `}
       >
         <item.icon size={20} />
-        {!(collapsed && !isMobile) && <span className="font-medium">{item.label}</span>}
+        <span className="font-medium">{item.label}</span>
       </NavLink>
     );
   };
 
   return (
-    <aside 
-      className={`fixed left-0 top-0 z-50 h-screen bg-slate-900 text-white transition-all duration-300 ${
-        isMobile 
-          ? 'w-64 transform' // Always full width on mobile, use transform for show/hide
-          : (collapsed ? 'w-20' : 'w-64') // Desktop behavior
-      }`}
-    >
-      {/* Logo */}
-      <div className="relative flex h-16 items-center border-b border-slate-700 px-4">
-        {(collapsed && !isMobile) ? (
-          /* Collapsed state - Show only logo icon centered with toggle button positioned properly */
-          <>
-            <div className="flex items-center justify-center w-full">
-              <img 
-                src="https://bayhawk.clientstagingdemo.com/_next/static/media/BayHawk.207595da.svg" 
-                alt="BayHawk" 
-                className="h-8 w-8"
-              />
-            </div>
-            <button 
-              onClick={() => onToggleCollapse(!collapsed)} 
-              className="absolute top-1/2 right-2 transform -translate-y-1/2 p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
-            >
-              <Menu size={16} />
-            </button>
-          </>
-        ) : (
-          /* Expanded state - Show full logo with toggle button */
-          <>
-            <div className="flex items-center gap-3 flex-1">
-              <img 
-                src="https://bayhawk.clientstagingdemo.com/_next/static/media/BayHawk.207595da.svg" 
-                alt="BayHawk" 
-                className="h-8 w-auto"
-              />
-            </div>
-            {!isMobile && (
-              <button 
-                onClick={() => onToggleCollapse(!collapsed)} 
-                className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
-              >
-                <X size={20} />
-              </button>
-            )}
-          </>
-        )}
-      </div>
-      
-      {/* Module Badge */}
-      {user && (
-        <div className="px-4 py-3 border-b border-slate-700">
-          {collapsed ? (
-            /* Collapsed state - Show abbreviated badge */
-            <div className="flex justify-center">
-              <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 text-xs font-bold flex items-center justify-center">
-                {user.loginType === 'super_admin' ? 'SA' : user.loginType === 'hub' ? 'H' : 'S'}
-              </div>
-            </div>
-          ) : (
-            /* Expanded state - Show full badge */
+    <>
+      <aside 
+        ref={sidebarRef}
+        className={`fixed top-0 left-0 z-50 h-screen w-64 bg-slate-900 text-white flex flex-col transition-transform duration-300 ease-in-out
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:translate-x-0 lg:w-64
+        `}
+      >
+        {/* Header */}
+        <div className="flex h-16 items-center justify-between border-b border-slate-700 px-4">
+          <div className="flex items-center gap-3">
+            <img 
+              src="https://bayhawk.clientstagingdemo.com/_next/static/media/BayHawk.207595da.svg" 
+              alt="BayHawk" 
+              className="h-8 w-auto"
+            />
+          </div>
+          <button 
+            onClick={toggleSidebar} 
+            className="lg:hidden p-2 rounded-lg hover:bg-slate-800 transition-colors"
+          >
+            <X size={20} />
+          </button>
+        </div>
+        
+        {/* Module Badge */}
+        {user && (
+          <div className="px-4 py-3 border-b border-slate-700">
             <div className="px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 text-xs font-semibold uppercase text-center">
               {user.loginType === 'super_admin' ? 'Super Admin' : user.loginType === 'hub' ? 'Hub Module' : 'Store Module'}
             </div>
-          )}
-        </div>
-      )}
-      
-      {/* Navigation */}
-      <nav className={`mt-4 px-3 space-y-1 overflow-y-auto ${
-        (collapsed && !isMobile) ? 'h-[calc(100vh-260px)]' : 'h-[calc(100vh-220px)]'
-      }`}>
-        {menuItems.map(renderMenuItem)}
-      </nav>
+          </div>
+        )}
+        
+        {/* Navigation */}
+        <nav className="flex-1 mt-4 px-3 space-y-1 overflow-y-auto">
+          {menuItems.map(renderMenuItem)}
+        </nav>
 
-      {/* Logout */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-slate-700 p-3">
-        <button
-          onClick={logout}
-          title="Logout"
-          className={`w-full flex items-center rounded-lg px-3 py-2.5 transition-all duration-200 ${
-            (collapsed && !isMobile) ? 'justify-center' : 'gap-3'
-          } text-slate-400 hover:bg-slate-800 hover:text-red-500`}
-        >
-          <LogOut size={20} />
-          {!(collapsed && !isMobile) && <span className="font-medium">Logout</span>}
-        </button>
-      </div>
-    </aside>
+        {/* Logout */}
+        <div className="border-t border-slate-700 p-3">
+          <button
+            onClick={logout}
+            title="Logout"
+            className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-all duration-200"
+          >
+            <LogOut size={20} />
+            <span className="font-medium">Logout</span>
+          </button>
+        </div>
+      </aside>
+      {/* Overlay for mobile */}
+      {isMobile && isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+          onClick={toggleSidebar}
+        ></div>
+      )}
+    </>
   );
 }
 

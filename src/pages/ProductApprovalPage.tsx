@@ -405,36 +405,36 @@ export function ProductApprovalPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">Product Approval</h1>
-        <p className="text-gray-600">Review and approve product requests from Hub and Store admins</p>
+        <h1 className="text-xl sm:text-2xl font-bold">Product Approval</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">Review and approve product requests from Hub and Store admins</p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Card className="p-4">
           <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-sm text-gray-600">Hub Requests</p>
-              <p className="text-2xl font-bold">{hubStats.total}</p>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm text-gray-600 truncate">Hub Requests</p>
+              <p className="text-xl sm:text-2xl font-bold">{hubStats.total}</p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Building2 className="h-6 w-6 text-blue-600" />
+            <div className="p-2 sm:p-3 bg-blue-100 rounded-lg flex-shrink-0">
+              <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div className="text-center">
-              <p className="text-lg font-semibold text-yellow-600">{hubStats.pending}</p>
+              <p className="text-base sm:text-lg font-semibold text-yellow-600">{hubStats.pending}</p>
               <p className="text-xs text-gray-500">Pending</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-semibold text-green-600">{hubStats.approved}</p>
+              <p className="text-base sm:text-lg font-semibold text-green-600">{hubStats.approved}</p>
               <p className="text-xs text-gray-500">Approved</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-semibold text-red-600">{hubStats.rejected}</p>
+              <p className="text-base sm:text-lg font-semibold text-red-600">{hubStats.rejected}</p>
               <p className="text-xs text-gray-500">Rejected</p>
             </div>
           </div>
@@ -442,12 +442,12 @@ export function ProductApprovalPage() {
 
         <Card className="p-4">
           <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-sm text-gray-600">Store Requests</p>
-              <p className="text-2xl font-bold">{storeStats.total}</p>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm text-gray-600 truncate">Store Requests</p>
+              <p className="text-xl sm:text-2xl font-bold">{storeStats.total}</p>
             </div>
-            <div className="p-3 bg-green-100 rounded-lg">
-              <Store className="h-6 w-6 text-green-600" />
+            <div className="p-2 sm:p-3 bg-green-100 rounded-lg flex-shrink-0">
+              <Store className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">

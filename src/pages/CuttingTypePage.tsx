@@ -166,36 +166,37 @@ export function CuttingTypePage() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Cutting Types</h1>
-          <p className="text-gray-600">Manage available cutting types for products</p>
+    <div className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">Cutting Types</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Manage available cutting types for products</p>
         </div>
         <Button onClick={() => {
           resetForm();
           setIsModalOpen(true);
-        }} className="flex items-center gap-2">
+        }} className="w-full sm:w-auto flex-shrink-0 flex items-center gap-2">
           <Plus className="w-4 h-4" />
-          Add Cutting Type
+          <span className="hidden sm:inline">Add Cutting Type</span>
+          <span className="sm:hidden">Add Type</span>
         </Button>
       </div>
 
-      <div className={user?.loginType === 'super_admin' ? "grid grid-cols-1 lg:grid-cols-2 gap-6" : "grid grid-cols-1 gap-6"}>
+      <div className={user?.loginType === 'super_admin' ? "grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6" : "grid grid-cols-1 gap-4 sm:gap-6"}>
         {/* Hub Section - Left Side for Super Admin */}
         {(user?.loginType === 'super_admin' || user?.loginType === 'hub') && hubTypes.length > 0 && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center gap-2">
-                <Fish className="w-5 h-5 text-blue-600" />
-                <h2 className="text-lg font-semibold text-gray-900">Hub - Fish Cutting Types</h2>
-                <Badge variant="secondary">{hubTypes.length}</Badge>
+                <Fish className="w-4 w-4 sm:w-5 sm:h-5 text-blue-600" />
+                <h2 className="text-base sm:text-lg font-semibold text-gray-900">Hub - Fish Cutting Types</h2>
+                <Badge variant="secondary" className="text-xs">{hubTypes.length}</Badge>
               </div>
             </div>
             <div className="p-4 space-y-3">
               {hubTypes.map((type) => (
                 <div key={type.id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-                  <div className="flex">
+                  <div className="flex flex-col sm:flex-row">
                     {type.imageUrl && (
                       <div className="w-20 h-20 flex-shrink-0">
                         <img 

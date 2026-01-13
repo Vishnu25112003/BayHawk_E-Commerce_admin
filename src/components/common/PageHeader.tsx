@@ -47,7 +47,7 @@ export function PageHeader({
       )}
 
       {/* Header Content */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div className="flex items-start gap-4">
           {onBack && (
             <Button
@@ -61,15 +61,15 @@ export function PageHeader({
           )}
           
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">{title}</h1>
             {description && (
-              <p className="mt-1 text-gray-600">{description}</p>
+              <p className="mt-1 text-sm sm:text-base text-gray-600">{description}</p>
             )}
           </div>
         </div>
 
         {actions && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {actions}
           </div>
         )}

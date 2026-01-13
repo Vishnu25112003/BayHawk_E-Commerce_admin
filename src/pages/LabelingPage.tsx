@@ -303,48 +303,49 @@ export function LabelingPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Label Generator</h1>
-          <p className="text-gray-600">
+          <h1 className="text-xl sm:text-2xl font-bold">Label Generator</h1>
+          <p className="text-sm sm:text-base text-gray-600">
             Create and customize labels for your products
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="secondary" onClick={resetTemplate}>
-            <RotateCcw className="mr-2 h-4 w-4" />
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button variant="secondary" onClick={resetTemplate} className="text-sm">
+            <RotateCcw className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
             Reset
           </Button>
           <Button
             variant="secondary"
             onClick={() => setIsPreviewMode(!isPreviewMode)}
+            className="text-sm"
           >
-            <Eye className="mr-2 h-4 w-4" />
+            <Eye className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
             {isPreviewMode ? "Edit" : "Preview"}
           </Button>
-          <Button>
-            <Save className="mr-2 h-4 w-4" />
+          <Button className="text-sm">
+            <Save className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
             Save Template
           </Button>
         </div>
       </div>
 
       {/* Template Settings */}
-      <Card>
-        <div className="flex items-center gap-3 mb-6">
+      <Card className="p-4 sm:p-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-blue-50 p-2">
-            <Settings className="h-5 w-5 text-blue-600" />
+            <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Template Settings</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-base sm:text-lg font-semibold">Template Settings</h2>
+            <p className="text-xs sm:text-sm text-gray-600">
               Configure label dimensions and layout
             </p>
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           <Input
             label="Template Name"
             value={currentTemplate.name}
@@ -389,18 +390,18 @@ export function LabelingPage() {
       </Card>
 
       {!isPreviewMode ? (
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
           {/* Design Panel */}
           <div className="lg:col-span-2">
-            <Card>
-              <div className="flex items-center justify-between mb-6">
+            <Card className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
                 <div className="flex items-center gap-3">
                   <div className="rounded-lg bg-green-50 p-2">
-                    <FileText className="h-5 w-5 text-green-600" />
+                    <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">Label Designer</h2>
-                    <p className="text-sm text-gray-600">
+                    <h2 className="text-base sm:text-lg font-semibold">Label Designer</h2>
+                    <p className="text-xs sm:text-sm text-gray-600">
                       Design your label layout
                     </p>
                   </div>
@@ -410,6 +411,7 @@ export function LabelingPage() {
                     variant={activeTab === "design" ? "primary" : "secondary"}
                     size="sm"
                     onClick={() => setActiveTab("design")}
+                    className="text-xs sm:text-sm"
                   >
                     Design
                   </Button>
@@ -417,6 +419,7 @@ export function LabelingPage() {
                     variant={activeTab === "data" ? "primary" : "secondary"}
                     size="sm"
                     onClick={() => setActiveTab("data")}
+                    className="text-xs sm:text-sm"
                   >
                     Data
                   </Button>
@@ -444,68 +447,68 @@ export function LabelingPage() {
 
           {/* Field Properties */}
           <div>
-            <Card>
-              <div className="flex items-center gap-3 mb-6">
+            <Card className="p-4 sm:p-6">
+              <div className="flex items-center gap-3 mb-4 sm:mb-6">
                 <div className="rounded-lg bg-purple-50 p-2">
-                  <Settings className="h-5 w-5 text-purple-600" />
+                  <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold">Field Properties</h2>
-                  <p className="text-sm text-gray-600">
+                  <h2 className="text-base sm:text-lg font-semibold">Field Properties</h2>
+                  <p className="text-xs sm:text-sm text-gray-600">
                     Customize selected field
                   </p>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <div className="text-sm text-gray-500 text-center py-8">
+                <div className="text-xs sm:text-sm text-gray-500 text-center py-6 sm:py-8">
                   Select a field to edit its properties
                 </div>
               </div>
             </Card>
 
             {/* Quick Actions */}
-            <Card className="mt-6">
-              <div className="flex items-center gap-3 mb-4">
+            <Card className="mt-4 sm:mt-6 p-4 sm:p-6">
+              <div className="flex items-center gap-3 mb-3 sm:mb-4">
                 <div className="rounded-lg bg-orange-50 p-2">
-                  <Package className="h-5 w-5 text-orange-600" />
+                  <Package className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">Quick Actions</h3>
+                  <h3 className="text-sm sm:text-base font-semibold">Quick Actions</h3>
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <Button
                   variant="secondary"
-                  className="w-full justify-start"
+                  className="w-full justify-start text-xs sm:text-sm"
                   size="sm"
                 >
-                  <Plus className="mr-2 h-4 w-4" />
+                  <Plus className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                   Add Text Field
                 </Button>
                 <Button
                   variant="secondary"
-                  className="w-full justify-start"
+                  className="w-full justify-start text-xs sm:text-sm"
                   size="sm"
                 >
-                  <Barcode className="mr-2 h-4 w-4" />
+                  <Barcode className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                   Add Barcode
                 </Button>
                 <Button
                   variant="secondary"
-                  className="w-full justify-start"
+                  className="w-full justify-start text-xs sm:text-sm"
                   size="sm"
                 >
-                  <QrCode className="mr-2 h-4 w-4" />
+                  <QrCode className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                   Add QR Code
                 </Button>
                 <Button
                   variant="secondary"
-                  className="w-full justify-start"
+                  className="w-full justify-start text-xs sm:text-sm"
                   size="sm"
                 >
-                  <Calendar className="mr-2 h-4 w-4" />
+                  <Calendar className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                   Add Date Field
                 </Button>
               </div>
@@ -514,28 +517,29 @@ export function LabelingPage() {
         </div>
       ) : (
         /* Preview Mode */
-        <div className="grid gap-6 lg:grid-cols-4">
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-4">
           <div className="lg:col-span-3">
-            <Card>
-              <div className="flex items-center justify-between mb-6">
+            <Card className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
                 <div className="flex items-center gap-3">
                   <div className="rounded-lg bg-indigo-50 p-2">
-                    <Eye className="h-5 w-5 text-indigo-600" />
+                    <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-indigo-600" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">Label Preview</h2>
-                    <p className="text-sm text-gray-600">
+                    <h2 className="text-base sm:text-lg font-semibold">Label Preview</h2>
+                    <p className="text-xs sm:text-sm text-gray-600">
                       Preview your labels before printing
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button variant="secondary" onClick={handleDownload}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Download
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button variant="secondary" onClick={handleDownload} className="text-xs sm:text-sm">
+                    <Download className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Download</span>
+                    <span className="sm:hidden">Save</span>
                   </Button>
-                  <Button onClick={handlePrint}>
-                    <Printer className="mr-2 h-4 w-4" />
+                  <Button onClick={handlePrint} className="text-xs sm:text-sm">
+                    <Printer className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     Print
                   </Button>
                 </div>
@@ -552,22 +556,22 @@ export function LabelingPage() {
 
           {/* Print Settings */}
           <div>
-            <Card>
-              <div className="flex items-center gap-3 mb-6">
+            <Card className="p-4 sm:p-6">
+              <div className="flex items-center gap-3 mb-4 sm:mb-6">
                 <div className="rounded-lg bg-red-50 p-2">
-                  <Printer className="h-5 w-5 text-red-600" />
+                  <Printer className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold">Print Settings</h2>
-                  <p className="text-sm text-gray-600">
+                  <h2 className="text-base sm:text-lg font-semibold">Print Settings</h2>
+                  <p className="text-xs sm:text-sm text-gray-600">
                     Configure printing options
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                     Number of Labels
                   </label>
                   <div className="flex items-center gap-2">
@@ -577,8 +581,9 @@ export function LabelingPage() {
                       onClick={() =>
                         setLabelQuantity(Math.max(1, labelQuantity - 1))
                       }
+                      className="p-1 sm:p-2"
                     >
-                      <Minus className="h-4 w-4" />
+                      <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
                     <Input
                       type="number"
@@ -588,15 +593,16 @@ export function LabelingPage() {
                           Math.max(1, parseInt(e.target.value) || 1),
                         )
                       }
-                      className="text-center"
+                      className="text-center text-xs sm:text-sm"
                       min="1"
                     />
                     <Button
                       variant="secondary"
                       size="sm"
                       onClick={() => setLabelQuantity(labelQuantity + 1)}
+                      className="p-1 sm:p-2"
                     >
-                      <Plus className="h-4 w-4" />
+                      <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
                   </div>
                 </div>
@@ -608,6 +614,7 @@ export function LabelingPage() {
                     { value: "normal", label: "Normal" },
                     { value: "high", label: "High Quality" },
                   ]}
+                  className="text-xs sm:text-sm"
                 />
 
                 <Select
@@ -617,33 +624,34 @@ export function LabelingPage() {
                     { value: "thermal", label: "Thermal Printer" },
                     { value: "laser", label: "Laser Printer" },
                   ]}
+                  className="text-xs sm:text-sm"
                 />
 
                 <div className="space-y-2">
                   <label className="flex items-center gap-2">
                     <input type="checkbox" className="rounded" defaultChecked />
-                    <span className="text-sm">Print borders</span>
+                    <span className="text-xs sm:text-sm">Print borders</span>
                   </label>
                   <label className="flex items-center gap-2">
                     <input type="checkbox" className="rounded" />
-                    <span className="text-sm">Print in grayscale</span>
+                    <span className="text-xs sm:text-sm">Print in grayscale</span>
                   </label>
                   <label className="flex items-center gap-2">
                     <input type="checkbox" className="rounded" />
-                    <span className="text-sm">Fit to page</span>
+                    <span className="text-xs sm:text-sm">Fit to page</span>
                   </label>
                 </div>
               </div>
             </Card>
 
             {/* Template Library */}
-            <Card className="mt-6">
-              <div className="flex items-center gap-3 mb-4">
+            <Card className="mt-4 sm:mt-6 p-4 sm:p-6">
+              <div className="flex items-center gap-3 mb-3 sm:mb-4">
                 <div className="rounded-lg bg-yellow-50 p-2">
-                  <FileText className="h-5 w-5 text-yellow-600" />
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">Templates</h3>
+                  <h3 className="text-sm sm:text-base font-semibold">Templates</h3>
                 </div>
               </div>
 
@@ -651,7 +659,7 @@ export function LabelingPage() {
                 {labelTemplates.map((template) => (
                   <button
                     key={template.value}
-                    className="w-full text-left p-2 rounded hover:bg-gray-50 text-sm"
+                    className="w-full text-left p-2 rounded hover:bg-gray-50 text-xs sm:text-sm"
                   >
                     {template.label}
                   </button>

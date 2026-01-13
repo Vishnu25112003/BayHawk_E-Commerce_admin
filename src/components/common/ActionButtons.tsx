@@ -29,7 +29,7 @@ export function ActionButtons({
   viewLabel = 'View',
   editLabel = 'Edit',
   deleteLabel = 'Delete',
-  downloadLabel = 'Download',
+  downloadLabel = 'Export',
   addLabel = 'Add New',
   refreshLabel = 'Refresh',
   size = 'sm',
@@ -39,15 +39,15 @@ export function ActionButtons({
   const isCompact = variant === 'compact';
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div className={`flex items-center gap-1 sm:gap-2 ${className}`}>
       {onAdd && (
         <Button
           onClick={onAdd}
           size={size}
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm px-2 sm:px-3"
         >
-          <Plus className="h-4 w-4 mr-2" />
-          {!isCompact && addLabel}
+          <Plus className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+          <span className="hidden sm:inline">{!isCompact ? addLabel : ''}</span>
         </Button>
       )}
       
@@ -56,9 +56,11 @@ export function ActionButtons({
           onClick={onRefresh}
           variant="secondary"
           size={size}
+          className="text-xs sm:text-sm px-2 sm:px-3"
+          title={refreshLabel}
         >
-          <RefreshCw className="h-4 w-4 mr-2" />
-          {!isCompact && refreshLabel}
+          <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+          <span className="hidden sm:inline">{!isCompact ? refreshLabel : ''}</span>
         </Button>
       )}
       
@@ -67,9 +69,11 @@ export function ActionButtons({
           onClick={onDownload}
           variant="secondary"
           size={size}
+          className="text-xs sm:text-sm px-2 sm:px-3"
+          title={downloadLabel}
         >
-          <Download className="h-4 w-4 mr-2" />
-          {!isCompact && downloadLabel}
+          <Download className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+          <span className="hidden sm:inline">{!isCompact ? downloadLabel : ''}</span>
         </Button>
       )}
       
@@ -78,10 +82,11 @@ export function ActionButtons({
           onClick={onView}
           variant="ghost"
           size={size}
-          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 text-xs sm:text-sm px-2 sm:px-3"
+          title={viewLabel}
         >
-          <Eye className="h-4 w-4 mr-2" />
-          {!isCompact && viewLabel}
+          <Eye className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+          <span className="hidden sm:inline">{!isCompact ? viewLabel : ''}</span>
         </Button>
       )}
       
@@ -90,10 +95,11 @@ export function ActionButtons({
           onClick={onEdit}
           variant="ghost"
           size={size}
-          className="text-green-600 hover:text-green-700 hover:bg-green-50"
+          className="text-green-600 hover:text-green-700 hover:bg-green-50 text-xs sm:text-sm px-2 sm:px-3"
+          title={editLabel}
         >
-          <Edit className="h-4 w-4 mr-2" />
-          {!isCompact && editLabel}
+          <Edit className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+          <span className="hidden sm:inline">{!isCompact ? editLabel : ''}</span>
         </Button>
       )}
       
@@ -102,10 +108,11 @@ export function ActionButtons({
           onClick={onDelete}
           variant="ghost"
           size={size}
-          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+          className="text-red-600 hover:text-red-700 hover:bg-red-50 text-xs sm:text-sm px-2 sm:px-3"
+          title={deleteLabel}
         >
-          <Trash2 className="h-4 w-4 mr-2" />
-          {!isCompact && deleteLabel}
+          <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+          <span className="hidden sm:inline">{!isCompact ? deleteLabel : ''}</span>
         </Button>
       )}
     </div>

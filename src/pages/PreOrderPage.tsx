@@ -325,11 +325,11 @@ export function PreOrderPage() {
       {/* Tab Navigation */}
       <Card className="p-0 overflow-hidden">
         <div className="border-b border-gray-200">
-          <nav className="flex flex-wrap sm:flex-nowrap overflow-x-auto px-4 sm:px-6" aria-label="Tabs">
+          <nav className="flex overflow-x-auto px-4 sm:px-6" aria-label="Tabs">
             <button
               onClick={() => setActiveTab("hub")}
               className={`
-                flex items-center gap-2 py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap
+                flex items-center gap-2 py-3 sm:py-4 px-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap
                 ${
                   activeTab === "hub"
                     ? "border-blue-500 text-blue-600"
@@ -351,7 +351,7 @@ export function PreOrderPage() {
             <button
               onClick={() => setActiveTab("store")}
               className={`
-                flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors
+                flex items-center gap-2 py-3 sm:py-4 px-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap
                 ${
                   activeTab === "store"
                     ? "border-green-500 text-green-600"
@@ -359,8 +359,9 @@ export function PreOrderPage() {
                 }
               `}
             >
-              <Store className="h-5 w-5" />
-              Store Pre-Orders
+              <Store className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="hidden sm:inline">Store Pre-Orders</span>
+              <span className="sm:hidden">Store</span>
               <Badge
                 variant={activeTab === "store" ? "success" : "default"}
                 className="ml-1"
@@ -372,84 +373,84 @@ export function PreOrderPage() {
         </div>
 
         {/* Module Information */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {activeTab === "hub" && (
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 mb-6">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 sm:p-6 border border-blue-200 mb-4 sm:mb-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="h-12 w-12 rounded-xl bg-blue-600 flex items-center justify-center">
-                  <Fish className="h-6 w-6 text-white" />
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-blue-600 flex items-center justify-center">
+                  <Fish className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-blue-900">
+                  <h3 className="text-base sm:text-lg font-semibold text-blue-900">
                     Hub Pre-Order Creation
                   </h3>
-                  <p className="text-sm text-blue-700">
+                  <p className="text-xs sm:text-sm text-blue-700">
                     Fish products • Rare items • Advance booking • Next day
                     delivery
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white/60 rounded-lg p-3">
-                  <p className="text-2xl font-bold text-blue-900">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                  <p className="text-lg sm:text-2xl font-bold text-blue-900">
                     {mockHubProducts.length}
                   </p>
-                  <p className="text-sm text-blue-700">Available Products</p>
+                  <p className="text-xs sm:text-sm text-blue-700">Available Products</p>
                 </div>
-                <div className="bg-white/60 rounded-lg p-3">
-                  <p className="text-2xl font-bold text-blue-900">
+                <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                  <p className="text-lg sm:text-2xl font-bold text-blue-900">
                     {mockHubs.length}
                   </p>
-                  <p className="text-sm text-blue-700">Active Hubs</p>
+                  <p className="text-xs sm:text-sm text-blue-700">Active Hubs</p>
                 </div>
-                <div className="bg-white/60 rounded-lg p-3">
-                  <p className="text-2xl font-bold text-blue-900">30 Days</p>
-                  <p className="text-sm text-blue-700">Max Advance</p>
+                <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                  <p className="text-lg sm:text-2xl font-bold text-blue-900">30 Days</p>
+                  <p className="text-xs sm:text-sm text-blue-700">Max Advance</p>
                 </div>
-                <div className="bg-white/60 rounded-lg p-3">
-                  <p className="text-2xl font-bold text-blue-900">Premium</p>
-                  <p className="text-sm text-blue-700">Quality Grade</p>
+                <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                  <p className="text-lg sm:text-2xl font-bold text-blue-900">Premium</p>
+                  <p className="text-xs sm:text-sm text-blue-700">Quality Grade</p>
                 </div>
               </div>
             </div>
           )}
 
           {activeTab === "store" && (
-            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200 mb-6">
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 sm:p-6 border border-green-200 mb-4 sm:mb-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="h-12 w-12 rounded-xl bg-green-600 flex items-center justify-center">
-                  <Store className="h-6 w-6 text-white" />
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-green-600 flex items-center justify-center">
+                  <Store className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-green-900">
+                  <h3 className="text-base sm:text-lg font-semibold text-green-900">
                     Store Pre-Order Creation
                   </h3>
-                  <p className="text-sm text-green-700">
+                  <p className="text-xs sm:text-sm text-green-700">
                     All products • Bulk orders • Subscriptions • Same/Next day
                     delivery
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white/60 rounded-lg p-3">
-                  <p className="text-2xl font-bold text-green-900">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                  <p className="text-lg sm:text-2xl font-bold text-green-900">
                     {mockStoreProducts.length}
                   </p>
-                  <p className="text-sm text-green-700">Available Products</p>
+                  <p className="text-xs sm:text-sm text-green-700">Available Products</p>
                 </div>
-                <div className="bg-white/60 rounded-lg p-3">
-                  <p className="text-2xl font-bold text-green-900">
+                <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                  <p className="text-lg sm:text-2xl font-bold text-green-900">
                     {mockStores.length}
                   </p>
-                  <p className="text-sm text-green-700">Active Stores</p>
+                  <p className="text-xs sm:text-sm text-green-700">Active Stores</p>
                 </div>
-                <div className="bg-white/60 rounded-lg p-3">
-                  <p className="text-2xl font-bold text-green-900">90 Days</p>
-                  <p className="text-sm text-green-700">Max Advance</p>
+                <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                  <p className="text-lg sm:text-2xl font-bold text-green-900">90 Days</p>
+                  <p className="text-xs sm:text-sm text-green-700">Max Advance</p>
                 </div>
-                <div className="bg-white/60 rounded-lg p-3">
-                  <p className="text-2xl font-bold text-green-900">Variety</p>
-                  <p className="text-sm text-green-700">Product Range</p>
+                <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                  <p className="text-lg sm:text-2xl font-bold text-green-900">Variety</p>
+                  <p className="text-xs sm:text-sm text-green-700">Product Range</p>
                 </div>
               </div>
             </div>

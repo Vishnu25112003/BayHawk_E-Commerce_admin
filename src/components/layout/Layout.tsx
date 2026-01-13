@@ -3,54 +3,50 @@ import { Sidebar, Header } from './Sidebar';
 import { useState, useEffect } from 'react';
 
 export function Layout() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const location = useLocation();
 
-  // Check if mobile view
+  const handleResize = () => {
+    const mobile = window.innerWidth < 1024;
+    setIsMobile(mobile);
+    if (!mobile) {
+      // On desktop, always show the sidebar
+      setIsSidebarOpen(true);
+    } else {
+      // On mobile, ensure it's closed on resize
+      setIsSidebarOpen(false);
+    }
+  };
+
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
-      if (window.innerWidth < 1024) {
-        setSidebarCollapsed(true); // Always collapsed on mobile
-      }
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Auto-hide sidebar on mobile when route changes
+  // Close mobile sidebar on route change
   useEffect(() => {
-    if (isMobile) {
-      setSidebarCollapsed(true); // Always hide on mobile route change
+    if (isMobile && isSidebarOpen) {
+      setIsSidebarOpen(false);
     }
-  }, [location.pathname, isMobile]);
+  }, [location.pathname]);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile Overlay */}
-      {isMobile && !sidebarCollapsed && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setSidebarCollapsed(true)}
-        />
-      )}
+      <Sidebar 
+        isMobile={isMobile}
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
       
-      {/* Only show sidebar on desktop or when explicitly opened on mobile */}
-      {(!isMobile || !sidebarCollapsed) && (
-        <Sidebar 
-          collapsed={sidebarCollapsed} 
-          onToggleCollapse={setSidebarCollapsed}
-          isMobile={isMobile}
-        />
-      )}
-      
-      <div className={`transition-all duration-300 ${
-        isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-20' : 'ml-64')
-      }`}>
-        <Header onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
+      <div className={`transition-all duration-300 ease-in-out
+        ${isMobile ? 'ml-0' : 'lg:ml-64'}
+      `}>
+        <Header onToggleSidebar={toggleSidebar} />
         <main className="p-4 sm:p-6">
           <Outlet />
         </main>

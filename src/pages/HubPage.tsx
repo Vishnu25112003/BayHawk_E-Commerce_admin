@@ -125,48 +125,48 @@ function HubStats({ hubs }: HubStatsProps) {
   );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <Card className="p-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <Building2 className="h-5 w-5 text-blue-600" />
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg">
+            <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
           </div>
           <div>
-            <p className="text-sm text-gray-600">Total Hubs</p>
-            <p className="text-xl font-bold">{hubs.length}</p>
+            <p className="text-xs sm:text-sm text-gray-600">Total Hubs</p>
+            <p className="text-lg sm:text-xl font-bold">{hubs.length}</p>
           </div>
         </div>
       </Card>
-      <Card className="p-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-green-100 rounded-lg">
-            <Package className="h-5 w-5 text-green-600" />
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-1.5 sm:p-2 bg-green-100 rounded-lg">
+            <Package className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
           </div>
           <div>
-            <p className="text-sm text-gray-600">Active Hubs</p>
-            <p className="text-xl font-bold">{activeHubs}</p>
+            <p className="text-xs sm:text-sm text-gray-600">Active Hubs</p>
+            <p className="text-lg sm:text-xl font-bold">{activeHubs}</p>
           </div>
         </div>
       </Card>
-      <Card className="p-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-purple-100 rounded-lg">
-            <Users className="h-5 w-5 text-purple-600" />
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-1.5 sm:p-2 bg-purple-100 rounded-lg">
+            <Users className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
           </div>
           <div>
-            <p className="text-sm text-gray-600">Connected Stores</p>
-            <p className="text-xl font-bold">{totalStores}</p>
+            <p className="text-xs sm:text-sm text-gray-600">Connected Stores</p>
+            <p className="text-lg sm:text-xl font-bold">{totalStores}</p>
           </div>
         </div>
       </Card>
-      <Card className="p-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-orange-100 rounded-lg">
-            <Package className="h-5 w-5 text-orange-600" />
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-1.5 sm:p-2 bg-orange-100 rounded-lg">
+            <Package className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
           </div>
           <div>
-            <p className="text-sm text-gray-600">Total Capacity</p>
-            <p className="text-xl font-bold">
+            <p className="text-xs sm:text-sm text-gray-600">Total Capacity</p>
+            <p className="text-lg sm:text-xl font-bold">
               {totalCapacity.toLocaleString()}
             </p>
           </div>
@@ -686,16 +686,16 @@ export function HubPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Hub Management</h1>
-          <p className="text-gray-600">
+          <h1 className="text-xl sm:text-2xl font-bold">Hub Management</h1>
+          <p className="text-sm sm:text-base text-gray-600">
             Manage distribution hubs and their operations
           </p>
         </div>
-        <Button onClick={() => setShowCreateModal(true)}>
-          <Plus className="mr-2 h-4 w-4" />
+        <Button onClick={() => setShowCreateModal(true)} className="w-full sm:w-auto text-sm">
+          <Plus className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
           Add Hub
         </Button>
       </div>
@@ -723,15 +723,15 @@ export function HubPage() {
       )}
 
       {/* Filters */}
-      <Card>
-        <div className="flex items-center gap-4 p-4">
+      <Card className="p-3 sm:p-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 h-3 w-3 sm:h-4 sm:w-4 -translate-y-1/2 text-gray-400" />
             <Input
               placeholder="Search hubs by name or code..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
+              className="pl-8 sm:pl-10 text-sm"
             />
           </div>
           <Select
@@ -742,56 +742,124 @@ export function HubPage() {
               { value: "active", label: "Active" },
               { value: "inactive", label: "Inactive" },
             ]}
+            className="w-full sm:w-auto text-sm"
           />
         </div>
       </Card>
 
       {/* Hubs List */}
-      <Card>
-        {/* Header */}
-        <div className="grid grid-cols-12 gap-4 p-4 border-b bg-gray-50 rounded-t-lg">
-          <div className="col-span-3 font-semibold text-sm text-gray-600">
-            Hub
-          </div>
-          <div className="col-span-3 font-semibold text-sm text-gray-600">
-            Contact
-          </div>
-          <div className="col-span-2 font-semibold text-sm text-gray-600">
-            Location
-          </div>
-          <div className="col-span-2 font-semibold text-sm text-gray-600 text-center">
-            Status
-          </div>
-          <div className="col-span-2 font-semibold text-sm text-gray-600 text-right">
-            Actions
-          </div>
-        </div>
+      <div className="space-y-4">
+        {filteredHubs.length > 0 ? (
+          <>
+            {/* Desktop Table Header - Hidden on mobile */}
+            <Card className="hidden lg:block">
+              <div className="grid grid-cols-12 gap-4 p-4 border-b bg-gray-50 rounded-t-lg">
+                <div className="col-span-3 font-semibold text-sm text-gray-600">
+                  Hub
+                </div>
+                <div className="col-span-3 font-semibold text-sm text-gray-600">
+                  Contact
+                </div>
+                <div className="col-span-2 font-semibold text-sm text-gray-600">
+                  Location
+                </div>
+                <div className="col-span-2 font-semibold text-sm text-gray-600 text-center">
+                  Status
+                </div>
+                <div className="col-span-2 font-semibold text-sm text-gray-600 text-right">
+                  Actions
+                </div>
+              </div>
+              <div>
+                {filteredHubs.map((hub) => (
+                  <HubRow
+                    key={hub.id}
+                    hub={hub}
+                    onView={() => handleViewHub(hub)}
+                    onEdit={() => handleEditHub(hub)}
+                    onDelete={() => handleDeleteHub(hub.id)}
+                  />
+                ))}
+              </div>
+            </Card>
 
-        {/* Body */}
-        <div>
-          {filteredHubs.length > 0 ? (
-            filteredHubs.map((hub) => (
-              <HubRow
-                key={hub.id}
-                hub={hub}
-                onView={() => handleViewHub(hub)}
-                onEdit={() => handleEditHub(hub)}
-                onDelete={() => handleDeleteHub(hub.id)}
-              />
-            ))
-          ) : (
-            <div className="text-center py-12">
-              <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No hubs found
-              </h3>
-              <p className="text-gray-500">
-                Your search or filter criteria did not match any hubs.
-              </p>
+            {/* Mobile Card Layout */}
+            <div className="lg:hidden space-y-4">
+              {filteredHubs.map((hub) => (
+                <Card key={hub.id} className="p-4">
+                  <div className="space-y-3">
+                    {/* Header */}
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-semibold text-gray-800">{hub.name}</h3>
+                        <p className="text-sm text-gray-500 font-mono">{hub.code}</p>
+                      </div>
+                      <Badge variant={getStatusColor(hub.isActive ? "active" : "inactive")}>
+                        {hub.isActive ? "Active" : "Inactive"}
+                      </Badge>
+                    </div>
+
+                    {/* Details */}
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Manager:</span>
+                        <span className="text-gray-800">{hub.contactInfo.manager}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Email:</span>
+                        <span className="text-gray-800 truncate ml-2">{hub.contactInfo.email}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Location:</span>
+                        <span className="text-gray-800">{hub.address.city}, {hub.address.state}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Capacity:</span>
+                        <span className="text-gray-800">{hub.capacity.storage.toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => handleViewHub(hub)}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        title="View Details"
+                      >
+                        <Eye className="h-4 w-4 text-gray-600" />
+                      </button>
+                      <button
+                        onClick={() => handleEditHub(hub)}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        title="Edit Hub"
+                      >
+                        <Edit className="h-4 w-4 text-gray-600" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteHub(hub.id)}
+                        className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                        title="Delete Hub"
+                      >
+                        <Trash2 className="h-4 w-4 text-red-600" />
+                      </button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
             </div>
-          )}
-        </div>
-      </Card>
+          </>
+        ) : (
+          <Card className="p-8 sm:p-12 text-center">
+            <Building2 className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">
+              No hubs found
+            </h3>
+            <p className="text-sm sm:text-base text-gray-500">
+              Your search or filter criteria did not match any hubs.
+            </p>
+          </Card>
+        )}
+      </div>
 
       {/* View Hub Modal */}
       <Modal

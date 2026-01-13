@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 import { Layout } from './components/layout/Layout';
 import { ProtectedRoute as ProtectedRouteComponent } from './components/ProtectedRoute';
 import { ProcurementRoute } from './components/ProcurementRoute';
@@ -285,12 +285,4 @@ function AppRoutes() {
   );
 }
 
-export default function App() {
-  return (
-    <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
-    </BrowserRouter>
-  );
-}
+export default AppRoutes;

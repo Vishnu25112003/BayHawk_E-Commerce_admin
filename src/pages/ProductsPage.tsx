@@ -328,25 +328,28 @@ export function ProductsPage() {
       >
         {selectedProduct ? (
           // Edit Product Form
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Product Name (English)"
                 defaultValue={selectedProduct.nameEn}
                 placeholder="e.g., Seer Fish"
+                className="text-sm"
               />
               <Input
                 label="Product Name (Tamil)"
                 defaultValue={selectedProduct.nameTa}
                 placeholder="e.g., வஞ்சிரம்"
+                className="text-sm"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="SKU"
                 defaultValue={selectedProduct.sku}
                 placeholder="e.g., FISH-001"
+                className="text-sm"
               />
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -158,25 +158,25 @@ export function CategoriesPage() {
     const IconComponent = getIcon(category.icon);
     
     return (
-      <Card key={category.id} className="p-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-4 flex-1">
-            <div className={`p-4 rounded-lg ${getColorClass(category.color)}`}>
-              <IconComponent className="h-8 w-8" />
+      <Card key={category.id} className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="flex items-start gap-3 sm:gap-4 flex-1">
+            <div className={`p-3 sm:p-4 rounded-lg ${getColorClass(category.color)} flex-shrink-0`}>
+              <IconComponent className="h-6 w-6 sm:h-8 sm:w-8" />
             </div>
             
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 mb-2">
-                <h3 className="font-semibold text-lg">{category.name}</h3>
-                <Badge variant={category.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                <h3 className="font-semibold text-base sm:text-lg truncate">{category.name}</h3>
+                <Badge variant={category.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'} className="self-start sm:self-auto">
                   {category.isActive ? 'Active' : 'Inactive'}
                 </Badge>
               </div>
               
-              <p className="text-gray-600 mb-2">{category.nameTa}</p>
-              <p className="text-sm text-gray-500 mb-3">{category.description}</p>
+              <p className="text-gray-600 mb-2 text-sm sm:text-base">{category.nameTa}</p>
+              <p className="text-xs sm:text-sm text-gray-500 mb-3 line-clamp-2">{category.description}</p>
               
-              <div className="flex items-center gap-4 text-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                 <div className="flex items-center gap-1">
                   <span className="font-medium">{category.productCount}</span>
                   <span className="text-gray-500">products</span>
@@ -189,27 +189,27 @@ export function CategoriesPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 self-start sm:self-auto">
             <button 
               onClick={() => handleViewCategory(category)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors" 
+              className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors" 
               title="View Details"
             >
-              <Eye className="h-4 w-4" />
+              <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
             </button>
             <button 
               onClick={() => handleEditCategory(category)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors" 
+              className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors" 
               title="Edit"
             >
-              <Edit className="h-4 w-4" />
+              <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
             </button>
             <button 
               onClick={() => handleDeleteCategory(category.id)}
-              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600" 
+              className="p-1.5 sm:p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600" 
               title="Delete"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
             </button>
           </div>
         </div>
@@ -224,38 +224,39 @@ export function CategoriesPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Category Management</h1>
-          <p className="text-gray-600">Manage product categories for hub and store</p>
+          <h1 className="text-xl sm:text-2xl font-bold">Category Management</h1>
+          <p className="text-sm sm:text-base text-gray-600">Manage product categories for hub and store</p>
         </div>
-        <Button onClick={() => setShowAddModal(true)} className="w-full sm:w-auto">
-          <Plus className="mr-2 h-4 w-4" /> 
-          Add {activeTab === 'hub' ? 'Hub' : 'Store'} Category
+        <Button onClick={() => setShowAddModal(true)} className="w-full sm:w-auto text-sm">
+          <Plus className="mr-2 h-3 w-3 sm:h-4 sm:w-4" /> 
+          <span className="hidden sm:inline">Add {activeTab === 'hub' ? 'Hub' : 'Store'} Category</span>
+          <span className="sm:hidden">Add Category</span>
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Card className="p-3 sm:p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Hub Categories</p>
-              <p className="text-2xl font-bold">{hubStats.total}</p>
+              <p className="text-xs sm:text-sm text-gray-600">Hub Categories</p>
+              <p className="text-xl sm:text-2xl font-bold">{hubStats.total}</p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Building2 className="h-6 w-6 text-blue-600" />
+            <div className="p-2 sm:p-3 bg-blue-100 rounded-lg">
+              <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2 mt-3">
+          <div className="grid grid-cols-2 gap-2 mt-2 sm:mt-3">
             <div className="text-center">
-              <p className="text-lg font-semibold text-green-600">{hubStats.active}</p>
+              <p className="text-base sm:text-lg font-semibold text-green-600">{hubStats.active}</p>
               <p className="text-xs text-gray-500">Active</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-semibold text-blue-600">{hubStats.products}</p>
+              <p className="text-base sm:text-lg font-semibold text-blue-600">{hubStats.products}</p>
               <p className="text-xs text-gray-500">Products</p>
             </div>
           </div>
@@ -264,56 +265,57 @@ export function CategoriesPage() {
 
       {/* Tabs - Only show if there are multiple tabs */}
       {tabs.length > 1 && (
-        <div className="flex gap-2 border-b overflow-x-auto">
+        <div className="flex gap-1 sm:gap-2 border-b overflow-x-auto">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
-              className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors whitespace-nowrap ${
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 border-b-2 transition-colors whitespace-nowrap text-xs sm:text-sm ${
                 activeTab === tab.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
-              <tab.icon className="h-4 w-4" />
-              {tab.label}
-              <Badge variant="bg-gray-100 text-gray-600">{tab.count}</Badge>
+              <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+              <Badge variant="bg-gray-100 text-gray-600" className="text-xs">{tab.count}</Badge>
             </button>
           ))}
         </div>
       )}
 
       {/* Search */}
-      <Card>
+      <Card className="p-3 sm:p-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 h-3 w-3 sm:h-4 sm:w-4 -translate-y-1/2 text-gray-400" />
           <Input 
             placeholder="Search categories..." 
             value={search} 
             onChange={e => setSearch(e.target.value)} 
-            className="pl-10" 
+            className="pl-8 sm:pl-10 text-sm" 
           />
         </div>
       </Card>
 
       {/* Categories List */}
       {getCurrentCategories().length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6">
           {getCurrentCategories().map(category => (
             <CategoryCard key={category.id} category={category} />
           ))}
         </div>
       ) : (
-        <Card className="p-12 text-center">
+        <Card className="p-8 sm:p-12 text-center">
           {activeTab === 'hub' ? (
-            <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <Building2 className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-4" />
           ) : (
-            <Store className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <Store className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-4" />
           )}
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">
             No {activeTab === 'hub' ? 'hub' : 'store'} categories found
           </h3>
-          <p className="text-gray-500 mb-4">Try adjusting your search or add a new category</p>
-          <Button onClick={() => setShowAddModal(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Add Category
+          <p className="text-sm sm:text-base text-gray-500 mb-4">Try adjusting your search or add a new category</p>
+          <Button onClick={() => setShowAddModal(true)} className="text-sm">
+            <Plus className="mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Add Category
           </Button>
         </Card>
       )}

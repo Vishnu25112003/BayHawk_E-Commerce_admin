@@ -311,7 +311,7 @@ export function OrdersList({
         itemName="orders"
       />
 
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
         <SearchFilter
           searchValue={searchValue}
           onSearchChange={setSearchValue}
@@ -322,7 +322,7 @@ export function OrdersList({
             setSourceFilter('');
           }}
           placeholder="Search orders by ID or customer name..."
-          className="flex-1 mr-4"
+          className="flex-1"
         />
         
         <ActionButtons

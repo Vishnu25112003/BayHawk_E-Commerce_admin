@@ -179,24 +179,26 @@ export function RecipesPage() {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Recipe Management</h1>
-          <p className="text-gray-600">Manage recipes and cooking guides</p>
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold truncate">Recipe Management</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Manage recipes and cooking guides</p>
         </div>
-        <Button onClick={() => setShowAddModal(true)}>
-          <Plus className="mr-2 h-4 w-4" /> Add Recipe
+        <Button onClick={() => setShowAddModal(true)} className="w-full sm:w-auto flex-shrink-0">
+          <Plus className="mr-2 h-4 w-4" /> 
+          <span className="hidden sm:inline">Add Recipe</span>
+          <span className="sm:hidden">Add</span>
         </Button>
       </div>
 
       {/* Hub/Store Section Tabs - Only show if there are multiple sections */}
       {availableSections.length > 1 && (
-        <Card>
-          <div className="flex items-center gap-4 p-1 bg-gray-50 rounded-lg">
+        <Card className="p-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 p-1 bg-gray-50 rounded-lg">
             <button
               onClick={() => setActiveSection('hub')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-all ${
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-md font-medium transition-all text-sm ${
                 activeSection === 'hub' 
                   ? 'bg-white text-blue-600 shadow-sm' 
                   : 'text-gray-600 hover:text-gray-900'
@@ -273,7 +275,7 @@ export function RecipesPage() {
       </Card>
 
       {/* Recipes Grid */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {filteredRecipes.map(renderRecipeCard)}
       </div>
 

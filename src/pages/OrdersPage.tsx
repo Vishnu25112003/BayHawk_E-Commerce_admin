@@ -394,7 +394,7 @@ export function OrdersPage() {
 
   return (
     <LoadingWrapper isLoading={isLoading} type="page" text="Loading orders..." variant="branded">
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <PageHeader
           title={
             user?.loginType === 'hub' ? 'Hub Orders Management' : 
@@ -418,7 +418,7 @@ export function OrdersPage() {
         {/* Tab Navigation */}
         <Card className="p-0 overflow-hidden">
           <div className="border-b border-gray-200">
-            <nav className="flex flex-wrap sm:flex-nowrap overflow-x-auto px-4 sm:px-6" aria-label="Tabs">
+            <nav className="flex overflow-x-auto px-4 sm:px-6" aria-label="Tabs">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -427,7 +427,7 @@ export function OrdersPage() {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as 'all' | 'hub' | 'store')}
                     className={`
-                      flex items-center gap-2 py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap
+                      flex items-center gap-2 py-3 sm:py-4 px-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap
                       ${isActive
                         ? 'border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -449,65 +449,65 @@ export function OrdersPage() {
           {/* Statistics Section */}
           <div className="p-4 sm:p-6">
             {activeTab === 'all' && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                 {/* Hub Statistics */}
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 sm:p-6 border border-blue-200">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="h-12 w-12 rounded-xl bg-blue-600 flex items-center justify-center">
-                      <Fish className="h-6 w-6 text-white" />
+                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-blue-600 flex items-center justify-center">
+                      <Fish className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-blue-900">Hub Orders</h3>
-                      <p className="text-sm text-blue-700">Fish products • Next day delivery</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-blue-900">Hub Orders</h3>
+                      <p className="text-xs sm:text-sm text-blue-700">Fish products • Next day delivery</p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/60 rounded-lg p-3">
-                      <p className="text-2xl font-bold text-blue-900">{hubStats.total}</p>
-                      <p className="text-sm text-blue-700">Total Orders</p>
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                      <p className="text-lg sm:text-2xl font-bold text-blue-900">{hubStats.total}</p>
+                      <p className="text-xs sm:text-sm text-blue-700">Total Orders</p>
                     </div>
-                    <div className="bg-white/60 rounded-lg p-3">
-                      <p className="text-2xl font-bold text-blue-900">{formatCurrency(hubStats.revenue)}</p>
-                      <p className="text-sm text-blue-700">Revenue</p>
+                    <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                      <p className="text-lg sm:text-2xl font-bold text-blue-900">{formatCurrency(hubStats.revenue)}</p>
+                      <p className="text-xs sm:text-sm text-blue-700">Revenue</p>
                     </div>
-                    <div className="bg-white/60 rounded-lg p-3">
-                      <p className="text-2xl font-bold text-orange-600">{hubStats.pending}</p>
-                      <p className="text-sm text-blue-700">Pending</p>
+                    <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                      <p className="text-lg sm:text-2xl font-bold text-orange-600">{hubStats.pending}</p>
+                      <p className="text-xs sm:text-sm text-blue-700">Pending</p>
                     </div>
-                    <div className="bg-white/60 rounded-lg p-3">
-                      <p className="text-2xl font-bold text-green-600">{hubStats.delivered}</p>
-                      <p className="text-sm text-blue-700">Delivered</p>
+                    <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                      <p className="text-lg sm:text-2xl font-bold text-green-600">{hubStats.delivered}</p>
+                      <p className="text-xs sm:text-sm text-blue-700">Delivered</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Store Statistics */}
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 sm:p-6 border border-green-200">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="h-12 w-12 rounded-xl bg-green-600 flex items-center justify-center">
-                      <Store className="h-6 w-6 text-white" />
+                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-green-600 flex items-center justify-center">
+                      <Store className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-green-900">Store Orders</h3>
-                      <p className="text-sm text-green-700">All products • Same/Next day delivery</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-green-900">Store Orders</h3>
+                      <p className="text-xs sm:text-sm text-green-700">All products • Same/Next day delivery</p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/60 rounded-lg p-3">
-                      <p className="text-2xl font-bold text-green-900">{storeStats.total}</p>
-                      <p className="text-sm text-green-700">Total Orders</p>
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                      <p className="text-lg sm:text-2xl font-bold text-green-900">{storeStats.total}</p>
+                      <p className="text-xs sm:text-sm text-green-700">Total Orders</p>
                     </div>
-                    <div className="bg-white/60 rounded-lg p-3">
-                      <p className="text-2xl font-bold text-green-900">{formatCurrency(storeStats.revenue)}</p>
-                      <p className="text-sm text-green-700">Revenue</p>
+                    <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                      <p className="text-lg sm:text-2xl font-bold text-green-900">{formatCurrency(storeStats.revenue)}</p>
+                      <p className="text-xs sm:text-sm text-green-700">Revenue</p>
                     </div>
-                    <div className="bg-white/60 rounded-lg p-3">
-                      <p className="text-2xl font-bold text-orange-600">{storeStats.pending}</p>
-                      <p className="text-sm text-green-700">Pending</p>
+                    <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                      <p className="text-lg sm:text-2xl font-bold text-orange-600">{storeStats.pending}</p>
+                      <p className="text-xs sm:text-sm text-green-700">Pending</p>
                     </div>
-                    <div className="bg-white/60 rounded-lg p-3">
-                      <p className="text-2xl font-bold text-green-600">{storeStats.delivered}</p>
-                      <p className="text-sm text-green-700">Delivered</p>
+                    <div className="bg-white/60 rounded-lg p-2 sm:p-3">
+                      <p className="text-lg sm:text-2xl font-bold text-green-600">{storeStats.delivered}</p>
+                      <p className="text-xs sm:text-sm text-green-700">Delivered</p>
                     </div>
                   </div>
                 </div>
@@ -522,8 +522,8 @@ export function OrdersPage() {
                   { label: 'Pending Orders', value: hubStats.pending, icon: Clock, color: 'orange' },
                   { label: 'Delivered Orders', value: hubStats.delivered, icon: CheckCircle, color: 'green' },
                 ]}
-                columns={4}
-                className="mb-6"
+                columns={2}
+                className="mb-4 sm:mb-6"
               />
             )}
 
@@ -535,8 +535,8 @@ export function OrdersPage() {
                   { label: 'Pending Orders', value: storeStats.pending, icon: Clock, color: 'orange' },
                   { label: 'Delivered Orders', value: storeStats.delivered, icon: CheckCircle, color: 'green' },
                 ]}
-                columns={4}
-                className="mb-6"
+                columns={2}
+                className="mb-4 sm:mb-6"
               />
             )}
           </div>

@@ -8,6 +8,7 @@ interface Column<T> {
   render?: (value: any, item: T) => ReactNode;
   sortable?: boolean;
   className?: string;
+  width?: string;
 }
 
 interface DataTableProps<T> {
@@ -48,77 +49,150 @@ export function DataTable<T extends { id: string | number }>({
 
   if (data.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-        <p className="text-gray-500">{emptyMessage}</p>
+      <div className="bg-white rounded-xl border border-gray-200 p-8 sm:p-12 text-center">
+        <p className="text-gray-500 text-sm sm:text-base">{emptyMessage}</p>
       </div>
     );
   }
 
   return (
-    <Table className={className}>
-      <thead>
-        <tr>
-          {columns.map((column) => (
-            <Th key={String(column.key)}>
-              {column.label}
-            </Th>
-          ))}
-          {hasActions && <Th>Actions</Th>}
-        </tr>
-      </thead>
-      <tbody>
+    <>
+      {/* Desktop Table View */}
+      <div className="hidden lg:block">
+        <Table className={className}>
+          <thead>
+            <tr>
+              {columns.map((column) => (
+                <Th key={String(column.key)} className={column.width ? `w-[${column.width}]` : ''}>
+                  {column.label}
+                </Th>
+              ))}
+              {hasActions && <Th>Actions</Th>}
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item) => (
+              <tr key={item.id} className="hover:bg-gray-50">
+                {columns.map((column) => {
+                  const value = typeof column.key === 'string' && column.key.includes('.') 
+                    ? column.key.split('.').reduce((obj, key) => obj?.[key], item as any)
+                    : (item as any)[column.key];
+                  
+                  return (
+                    <Td key={String(column.key)} className={column.className}>
+                      {column.render ? column.render(value, item) : value}
+                    </Td>
+                  );
+                })}
+                {hasActions && (
+                  <Td>
+                    <div className="flex items-center gap-2">
+                      {onView && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => onView(item)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      )}
+                      {onEdit && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => onEdit(item)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      )}
+                      {onDelete && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => onDelete(item)}
+                          className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </Td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="lg:hidden space-y-4">
         {data.map((item) => (
-          <tr key={item.id} className="hover:bg-gray-50">
-            {columns.map((column) => {
-              const value = typeof column.key === 'string' && column.key.includes('.') 
-                ? column.key.split('.').reduce((obj, key) => obj?.[key], item as any)
-                : (item as any)[column.key];
-              
-              return (
-                <Td key={String(column.key)} className={column.className}>
-                  {column.render ? column.render(value, item) : value}
-                </Td>
-              );
-            })}
+          <div key={item.id} className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
+            {/* Main content */}
+            <div className="space-y-2">
+              {columns.filter(col => col.key !== 'select').map((column) => {
+                const value = typeof column.key === 'string' && column.key.includes('.') 
+                  ? column.key.split('.').reduce((obj, key) => obj?.[key], item as any)
+                  : (item as any)[column.key];
+                
+                if (!value && value !== 0) return null;
+                
+                return (
+                  <div key={String(column.key)} className="flex justify-between items-start">
+                    <span className="text-sm font-medium text-gray-600 min-w-0 flex-shrink-0 mr-3">
+                      {column.label}:
+                    </span>
+                    <div className="text-sm text-gray-900 text-right min-w-0 flex-1">
+                      {column.render ? column.render(value, item) : value}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* Actions */}
             {hasActions && (
-              <Td>
-                <div className="flex items-center gap-2">
-                  {onView && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onView(item)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                  )}
-                  {onEdit && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onEdit(item)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  )}
-                  {onDelete && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onDelete(item)}
-                      className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </Td>
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                {onView && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => onView(item)}
+                    className="h-8 px-3 text-xs"
+                  >
+                    <Eye className="h-3 w-3 mr-1" />
+                    View
+                  </Button>
+                )}
+                {onEdit && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => onEdit(item)}
+                    className="h-8 px-3 text-xs"
+                  >
+                    <Edit className="h-3 w-3 mr-1" />
+                    Edit
+                  </Button>
+                )}
+                {onDelete && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => onDelete(item)}
+                    className="h-8 px-3 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-3 w-3 mr-1" />
+                    Delete
+                  </Button>
+                )}
+              </div>
             )}
-          </tr>
+          </div>
         ))}
-      </tbody>
-    </Table>
+      </div>
+    </>
   );
 }

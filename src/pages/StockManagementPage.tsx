@@ -191,63 +191,63 @@ export function StockManagementPage() {
     
     return (
       <Card key={item.id} className="p-4 mb-3">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           {/* Product Info */}
-          <div className="flex items-center gap-4 flex-1 min-w-0">
-            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Package className="h-8 w-8 text-gray-400" />
+          <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 w-full sm:w-auto">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Package className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
             </div>
             
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 mb-1">
-                <h3 className="font-semibold text-base truncate">{item.productName}</h3>
-                <Badge variant={getStatusColor(item.status)} className="flex items-center gap-1 text-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mb-2">
+                <h3 className="font-semibold text-sm sm:text-base truncate">{item.productName}</h3>
+                <Badge variant={getStatusColor(item.status)} className="flex items-center gap-1 text-xs w-fit">
                   <StatusIcon className="h-3 w-3" />
                   {item.status.replace('_', ' ').toUpperCase()}
                 </Badge>
               </div>
-              <div className="flex items-center gap-6 text-sm text-gray-600">
-                <span>{item.productNameTa}</span>
-                <span className="font-mono">{item.sku}</span>
-                <span>{item.variant}</span>
-                {item.storeName && <span className="text-blue-600">{item.storeName}</span>}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm text-gray-600">
+                <span className="truncate">{item.productNameTa}</span>
+                <span className="font-mono text-xs">{item.sku}</span>
+                <span className="truncate">{item.variant}</span>
+                {item.storeName && <span className="text-blue-600 truncate">{item.storeName}</span>}
               </div>
             </div>
           </div>
 
           {/* Stock Info */}
-          <div className="hidden md:flex items-center gap-6 flex-shrink-0">
+          <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 w-full sm:w-auto flex-shrink-0">
             <div className="text-center">
-              <p className={`text-2xl font-bold ${item.status === 'out_of_stock' ? 'text-red-600' : item.status === 'low_stock' ? 'text-yellow-600' : 'text-green-600'}`}>
+              <p className={`text-lg sm:text-2xl font-bold ${item.status === 'out_of_stock' ? 'text-red-600' : item.status === 'low_stock' ? 'text-yellow-600' : 'text-green-600'}`}>
                 {item.currentStock}
               </p>
               <p className="text-xs text-gray-500">Current</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-medium text-gray-700">{item.minStockLevel}</p>
+              <p className="text-base sm:text-lg font-medium text-gray-700">{item.minStockLevel}</p>
               <p className="text-xs text-gray-500">Min Level</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-semibold">{formatCurrency(item.price)}</p>
+              <p className="text-base sm:text-lg font-semibold">{formatCurrency(item.price)}</p>
               <p className="text-xs text-gray-500">per {item.unit}</p>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 mt-2 sm:mt-0">
             <button 
               onClick={() => handleViewItem(item)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors" 
+              className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors" 
               title="View Details"
             >
-              <Eye className="h-4 w-4" />
+              <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
             </button>
             <button 
               onClick={() => handleEditItem(item)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors" 
+              className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors" 
               title="Update Stock"
             >
-              <Edit className="h-4 w-4" />
+              <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
             </button>
           </div>
         </div>
@@ -296,51 +296,52 @@ export function StockManagementPage() {
   const storeStats = getStockStats(filteredStoreStock);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold truncate">
             {user?.loginType === 'hub' ? 'Hub Stock Management' : 
              user?.loginType === 'store' ? 'Store Stock Management' : 
              'Stock Management'}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600 mt-1">
             {user?.loginType === 'hub' ? 'Monitor and manage hub inventory levels' : 
              user?.loginType === 'store' ? 'Monitor and manage store inventory levels' : 
              'Monitor and manage inventory levels across hub and stores'}
           </p>
         </div>
-        <Button onClick={activeTab === 'hub' ? handleUpdateHubStock : handleUpdateHubStock} className="w-full sm:w-auto">
+        <Button onClick={activeTab === 'hub' ? handleUpdateHubStock : handleUpdateHubStock} className="w-full sm:w-auto flex-shrink-0">
           <Plus className="mr-2 h-4 w-4" /> 
-          Update {activeTab === 'hub' ? 'Hub' : 'Store'} Stock
+          <span className="hidden sm:inline">Update {activeTab === 'hub' ? 'Hub' : 'Store'} Stock</span>
+          <span className="sm:hidden">Update Stock</span>
         </Button>
       </div>
 
       {/* Stats Cards - Only show relevant stats based on user type */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {(user?.loginType === 'super_admin' || user?.loginType === 'hub') && (
           <Card className="p-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Hub Stock</p>
-                <p className="text-2xl font-bold">{hubStats.total}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-gray-600 truncate">Hub Stock</p>
+                <p className="text-xl sm:text-2xl font-bold">{hubStats.total}</p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <Building2 className="h-6 w-6 text-blue-600" />
+              <div className="p-2 sm:p-3 bg-blue-100 rounded-lg flex-shrink-0">
+                <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
               </div>
             </div>
             <div className="grid grid-cols-3 gap-2 mt-3">
               <div className="text-center">
-                <p className="text-lg font-semibold text-green-600">{hubStats.inStock}</p>
+                <p className="text-base sm:text-lg font-semibold text-green-600">{hubStats.inStock}</p>
                 <p className="text-xs text-gray-500">In Stock</p>
               </div>
               <div className="text-center">
-                <p className="text-lg font-semibold text-yellow-600">{hubStats.lowStock}</p>
+                <p className="text-base sm:text-lg font-semibold text-yellow-600">{hubStats.lowStock}</p>
                 <p className="text-xs text-gray-500">Low Stock</p>
               </div>
               <div className="text-center">
-                <p className="text-lg font-semibold text-red-600">{hubStats.outOfStock}</p>
+                <p className="text-base sm:text-lg font-semibold text-red-600">{hubStats.outOfStock}</p>
                 <p className="text-xs text-gray-500">Out of Stock</p>
               </div>
             </div>
@@ -378,25 +379,26 @@ export function StockManagementPage() {
 
       {/* Tabs - Only show if there are multiple tabs */}
       {tabs.length > 1 && (
-        <div className="flex gap-2 border-b overflow-x-auto">
+        <div className="flex gap-1 sm:gap-2 border-b overflow-x-auto">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
-              className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors whitespace-nowrap ${
+              className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 border-b-2 transition-colors whitespace-nowrap text-xs sm:text-sm ${
                 activeTab === tab.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
-              <tab.icon className="h-4 w-4" />
-              {tab.label}
-              <Badge variant="bg-gray-100 text-gray-600">{tab.count}</Badge>
+              <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+              <Badge variant="bg-gray-100 text-gray-600" className="text-xs">{tab.count}</Badge>
             </button>
           ))}
         </div>
       )}
 
       {/* Filters */}
-      <Card>
+      <Card className="p-4 sm:p-6">
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -404,7 +406,7 @@ export function StockManagementPage() {
               placeholder="Search by product name, SKU..." 
               value={search} 
               onChange={e => setSearch(e.target.value)} 
-              className="pl-10" 
+              className="pl-10 text-sm" 
             />
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
@@ -416,7 +418,8 @@ export function StockManagementPage() {
                 { value: 'in_stock', label: 'In Stock' },
                 { value: 'low_stock', label: 'Low Stock' },
                 { value: 'out_of_stock', label: 'Out of Stock' }
-              ]} 
+              ]}
+              className="text-sm"
             />
             {activeTab === 'store' && (
               <Select 
@@ -425,11 +428,13 @@ export function StockManagementPage() {
                 options={[
                   { value: '', label: 'All Stores' },
                   ...mockStores.map(store => ({ value: store.id, label: store.name }))
-                ]} 
+                ]}
+                className="text-sm"
               />
             )}
-            <Button variant="secondary" onClick={handleExport}>
-              <Download className="mr-2 h-4 w-4" /> Export
+            <Button variant="secondary" onClick={handleExport} className="text-sm">
+              <Download className="mr-2 h-3 w-3 sm:h-4 sm:w-4" /> 
+              <span className="hidden sm:inline">Export</span>
             </Button>
           </div>
         </div>

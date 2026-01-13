@@ -100,9 +100,9 @@ export function BulkActions({
 
   return (
     <>
-      <div className={`flex items-center justify-between p-4 bg-white border-b border-gray-200 ${className}`}>
+      <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-white border-b border-gray-200 gap-3 sm:gap-4 ${className}`}>
         {/* Selection Controls */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={handleSelectAll}
             className={`p-2 rounded-lg transition-colors ${
@@ -110,23 +110,23 @@ export function BulkActions({
             }`}
             title={isAllSelected ? 'Deselect all' : 'Select all'}
           >
-            <CheckboxIcon className="h-5 w-5" />
+            <CheckboxIcon className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
 
           {hasSelection ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-900">
+              <span className="text-xs sm:text-sm font-medium text-gray-900">
                 {selectedItems.length} {itemName} selected
               </span>
               <button
                 onClick={onDeselectAll}
-                className="text-sm text-gray-500 hover:text-gray-700"
+                className="text-xs sm:text-sm text-gray-500 hover:text-gray-700"
               >
                 Clear selection
               </button>
             </div>
           ) : (
-            <span className="text-sm text-gray-500">
+            <span className="text-xs sm:text-sm text-gray-500">
               Select {itemName} to perform bulk actions
             </span>
           )}
@@ -134,7 +134,7 @@ export function BulkActions({
 
         {/* Bulk Actions */}
         {hasSelection && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto">
             {/* Primary Actions */}
             {primaryActions.map((action) => {
               const Icon = action.icon;
@@ -145,11 +145,12 @@ export function BulkActions({
                   size="sm"
                   onClick={() => handleAction(action)}
                   disabled={action.disabled}
-                  className={getActionVariantClass(action.variant)}
+                  className={`${getActionVariantClass(action.variant)} text-xs sm:text-sm whitespace-nowrap`}
                   title={action.label}
                 >
-                  <Icon className="h-4 w-4 mr-2" />
-                  {action.label}
+                  <Icon className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">{action.label}</span>
+                  <span className="sm:hidden">{action.label.split(' ')[0]}</span>
                 </Button>
               );
             })}
@@ -163,7 +164,7 @@ export function BulkActions({
                   onClick={() => setShowMoreActions(!showMoreActions)}
                   className="text-gray-600 hover:text-gray-700 hover:bg-gray-50"
                 >
-                  <MoreHorizontal className="h-4 w-4" />
+                  <MoreHorizontal className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
 
                 {showMoreActions && (
@@ -204,7 +205,7 @@ export function BulkActions({
               className="text-gray-400 hover:text-gray-600"
               title="Clear selection"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
           </div>
         )}
@@ -212,20 +213,20 @@ export function BulkActions({
 
       {/* Confirmation Modal */}
       {showConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full">
             <div className="flex items-center gap-3 mb-4">
-              <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
-                <AlertTriangle className="h-5 w-5 text-red-600" />
+              <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-red-100 flex items-center justify-center">
+                <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Confirm Action</h3>
-                <p className="text-sm text-gray-600">This action cannot be undone</p>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Confirm Action</h3>
+                <p className="text-xs sm:text-sm text-gray-600">This action cannot be undone</p>
               </div>
             </div>
 
-            <div className="mb-6">
-              <p className="text-gray-700">
+            <div className="mb-4 sm:mb-6">
+              <p className="text-sm sm:text-base text-gray-700">
                 {actions.find(a => a.id === showConfirmation)?.confirmationMessage ||
                   `Are you sure you want to perform this action on ${selectedItems.length} selected ${itemName}?`}
               </p>
@@ -235,14 +236,14 @@ export function BulkActions({
               <Button
                 variant="secondary"
                 onClick={() => setShowConfirmation(null)}
-                className="flex-1"
+                className="flex-1 text-sm"
               >
                 Cancel
               </Button>
               <Button
                 variant="primary"
                 onClick={() => confirmAction(showConfirmation)}
-                className="flex-1 bg-red-600 hover:bg-red-700"
+                className="flex-1 bg-red-600 hover:bg-red-700 text-sm"
               >
                 Confirm
               </Button>
@@ -402,4 +403,48 @@ export const commonBulkActions = {
       requiresConfirmation: true
     }
   ]
+};
+
+// Bulk action modal configurations
+export const bulkActionConfigs = {
+  'update-status': {
+    title: 'Update Status',
+    fields: [
+      {
+        id: 'status',
+        label: 'New Status',
+        type: 'select' as const,
+        required: true,
+        options: [
+          { value: 'active', label: 'Active' },
+          { value: 'inactive', label: 'Inactive' },
+          { value: 'pending', label: 'Pending' },
+          { value: 'archived', label: 'Archived' }
+        ]
+      }
+    ]
+  },
+  'send-notification': {
+    title: 'Send Notification',
+    fields: [
+      {
+        id: 'type',
+        label: 'Notification Type',
+        type: 'select' as const,
+        required: true,
+        options: [
+          { value: 'email', label: 'Email' },
+          { value: 'sms', label: 'SMS' },
+          { value: 'push', label: 'Push Notification' }
+        ]
+      },
+      {
+        id: 'message',
+        label: 'Message',
+        type: 'textarea' as const,
+        required: true,
+        placeholder: 'Enter your message...'
+      }
+    ]
+  }
 };
