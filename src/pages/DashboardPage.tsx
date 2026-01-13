@@ -149,11 +149,24 @@ export function DashboardPage() {
     );
   }
 
-  // Show role-based dashboard for main admins and employee roles
-  if (user?.role === 'hub_main_admin' || user?.role === 'store_main_admin' || 
-      user?.role === 'hub_procurement' || user?.role === 'store_procurement' ||
-      user?.role === 'hub_packing' || user?.role === 'store_packing' ||
-      user?.role === 'hub_delivery' || user?.role === 'store_delivery') {
+  // Redirect employee roles to their specific dashboards
+  if (user?.role === 'hub_procurement' || user?.role === 'store_procurement') {
+    window.location.href = '/procurement-dashboard';
+    return null;
+  }
+  
+  if (user?.role === 'hub_packing' || user?.role === 'store_packing') {
+    window.location.href = '/packing-dashboard';
+    return null;
+  }
+  
+  if (user?.role === 'hub_delivery' || user?.role === 'store_delivery') {
+    window.location.href = '/delivery-dashboard';
+    return null;
+  }
+
+  // Show role-based dashboard for main admins
+  if (user?.role === 'hub_main_admin' || user?.role === 'store_main_admin') {
     return <RoleDashboard />;
   }
 

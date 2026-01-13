@@ -66,8 +66,6 @@ export const PERMISSIONS = {
   
   // Store Delivery Agents
   STORE_DELIVERY_AGENTS_VIEW: 'store_delivery_agents_view',
-  STORE_TEAM_VIEW: 'store_team_view',
-  STORE_TEAM_MANAGE: 'store_team_manage',
   
   // Super Admin
   PRODUCT_APPROVAL: 'product_approval',

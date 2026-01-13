@@ -6,14 +6,17 @@ import { ProcurementRoute } from './components/ProcurementRoute';
 import { PackingRoute } from './components/PackingRoute';
 import { DeliveryRoute } from './components/DeliveryRoute';
 import { MultiRoleRoute } from './components/MultiRoleRoute';
+import { PERMISSIONS } from './utils/rbac';
 import { ProcurementReportsPage } from './pages/ProcurementReportsPage';
 import { DeliveryAgentPage } from './pages/DeliveryAgentPage';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import ProcurementDashboard from './pages/ProcurementDashboard';
+import PackingDashboard from './pages/PackingDashboard';
+import DeliveryDashboard from './pages/DeliveryDashboard';
 import { OrdersPage } from './pages/OrdersPage';
 import { ManualOrderPage } from './pages/ManualOrderPage';
 import { PreOrderPage } from './pages/PreOrderPage';
-import HubOrdersPage from './pages/HubOrdersPage';
 import HubManualOrderPage from './pages/HubManualOrderPage';
 import HubPreOrderPage from './pages/HubPreOrderPage';
 import StoreManualOrderPage from './pages/StoreManualOrderPage';
@@ -76,6 +79,11 @@ function AppRoutes() {
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         
+        {/* Role-specific Dashboards */}
+        <Route path="procurement-dashboard" element={<ProcurementRoute><ProcurementDashboard /></ProcurementRoute>} />
+        <Route path="packing-dashboard" element={<PackingRoute><PackingDashboard /></PackingRoute>} />
+        <Route path="delivery-dashboard" element={<DeliveryRoute><DeliveryDashboard /></DeliveryRoute>} />
+        
         {/* Hub Products Routes - Procurement Accessible */}
         <Route path="hub/products/categories" element={<ProcurementRoute><CategoriesPage /></ProcurementRoute>} />
         <Route path="hub/products/cutting-types" element={<ProcurementRoute><CuttingTypePage /></ProcurementRoute>} />
@@ -98,18 +106,18 @@ function AppRoutes() {
         {/* Hub Reports Routes - Limited Procurement Access */}
         <Route path="hub/reports/stock" element={<ProcurementRoute><StockReportPage /></ProcurementRoute>} />
         <Route path="hub/reports/procurement" element={<ProcurementRoute><ProcurementReportsPage /></ProcurementRoute>} />
-        <Route path="hub/reports/sales" element={<ProtectedRouteComponent permission="HUB_REPORTS_SALES"><SalesReportPage /></ProtectedRouteComponent>} />
+        <Route path="hub/reports/sales" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_REPORTS_SALES}><SalesReportPage /></ProtectedRouteComponent>} />
         <Route path="hub/reports/packing" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_packing']}><PackingReportPage /></MultiRoleRoute>} />
         <Route path="hub/reports/delivery" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_delivery']}><DeliveryReportPage /></MultiRoleRoute>} />
-        <Route path="hub/reports/customer" element={<ProtectedRouteComponent permission="HUB_REPORTS_CUSTOMER"><CustomerReportPage /></ProtectedRouteComponent>} />
+        <Route path="hub/reports/customer" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_REPORTS_CUSTOMER}><CustomerReportPage /></ProtectedRouteComponent>} />
         <Route path="hub/reports" element={<ReportsPage />} />
         
         {/* Hub Orders Routes - Multiple Roles Accessible */}
-        <Route path="hub/orders/*" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_packing', 'hub_delivery']}><HubOrdersPage /></MultiRoleRoute>} />
+        <Route path="hub/orders/*" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_packing', 'hub_delivery']}><OrdersPage /></MultiRoleRoute>} />
         
         {/* Hub Team Routes - Delivery Accessible */}
         <Route path="hub/team/delivery-agents" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
-        <Route path="hub/team/*" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><TeamPage /></ProtectedRouteComponent>} />
+        <Route path="hub/team/*" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_TEAM_VIEW}><TeamPage /></ProtectedRouteComponent>} />
         
         {/* Hub Labeling Routes - Packing Accessible */}
         <Route path="hub/labeling" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_packing']}><LabelingPage /></MultiRoleRoute>} />
@@ -120,8 +128,9 @@ function AppRoutes() {
         <Route path="hub/reports" element={<PackingRoute><ReportsPage /></PackingRoute>} />
         
         {/* Hub Admin-Only Routes */}
-        <Route path="hub/orders/manual" element={<ProtectedRouteComponent permission="HUB_ORDERS_CREATE"><HubManualOrderPage /></ProtectedRouteComponent>} />
-        <Route path="hub/orders/pre-orders" element={<ProtectedRouteComponent permission="HUB_PRE_ORDERS"><HubPreOrderPage /></ProtectedRouteComponent>} />
+        <Route path="hub/orders/manual" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_ORDERS_CREATE}><HubManualOrderPage /></ProtectedRouteComponent>} />
+        <Route path="hub/orders/pre-orders" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_PRE_ORDERS}><HubPreOrderPage /></ProtectedRouteComponent>} />
+        <Route path="hub/audit" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_AUDIT_LOGS}><AuditLogsPage /></ProtectedRouteComponent>} />
         <Route path="hub/settings" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><GeneralSettingsPage /></ProtectedRouteComponent>} />
         <Route path="hub/settings/delivery-slots" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><DeliverySlotsPage /></ProtectedRouteComponent>} />
         <Route path="hub/settings/shipping-charges" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><ShippingChargesPage /></ProtectedRouteComponent>} />
@@ -165,7 +174,7 @@ function AppRoutes() {
         
         {/* Store Team Routes - Delivery Accessible */}
         <Route path="store/team/delivery-agents" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
-        <Route path="store/team/*" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><TeamPage /></ProtectedRouteComponent>} />
+        <Route path="store/team/*" element={<ProtectedRouteComponent permission={PERMISSIONS.STORE_TEAM_VIEW}><TeamPage /></ProtectedRouteComponent>} />
         
         {/* Store Labeling Routes - Packing Accessible */}
         <Route path="store/labeling" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_packing']}><LabelingPage /></MultiRoleRoute>} />
@@ -178,12 +187,8 @@ function AppRoutes() {
         {/* Store Admin-Only Routes */}
         <Route path="store/orders/manual" element={<ProtectedRouteComponent permission="STORE_ORDERS_CREATE"><StoreManualOrderPage /></ProtectedRouteComponent>} />
         <Route path="store/orders/pre-orders" element={<ProtectedRouteComponent permission="STORE_ORDERS_CREATE"><StorePreOrderPage /></ProtectedRouteComponent>} />
-        <Route path="store/team/delivery-agents" element={<ProtectedRouteComponent permission="STORE_TEAM_VIEW"><DeliveryAgentPage /></ProtectedRouteComponent>} />
         <Route path="store/team/custom-roles" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><CustomRolesPage /></ProtectedRouteComponent>} />
-        <Route path="store/labeling" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><LabelingPage /></ProtectedRouteComponent>} />
         <Route path="store/audit" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><AuditLogsPage /></ProtectedRouteComponent>} />
-        <Route path="store/orders/*" element={<ProtectedRouteComponent permission="STORE_ORDERS_VIEW"><OrdersPage /></ProtectedRouteComponent>} />
-        <Route path="store/team/*" element={<ProtectedRouteComponent permission="STORE_TEAM_VIEW"><TeamPage /></ProtectedRouteComponent>} />
         <Route path="store/settings" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><GeneralSettingsPage /></ProtectedRouteComponent>} />
         <Route path="store/settings/delivery-slots" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><DeliverySlotsPage /></ProtectedRouteComponent>} />
         <Route path="store/settings/shipping-charges" element={<ProtectedRouteComponent permission="STORE_TEAM_MANAGE"><ShippingChargesPage /></ProtectedRouteComponent>} />
