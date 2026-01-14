@@ -9,6 +9,7 @@ import {
   Edit,
   Plus,
   Volume2,
+  X,
 } from "lucide-react";
 
 interface NotificationTemplate {
@@ -124,20 +125,20 @@ export function NotificationCustomizationPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Notification Customization</h1>
-          <p className="text-gray-600">
+          <h1 className="text-xl sm:text-2xl font-bold">Notification Customization</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">
             Configure notification settings and templates
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="secondary" onClick={addNewTemplate}>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button variant="secondary" onClick={addNewTemplate} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Add Template
           </Button>
-          <Button>
+          <Button className="w-full sm:w-auto">
             <Save className="mr-2 h-4 w-4" />
             Save All Changes
           </Button>
@@ -146,19 +147,19 @@ export function NotificationCustomizationPage() {
 
       {/* Notification Settings */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-blue-50 p-2">
-            <Bell className="h-5 w-5 text-blue-600" />
+            <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Notification Settings</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-base sm:text-lg font-semibold">Notification Settings</h2>
+            <p className="text-xs sm:text-sm text-gray-600">
               Enable or disable notification types
             </p>
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 md:grid-cols-2">
           {[
             {
               key: "newOrderAlerts",
@@ -203,13 +204,13 @@ export function NotificationCustomizationPage() {
           ].map((setting) => (
             <div
               key={setting.key}
-              className="flex items-center justify-between p-4 border rounded-lg"
+              className="flex items-start sm:items-center justify-between p-3 sm:p-4 border rounded-lg gap-3"
             >
-              <div>
-                <p className="font-medium text-sm">{setting.label}</p>
-                <p className="text-xs text-gray-500">{setting.desc}</p>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-xs sm:text-sm truncate">{setting.label}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{setting.desc}</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+              <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
                 <input
                   type="checkbox"
                   checked={
@@ -229,13 +230,13 @@ export function NotificationCustomizationPage() {
 
       {/* Notification Templates */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-green-50 p-2">
-            <Edit className="h-5 w-5 text-green-600" />
+            <Edit className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Notification Templates</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-base sm:text-lg font-semibold">Notification Templates</h2>
+            <p className="text-xs sm:text-sm text-gray-600">
               Customize notification messages and content
             </p>
           </div>
@@ -251,9 +252,9 @@ export function NotificationCustomizationPage() {
               "text-gray-600";
 
             return (
-              <div key={template.id} className="border rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
+              <div key={template.id} className="border rounded-lg p-3 sm:p-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                     <div className="flex items-center gap-2">
                       <input
                         type="checkbox"
@@ -270,7 +271,7 @@ export function NotificationCustomizationPage() {
                         className="rounded"
                       />
                       <TypeIcon className={`h-4 w-4 ${typeColor}`} />
-                      <span className="font-medium">{template.name}</span>
+                      <span className="font-medium text-sm sm:text-base">{template.name}</span>
                     </div>
                     <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs capitalize">
                       {template.type}
@@ -303,13 +304,13 @@ export function NotificationCustomizationPage() {
                 {template.subject && (
                   <div className="mb-2">
                     <span className="text-xs text-gray-500">Subject:</span>
-                    <p className="text-sm font-medium">{template.subject}</p>
+                    <p className="text-xs sm:text-sm font-medium truncate">{template.subject}</p>
                   </div>
                 )}
 
                 <div className="mb-3">
                   <span className="text-xs text-gray-500">Content:</span>
-                  <p className="text-sm text-gray-700 line-clamp-2">
+                  <p className="text-xs sm:text-sm text-gray-700 line-clamp-2">
                     {template.content}
                   </p>
                 </div>
@@ -332,20 +333,20 @@ export function NotificationCustomizationPage() {
 
       {/* Email Configuration */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-purple-50 p-2">
-            <Mail className="h-5 w-5 text-purple-600" />
+            <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Email Configuration</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-base sm:text-lg font-semibold">Email Configuration</h2>
+            <p className="text-xs sm:text-sm text-gray-600">
               Configure email sender settings
             </p>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <Input
               label="From Name"
               defaultValue="BAYHAWK"
@@ -359,7 +360,7 @@ export function NotificationCustomizationPage() {
             />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <Input
               label="Reply-To Email"
               type="email"
@@ -392,20 +393,20 @@ export function NotificationCustomizationPage() {
 
       {/* SMS Configuration */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-orange-50 p-2">
-            <Smartphone className="h-5 w-5 text-orange-600" />
+            <Smartphone className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">SMS Configuration</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-base sm:text-lg font-semibold">SMS Configuration</h2>
+            <p className="text-xs sm:text-sm text-gray-600">
               Configure SMS notification settings
             </p>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
             <Input
               label="Sender ID"
               defaultValue="BAYHWK"
@@ -430,14 +431,14 @@ export function NotificationCustomizationPage() {
             />
           </div>
 
-          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="p-3 sm:p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
-              <Volume2 className="h-4 w-4 text-yellow-600" />
-              <span className="font-medium text-yellow-800">
+              <Volume2 className="h-4 w-4 text-yellow-600 flex-shrink-0" />
+              <span className="font-medium text-sm sm:text-base text-yellow-800">
                 SMS Usage Guidelines
               </span>
             </div>
-            <ul className="text-sm text-yellow-700 space-y-1">
+            <ul className="text-xs sm:text-sm text-yellow-700 space-y-1">
               <li>• Keep messages under 160 characters for single SMS</li>
               <li>
                 • Use approved sender ID registered with telecom operators
@@ -454,7 +455,7 @@ export function NotificationCustomizationPage() {
       {/* Template Editor Modal */}
       {selectedTemplate && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-screen items-center justify-center p-4">
+          <div className="flex min-h-screen items-center justify-center p-3 sm:p-4">
             <div
               className="fixed inset-0 bg-black/50 transition-opacity"
               onClick={() => {
@@ -462,27 +463,27 @@ export function NotificationCustomizationPage() {
                 setIsEditing(false);
               }}
             />
-            <Card className="relative w-full max-w-3xl">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-xl font-semibold">
+            <Card className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+              <div className="flex items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg sm:text-xl font-semibold truncate">
                     {isEditing ? "Edit" : "View"} Template:{" "}
                     {selectedTemplate.name}
                   </h2>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-xs sm:text-sm text-gray-600">
                     {selectedTemplate.type.toUpperCase()} •{" "}
                     {selectedTemplate.trigger.replace("_", " ")}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-shrink-0">
                   {!isEditing && (
                     <Button
                       variant="secondary"
                       size="sm"
                       onClick={() => setIsEditing(true)}
                     >
-                      <Edit className="h-4 w-4 mr-1" />
-                      Edit
+                      <Edit className="h-4 w-4 sm:mr-1" />
+                      <span className="hidden sm:inline">Edit</span>
                     </Button>
                   )}
                   <Button
@@ -493,13 +494,13 @@ export function NotificationCustomizationPage() {
                       setIsEditing(false);
                     }}
                   >
-                    ×
+                    <X className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <Input
                     label="Template Name"
                     value={selectedTemplate.name}
@@ -548,7 +549,6 @@ export function NotificationCustomizationPage() {
                         key={variable}
                         className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs hover:bg-blue-200"
                         onClick={() => {
-                          // Copy variable to clipboard
                           navigator.clipboard.writeText(`{${variable}}`);
                         }}
                       >
@@ -559,14 +559,15 @@ export function NotificationCustomizationPage() {
                 </div>
 
                 {isEditing && (
-                  <div className="flex justify-end gap-2 pt-4 border-t">
+                  <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4 border-t">
                     <Button
                       variant="secondary"
                       onClick={() => setIsEditing(false)}
+                      className="w-full sm:w-auto"
                     >
                       Cancel
                     </Button>
-                    <Button>
+                    <Button className="w-full sm:w-auto">
                       <Save className="h-4 w-4 mr-2" />
                       Save Template
                     </Button>

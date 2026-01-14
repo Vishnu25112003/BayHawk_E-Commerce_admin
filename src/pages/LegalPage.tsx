@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { Card, Button, Input } from '../components/ui';
-import { Save, FileText, Edit, Eye, Plus, Calendar, Shield, Scale, RefreshCw } from 'lucide-react';
+import { Save, FileText, Edit, Eye, Plus, Calendar, Shield, Scale, RefreshCw, X } from 'lucide-react';
 
 interface LegalDocument {
   id: string;
@@ -144,18 +144,18 @@ export function LegalPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Legal Documents</h1>
-          <p className="text-gray-600">Manage legal documents and compliance settings</p>
+          <h1 className="text-xl sm:text-2xl font-bold">Legal Documents</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Manage legal documents and compliance settings</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="secondary" onClick={addNewDocument}>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button variant="secondary" onClick={addNewDocument} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Add Document
           </Button>
-          <Button>
+          <Button className="w-full sm:w-auto">
             <Save className="mr-2 h-4 w-4" />
             Save All Changes
           </Button>
@@ -164,56 +164,56 @@ export function LegalPage() {
 
       {/* Compliance Overview */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-blue-50 p-2">
-            <Shield className="h-5 w-5 text-blue-600" />
+            <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Compliance Status</h2>
-            <p className="text-sm text-gray-600">Legal compliance and document status overview</p>
+            <h2 className="text-base sm:text-lg font-semibold">Compliance Status</h2>
+            <p className="text-xs sm:text-sm text-gray-600">Legal compliance and document status overview</p>
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-4">
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+          <div className="text-center p-3 sm:p-4 bg-green-50 rounded-lg">
+            <div className="text-xl sm:text-2xl font-bold text-green-600">
               {documents.filter(d => d.isActive).length}
             </div>
-            <div className="text-sm text-green-600">Active Documents</div>
+            <div className="text-xs sm:text-sm text-green-600 mt-1">Active Documents</div>
           </div>
-          <div className="text-center p-4 bg-red-50 rounded-lg">
-            <div className="text-2xl font-bold text-red-600">
+          <div className="text-center p-3 sm:p-4 bg-red-50 rounded-lg">
+            <div className="text-xl sm:text-2xl font-bold text-red-600">
               {documents.filter(d => d.isRequired && !d.isActive).length}
             </div>
-            <div className="text-sm text-red-600">Missing Required</div>
+            <div className="text-xs sm:text-sm text-red-600 mt-1">Missing Required</div>
           </div>
-          <div className="text-center p-4 bg-yellow-50 rounded-lg">
-            <div className="text-2xl font-bold text-yellow-600">
+          <div className="text-center p-3 sm:p-4 bg-yellow-50 rounded-lg">
+            <div className="text-xl sm:text-2xl font-bold text-yellow-600">
               {documents.filter(d => {
                 const daysSinceUpdate = Math.floor((Date.now() - new Date(d.lastUpdated).getTime()) / (1000 * 60 * 60 * 24));
                 return daysSinceUpdate > 365;
               }).length}
             </div>
-            <div className="text-sm text-yellow-600">Need Updates</div>
+            <div className="text-xs sm:text-sm text-yellow-600 mt-1">Need Updates</div>
           </div>
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">
+          <div className="text-center p-3 sm:p-4 bg-blue-50 rounded-lg">
+            <div className="text-xl sm:text-2xl font-bold text-blue-600">
               {Object.values(complianceSettings).filter(Boolean).length}
             </div>
-            <div className="text-sm text-blue-600">Compliance Rules</div>
+            <div className="text-xs sm:text-sm text-blue-600 mt-1">Compliance Rules</div>
           </div>
         </div>
       </Card>
 
       {/* Legal Documents */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-green-50 p-2">
-            <FileText className="h-5 w-5 text-green-600" />
+            <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Legal Documents</h2>
-            <p className="text-sm text-gray-600">Manage your legal documents and policies</p>
+            <h2 className="text-base sm:text-lg font-semibold">Legal Documents</h2>
+            <p className="text-xs sm:text-sm text-gray-600">Manage your legal documents and policies</p>
           </div>
         </div>
 
@@ -225,27 +225,27 @@ export function LegalPage() {
             const daysSinceUpdate = Math.floor((Date.now() - new Date(document.lastUpdated).getTime()) / (1000 * 60 * 60 * 24));
 
             return (
-              <div key={document.id} className="border rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <DocumentIcon className="h-5 w-5 text-gray-600" />
-                    <div>
-                      <h3 className="font-medium">{document.title}</h3>
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
+              <div key={document.id} className="border rounded-lg p-3 sm:p-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                  <div className="flex items-start gap-3 flex-1 min-w-0">
+                    <DocumentIcon className="h-5 w-5 text-gray-600 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-sm sm:text-base truncate">{document.title}</h3>
+                      <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-500 mt-1">
                         <span>Version {document.version}</span>
-                        <span>•</span>
-                        <span>Updated {daysSinceUpdate} days ago</span>
+                        <span className="hidden sm:inline">•</span>
+                        <span>Updated {daysSinceUpdate}d ago</span>
                         {document.isRequired && (
                           <>
-                            <span>•</span>
+                            <span className="hidden sm:inline">•</span>
                             <span className="text-red-600 font-medium">Required</span>
                           </>
                         )}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor}`}>
+                  <div className="flex items-center justify-between sm:justify-end gap-3">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor} whitespace-nowrap`}>
                       {statusText}
                     </span>
                     <div className="flex items-center gap-1">
@@ -272,18 +272,18 @@ export function LegalPage() {
                           size="sm"
                           onClick={() => deleteDocument(document.id)}
                         >
-                          ×
+                          <X className="h-4 w-4" />
                         </Button>
                       )}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-600 line-clamp-2 flex-1 mr-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="text-xs sm:text-sm text-gray-600 line-clamp-2 flex-1">
                     {document.content.substring(0, 150)}...
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
+                  <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
                     <input
                       type="checkbox"
                       checked={document.isActive}
@@ -295,7 +295,7 @@ export function LegalPage() {
                 </div>
 
                 {daysSinceUpdate > 365 && (
-                  <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-700">
+                  <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs sm:text-sm text-yellow-700">
                     <Calendar className="h-4 w-4 inline mr-1" />
                     This document hasn't been updated in over a year. Consider reviewing for accuracy.
                   </div>
@@ -308,17 +308,17 @@ export function LegalPage() {
 
       {/* Compliance Settings */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-purple-50 p-2">
-            <Scale className="h-5 w-5 text-purple-600" />
+            <Scale className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Compliance Settings</h2>
-            <p className="text-sm text-gray-600">Configure legal compliance requirements</p>
+            <h2 className="text-base sm:text-lg font-semibold">Compliance Settings</h2>
+            <p className="text-xs sm:text-sm text-gray-600">Configure legal compliance requirements</p>
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {[
             { key: 'gdprCompliance', label: 'GDPR Compliance', desc: 'European General Data Protection Regulation compliance' },
             { key: 'ccpaCompliance', label: 'CCPA Compliance', desc: 'California Consumer Privacy Act compliance' },
@@ -327,12 +327,12 @@ export function LegalPage() {
             { key: 'consentLogging', label: 'Log Consent Records', desc: 'Keep records of user consent for legal purposes' },
             { key: 'autoUpdateNotification', label: 'Auto-Update Notifications', desc: 'Notify users when legal documents are updated' }
           ].map((setting) => (
-            <div key={setting.key} className="flex items-center justify-between p-4 border rounded-lg">
-              <div>
-                <p className="font-medium text-sm">{setting.label}</p>
-                <p className="text-xs text-gray-500">{setting.desc}</p>
+            <div key={setting.key} className="flex items-start sm:items-center justify-between p-3 sm:p-4 border rounded-lg gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-xs sm:text-sm">{setting.label}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{setting.desc}</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+              <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
                 <input
                   type="checkbox"
                   checked={complianceSettings[setting.key as keyof typeof complianceSettings]}
@@ -352,31 +352,31 @@ export function LegalPage() {
       {/* Document Editor Modal */}
       {selectedDocument && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-screen items-center justify-center p-4">
+          <div className="flex min-h-screen items-center justify-center p-3 sm:p-4">
             <div className="fixed inset-0 bg-black/50 transition-opacity" onClick={() => {
               setSelectedDocument(null);
               setIsEditing(false);
             }} />
             <Card className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-gray-100 p-2">
-                    {React.createElement(getDocumentIcon(selectedDocument.type), { className: "h-5 w-5 text-gray-600" })}
+              <div className="flex items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
+                  <div className="rounded-lg bg-gray-100 p-2 flex-shrink-0">
+                    {React.createElement(getDocumentIcon(selectedDocument.type), { className: "h-4 w-4 sm:h-5 sm:w-5 text-gray-600" })}
                   </div>
-                  <div>
-                    <h2 className="text-xl font-semibold">
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-lg sm:text-xl font-semibold truncate">
                       {isEditing ? 'Edit' : 'View'}: {selectedDocument.title}
                     </h2>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-xs sm:text-sm text-gray-600">
                       Version {selectedDocument.version} • Last updated: {selectedDocument.lastUpdated}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-shrink-0">
                   {!isEditing && (
                     <Button variant="secondary" size="sm" onClick={() => setIsEditing(true)}>
-                      <Edit className="h-4 w-4 mr-1" />
-                      Edit
+                      <Edit className="h-4 w-4 sm:mr-1" />
+                      <span className="hidden sm:inline">Edit</span>
                     </Button>
                   )}
                   <Button
@@ -387,13 +387,13 @@ export function LegalPage() {
                       setIsEditing(false);
                     }}
                   >
-                    ×
+                    <X className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <Input
                     label="Document Title"
                     value={selectedDocument.title}
@@ -427,7 +427,7 @@ export function LegalPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Document Content</label>
                   <textarea
                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50"
-                    rows={20}
+                    rows={15}
                     value={selectedDocument.content}
                     disabled={!isEditing}
                     onChange={(e) => setSelectedDocument({
@@ -438,7 +438,7 @@ export function LegalPage() {
                   />
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -468,14 +468,14 @@ export function LegalPage() {
                 </div>
 
                 {isEditing && (
-                  <div className="flex justify-end gap-2 pt-4 border-t">
-                    <Button variant="secondary" onClick={() => setIsEditing(false)}>
+                  <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4 border-t">
+                    <Button variant="secondary" onClick={() => setIsEditing(false)} className="w-full sm:w-auto">
                       Cancel
                     </Button>
                     <Button onClick={() => {
                       updateDocument(selectedDocument.id, selectedDocument);
                       setIsEditing(false);
-                    }}>
+                    }} className="w-full sm:w-auto">
                       <Save className="h-4 w-4 mr-2" />
                       Save Document
                     </Button>

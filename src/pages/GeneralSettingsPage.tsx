@@ -18,15 +18,15 @@ export function GeneralSettingsPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold">General Settings</h1>
-          <p className="text-gray-600">
+          <h1 className="text-xl sm:text-2xl font-bold">General Settings</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">
             Configure your business information and basic settings
           </p>
         </div>
-        <Button>
+        <Button className="w-full sm:w-auto">
           <Save className="mr-2 h-4 w-4" />
           Save All Changes
         </Button>
@@ -34,29 +34,29 @@ export function GeneralSettingsPage() {
 
       {/* Business Information */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-blue-50 p-2">
-            <Building className="h-5 w-5 text-blue-600" />
+            <Building className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Business Information</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-base sm:text-lg font-semibold">Business Information</h2>
+            <p className="text-xs sm:text-sm text-gray-600">
               Basic details about your business
             </p>
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Business Logo
             </label>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <div className="h-20 w-20 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-xl">B</span>
               </div>
-              <div>
-                <Button variant="secondary" size="sm">
+              <div className="w-full sm:w-auto">
+                <Button variant="secondary" size="sm" className="w-full sm:w-auto">
                   <Upload className="h-4 w-4 mr-2" />
                   Upload New Logo
                 </Button>
@@ -67,7 +67,7 @@ export function GeneralSettingsPage() {
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <Input
               label="Business Name"
               value={businessInfo.name}
@@ -87,7 +87,7 @@ export function GeneralSettingsPage() {
             />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <Input
               label="Support Phone"
               type="tel"
@@ -113,7 +113,7 @@ export function GeneralSettingsPage() {
             />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <Select
               label="Currency"
               value={businessInfo.currency}
@@ -144,20 +144,20 @@ export function GeneralSettingsPage() {
 
       {/* FSSAI Certificate */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-green-50 p-2">
-            <FileText className="h-5 w-5 text-green-600" />
+            <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">FSSAI Certificate</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-base sm:text-lg font-semibold">FSSAI Certificate</h2>
+            <p className="text-xs sm:text-sm text-gray-600">
               Food Safety and Standards Authority of India certification
             </p>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <Input
               label="FSSAI License Number"
               value={fssaiInfo.licenseNumber}
@@ -181,9 +181,9 @@ export function GeneralSettingsPage() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Certificate Document
             </label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
-              <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm text-gray-600 mb-2">
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-6 text-center hover:border-gray-400 transition-colors">
+              <Upload className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400 mx-auto mb-2" />
+              <p className="text-xs sm:text-sm text-gray-600 mb-2">
                 Upload FSSAI Certificate
               </p>
               <Button variant="secondary" size="sm">
@@ -199,17 +199,17 @@ export function GeneralSettingsPage() {
 
       {/* Business Hours */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-purple-50 p-2">
-            <Calendar className="h-5 w-5 text-purple-600" />
+            <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Business Hours</h2>
-            <p className="text-sm text-gray-600">Set your operational hours</p>
+            <h2 className="text-base sm:text-lg font-semibold">Business Hours</h2>
+            <p className="text-xs sm:text-sm text-gray-600">Set your operational hours</p>
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {[
             { day: "Monday", open: "09:00", close: "21:00", enabled: true },
             { day: "Tuesday", open: "09:00", close: "21:00", enabled: true },
@@ -221,27 +221,35 @@ export function GeneralSettingsPage() {
           ].map((schedule) => (
             <div
               key={schedule.day}
-              className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
+              className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-lg"
             >
-              <div className="w-20">
+              <div className="w-full sm:w-24 flex justify-between sm:block">
                 <span className="font-medium text-sm">{schedule.day}</span>
+                <div className="flex items-center gap-2 sm:hidden">
+                  <input
+                    type="checkbox"
+                    checked={schedule.enabled}
+                    className="rounded"
+                  />
+                  <span className="text-sm text-gray-600">Open</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-1 flex-wrap">
                 <Input
                   type="time"
                   value={schedule.open}
-                  className="w-32"
+                  className="w-28 sm:w-32"
                   disabled={!schedule.enabled}
                 />
-                <span className="text-gray-500">to</span>
+                <span className="text-gray-500 text-sm">to</span>
                 <Input
                   type="time"
                   value={schedule.close}
-                  className="w-32"
+                  className="w-28 sm:w-32"
                   disabled={!schedule.enabled}
                 />
               </div>
-              <div className="flex items-center gap-2">
+              <div className="hidden sm:flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={schedule.enabled}
@@ -256,18 +264,18 @@ export function GeneralSettingsPage() {
 
       {/* Contact Information */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-orange-50 p-2">
-            <Mail className="h-5 w-5 text-orange-600" />
+            <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Contact Information</h2>
-            <p className="text-sm text-gray-600">Additional contact details</p>
+            <h2 className="text-base sm:text-lg font-semibold">Contact Information</h2>
+            <p className="text-xs sm:text-sm text-gray-600">Additional contact details</p>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <Input
               label="WhatsApp Number"
               type="tel"
@@ -291,7 +299,7 @@ export function GeneralSettingsPage() {
             />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
             <Input label="City" placeholder="Chennai" />
             <Input label="State" placeholder="Tamil Nadu" />
             <Input label="PIN Code" placeholder="600001" />

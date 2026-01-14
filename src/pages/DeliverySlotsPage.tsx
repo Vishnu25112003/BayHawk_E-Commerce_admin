@@ -89,18 +89,18 @@ export function DeliverySlotsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Delivery Slots</h1>
-          <p className="text-gray-600">Configure delivery time slots and capacity</p>
+          <h1 className="text-xl sm:text-2xl font-bold">Delivery Slots</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Configure delivery time slots and capacity</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="secondary" onClick={addNewSlot}>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button variant="secondary" onClick={addNewSlot} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Add Slot
           </Button>
-          <Button>
+          <Button className="w-full sm:w-auto">
             <Save className="mr-2 h-4 w-4" />
             Save Changes
           </Button>
@@ -109,21 +109,21 @@ export function DeliverySlotsPage() {
 
       {/* Delivery Slots */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-blue-50 p-2">
-            <Clock className="h-5 w-5 text-blue-600" />
+            <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Time Slots Configuration</h2>
-            <p className="text-sm text-gray-600">Set up available delivery time slots</p>
+            <h2 className="text-base sm:text-lg font-semibold">Time Slots Configuration</h2>
+            <p className="text-xs sm:text-sm text-gray-600">Set up available delivery time slots</p>
           </div>
         </div>
 
         <div className="space-y-4">
           {slots.map((slot) => (
-            <div key={slot.id} className="border rounded-lg p-4 space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+            <div key={slot.id} className="border rounded-lg p-3 sm:p-4 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
                   <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -131,9 +131,9 @@ export function DeliverySlotsPage() {
                       onChange={(e) => updateSlot(slot.id, { isActive: e.target.checked })}
                       className="rounded"
                     />
-                    <span className="font-medium">{slot.name}</span>
+                    <span className="font-medium text-sm sm:text-base">{slot.name}</span>
                   </div>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-xs sm:text-sm text-gray-500">
                     {slot.startTime} - {slot.endTime}
                   </span>
                 </div>
@@ -147,7 +147,7 @@ export function DeliverySlotsPage() {
                 </div>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-4">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                 <Input
                   label="Slot Name"
                   value={slot.name}
@@ -175,12 +175,12 @@ export function DeliverySlotsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Available Days</label>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {daysOfWeek.map((day) => (
                     <button
                       key={day.key}
                       onClick={() => toggleSlotDay(slot.id, day.key)}
-                      className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                      className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium transition-colors ${
                         slot.days.includes(day.key)
                           ? 'bg-blue-100 text-blue-700 border border-blue-200'
                           : 'bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200'
@@ -192,7 +192,7 @@ export function DeliverySlotsPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 text-sm text-gray-600">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
                 <div className="flex items-center gap-1">
                   <Users className="h-4 w-4" />
                   <span>Capacity: {slot.capacity} orders</span>
@@ -209,18 +209,18 @@ export function DeliverySlotsPage() {
 
       {/* Delivery Settings */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-green-50 p-2">
-            <Calendar className="h-5 w-5 text-green-600" />
+            <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Delivery Settings</h2>
-            <p className="text-sm text-gray-600">Configure delivery rules and restrictions</p>
+            <h2 className="text-base sm:text-lg font-semibold">Delivery Settings</h2>
+            <p className="text-xs sm:text-sm text-gray-600">Configure delivery rules and restrictions</p>
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Next Day Delivery Cut-off Time
@@ -230,7 +230,7 @@ export function DeliverySlotsPage() {
                 value={cutoffTime}
                 onChange={(e) => setCutoffTime(e.target.value)}
               />
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-xs sm:text-sm text-gray-500 mt-1">
                 Orders placed after this time will be scheduled for the next available day
               </p>
             </div>
@@ -246,14 +246,14 @@ export function DeliverySlotsPage() {
                 min="1"
                 max="30"
               />
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-xs sm:text-sm text-gray-500 mt-1">
                 Maximum days in advance customers can book delivery
               </p>
             </div>
           </div>
 
-          <div className="border-t pt-6">
-            <h3 className="font-medium mb-4">Delivery Restrictions</h3>
+          <div className="border-t pt-4 sm:pt-6">
+            <h3 className="font-medium mb-4 text-sm sm:text-base">Delivery Restrictions</h3>
             <div className="space-y-3">
               {[
                 { label: 'Allow same-day delivery', desc: 'Enable delivery on the same day if ordered before cut-off time' },
@@ -261,12 +261,12 @@ export function DeliverySlotsPage() {
                 { label: 'Enable express delivery', desc: 'Allow customers to pay extra for priority delivery' },
                 { label: 'Weekend delivery', desc: 'Enable delivery slots on weekends' },
               ].map((setting, index) => (
-                <div key={index} className="flex items-center justify-between py-2">
-                  <div>
-                    <p className="font-medium text-sm">{setting.label}</p>
-                    <p className="text-xs text-gray-500">{setting.desc}</p>
+                <div key={index} className="flex items-start sm:items-center justify-between py-2 gap-3">
+                  <div className="flex-1">
+                    <p className="font-medium text-xs sm:text-sm">{setting.label}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{setting.desc}</p>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
+                  <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
                     <input type="checkbox" defaultChecked className="sr-only peer" />
                     <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
                   </label>
@@ -279,19 +279,19 @@ export function DeliverySlotsPage() {
 
       {/* Slot Analytics */}
       <Card>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="rounded-lg bg-purple-50 p-2">
-            <Users className="h-5 w-5 text-purple-600" />
+            <Users className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Slot Performance</h2>
-            <p className="text-sm text-gray-600">Current week's slot utilization</p>
+            <h2 className="text-base sm:text-lg font-semibold">Slot Performance</h2>
+            <p className="text-xs sm:text-sm text-gray-600">Current week's slot utilization</p>
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {slots.filter(slot => slot.isActive).map((slot) => {
-            const utilization = Math.floor(Math.random() * 80) + 20; // Mock data
+            const utilization = Math.floor(Math.random() * 80) + 20;
             return (
               <div key={slot.id} className="p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
