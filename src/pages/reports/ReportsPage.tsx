@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Card, Button } from '../../components/ui';
-import { Download, BarChart3, Package, Truck, Users, IndianRupee, ArrowRight } from 'lucide-react';
+import { Download, BarChart3, Package, Truck, Users, IndianRupee, ArrowRight, TrendingUp, BarChart, Calculator } from 'lucide-react';
 import { ProcurementReportsPage } from './ProcurementReportsPage';
 
 const reportTypes = [
@@ -49,6 +49,33 @@ const reportTypes = [
     path: '/reports/customer',
     hubPath: '/hub/reports/customer',
     storePath: '/store/reports/customer'
+  },
+  { 
+    id: 'demand-forecast', 
+    label: 'Products Demand Forecast', 
+    icon: TrendingUp, 
+    description: 'AI-powered demand prediction and inventory planning',
+    path: '/reports/demand-forecast',
+    hubPath: '/hub/reports/demand-forecast',
+    storePath: '/store/reports/demand-forecast'
+  },
+  { 
+    id: 'trend-analysis', 
+    label: 'Product Trend Analysis', 
+    icon: BarChart, 
+    description: 'Track product performance and market trends',
+    path: '/reports/trend-analysis',
+    hubPath: '/hub/reports/trend-analysis',
+    storePath: '/store/reports/trend-analysis'
+  },
+  { 
+    id: 'tax-gst', 
+    label: 'Tax & GST Reports', 
+    icon: Calculator, 
+    description: 'Tax calculation and GST reports for accounting',
+    path: '/reports/tax-gst',
+    hubPath: '/hub/reports/tax-gst',
+    storePath: '/store/reports/tax-gst'
   },
 ];
 

@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { DashboardFilters } from '../../components/dashboard/DashboardFilters';
+import type { FilterOptions } from '../../components/dashboard/DashboardFilters';
 import { Package, TrendingUp, AlertTriangle, ShoppingCart, Users, Clock } from 'lucide-react';
 
 const ProcurementDashboard: React.FC = () => {
   const { user } = useAuth();
+  const [filters, setFilters] = useState<FilterOptions>({});
   const isHub = user?.loginType === 'hub';
+
+  // TODO: Implement filter functionality
+  console.log('Procurement dashboard filters:', filters);
 
   const stats = [
     {
@@ -54,6 +60,22 @@ const ProcurementDashboard: React.FC = () => {
         <h1 className="text-xl sm:text-2xl font-bold">Procurement Dashboard</h1>
         <p className="text-blue-100 text-sm sm:text-base">{isHub ? 'Hub' : 'Store'} Procurement Operations</p>
       </div>
+
+      {/* Dashboard Filters */}
+      <DashboardFilters
+        onFiltersChange={setFilters}
+        statusOptions={[
+          { value: 'pending', label: 'Pending' },
+          { value: 'approved', label: 'Approved' },
+          { value: 'processing', label: 'Processing' },
+          { value: 'delivered', label: 'Delivered' }
+        ]}
+        categoryOptions={[
+          { value: 'orders', label: 'Orders' },
+          { value: 'suppliers', label: 'Suppliers' },
+          { value: 'inventory', label: 'Inventory' }
+        ]}
+      />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">

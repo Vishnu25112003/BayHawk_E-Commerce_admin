@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Card, Badge, LoadingWrapper } from '../../components/ui';
 import { RoleDashboard } from '../../components/dashboard/RoleDashboard';
+import { DashboardFilters } from '../../components/dashboard/DashboardFilters';
+import type { FilterOptions } from '../../components/dashboard/DashboardFilters';
 import { useAuth } from '../../context/AuthContext';
 import { useLoading } from '../../hooks/useLoading';
 import { ShoppingCart, Package, Users, TrendingUp, Clock, AlertTriangle, Truck, IndianRupee, ArrowUpRight, ArrowDownRight } from 'lucide-react';
@@ -47,6 +49,10 @@ export function DashboardPage() {
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [lowStockItems, setLowStockItems] = useState<LowStockItem[]>([]);
   const [salesData, setSalesData] = useState<SalesChartData[]>([]);
+  const [filters, setFilters] = useState<FilterOptions>({});
+
+  // TODO: Implement filter functionality
+  console.log('Dashboard filters:', filters);
   const { isLoading, withLoading } = useLoading(true);
 
   useEffect(() => {
@@ -208,6 +214,23 @@ export function DashboardPage() {
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Welcome back, {user?.name || 'Admin'}! 👋</h1>
         <p className="text-gray-500 mt-1 text-sm sm:text-base">Here's what's happening with your business today.</p>
       </div>
+
+      {/* Dashboard Filters */}
+      <DashboardFilters
+        onFiltersChange={setFilters}
+        statusOptions={[
+          { value: 'received', label: 'Received' },
+          { value: 'processing', label: 'Processing' },
+          { value: 'packed', label: 'Packed' },
+          { value: 'delivered', label: 'Delivered' }
+        ]}
+        categoryOptions={[
+          { value: 'orders', label: 'Orders' },
+          { value: 'revenue', label: 'Revenue' },
+          { value: 'products', label: 'Products' },
+          { value: 'customers', label: 'Customers' }
+        ]}
+      />
 
       {/* Stats Grid */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">

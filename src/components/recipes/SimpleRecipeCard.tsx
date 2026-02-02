@@ -47,31 +47,11 @@ export function SimpleRecipeCard({
     }
   };
 
-  const getVideoThumbnail = (url: string) => {
-    const youtubeMatch = url?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-    if (youtubeMatch) {
-      return `https://img.youtube.com/vi/${youtubeMatch[1]}/mqdefault.jpg`;
-    }
-    return null;
-  };
-
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-200">
-      {/* Recipe Image/Video */}
+      {/* Recipe Image */}
       <div className="relative h-48 bg-gray-100">
-        {recipe.videoUrl && getVideoThumbnail(recipe.videoUrl) ? (
-          <>
-            <img 
-              src={getVideoThumbnail(recipe.videoUrl)!} 
-              alt={recipe.name}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
-                 onClick={() => onView?.(recipe)}>
-              <Play className="h-12 w-12 text-white" />
-            </div>
-          </>
-        ) : recipe.images?.[0] ? (
+        {recipe.images?.[0] ? (
           <img 
             src={recipe.images[0]} 
             alt={recipe.name}
@@ -82,6 +62,14 @@ export function SimpleRecipeCard({
           <div className="w-full h-full flex items-center justify-center cursor-pointer"
                onClick={() => onView?.(recipe)}>
             <ChefHat className="h-16 w-16 text-gray-400" />
+          </div>
+        )}
+        
+        {/* Video Play Button Overlay */}
+        {recipe.videoUrl && (
+          <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+               onClick={() => onView?.(recipe)}>
+            <Play className="h-12 w-12 text-white" />
           </div>
         )}
         

@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { DashboardFilters } from '../../components/dashboard/DashboardFilters';
+import type { FilterOptions } from '../../components/dashboard/DashboardFilters';
 import { Truck, MapPin, Clock, CheckCircle, AlertTriangle, Route, Users } from 'lucide-react';
 
 const DeliveryDashboard: React.FC = () => {
   const { user } = useAuth();
+  const [filters, setFilters] = useState<FilterOptions>({});
   const isHub = user?.loginType === 'hub';
+
+  // TODO: Implement filter functionality
+  console.log('Delivery dashboard filters:', filters);
 
   const stats = [
     {
@@ -62,6 +68,22 @@ const DeliveryDashboard: React.FC = () => {
         <h1 className="text-xl sm:text-2xl font-bold">Delivery Dashboard</h1>
         <p className="text-purple-100 text-sm sm:text-base">{isHub ? 'Hub' : 'Store'} Delivery Operations</p>
       </div>
+
+      {/* Dashboard Filters */}
+      <DashboardFilters
+        onFiltersChange={setFilters}
+        statusOptions={[
+          { value: 'in_transit', label: 'In Transit' },
+          { value: 'out_for_delivery', label: 'Out for Delivery' },
+          { value: 'delivered', label: 'Delivered' },
+          { value: 'picked_up', label: 'Picked Up' }
+        ]}
+        categoryOptions={[
+          { value: 'deliveries', label: 'Deliveries' },
+          { value: 'agents', label: 'Agents' },
+          { value: 'routes', label: 'Routes' }
+        ]}
+      />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">

@@ -277,11 +277,6 @@ export function CuttingTypePage() {
     }
   };
 
-  const handleViewType = (type: CuttingType) => {
-    // Handle view type functionality
-    console.log('Viewing cutting type:', type);
-  };
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -470,85 +465,7 @@ export function CuttingTypePage() {
             />
           </Card>
 
-          {/* Overview Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total Types</p>
-              <p className="text-2xl font-bold">{filteredCuttingTypes.length}</p>
-            </div>
-            <Scissors className="h-8 w-8 text-blue-600" />
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Active Types</p>
-              <p className="text-2xl font-bold text-green-600">
-                {filteredCuttingTypes.filter(t => t.isActive).length}
-              </p>
-            </div>
-            <Scissors className="h-8 w-8 text-green-600" />
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Fish Types</p>
-              <p className="text-2xl font-bold text-blue-600">
-                {filteredCuttingTypes.filter(t => t.category === 'fish').length}
-              </p>
-            </div>
-            <Fish className="h-8 w-8 text-blue-600" />
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Chicken Types</p>
-              <p className="text-2xl font-bold text-yellow-600">
-                {filteredCuttingTypes.filter(t => t.category === 'chicken').length}
-              </p>
-            </div>
-            <ChefHat className="h-8 w-8 text-yellow-600" />
-          </div>
-        </Card>
-      </div>
-
-      {/* Tabs for Hub/Store Types */}
-      {user?.loginType === 'super_admin' && (
-        <div className="flex gap-1 sm:gap-2 border-b overflow-x-auto">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as 'hub' | 'store')}
-              className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors whitespace-nowrap text-sm ${
-                activeTab === tab.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <tab.icon className="w-4 h-4" />
-              {tab.label}
-              <Badge variant="bg-gray-100 text-gray-600" className="text-xs">{tab.count}</Badge>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Cutting Types List with Bulk Actions */}
-      <CuttingTypesList
-        cuttingTypes={getCurrentTypes()}
-        onView={handleViewType}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onBulkAction={handleCuttingTypeBulkAction}
-        title={user?.loginType === 'super_admin' 
-          ? `${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Cutting Types`
-          : "Cutting Types"
-        }
-      />
-
-      {/* Add/Edit Modal */}
+          {/* Add/Edit Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => {

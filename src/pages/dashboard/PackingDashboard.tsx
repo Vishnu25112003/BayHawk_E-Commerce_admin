@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { DashboardFilters } from '../../components/dashboard/DashboardFilters';
+import type { FilterOptions } from '../../components/dashboard/DashboardFilters';
 import { Package2, Clock, CheckCircle, AlertCircle, TrendingUp, Users } from 'lucide-react';
 
 const PackingDashboard: React.FC = () => {
   const { user } = useAuth();
+  const [filters, setFilters] = useState<FilterOptions>({});
   const isHub = user?.loginType === 'hub';
+
+  // TODO: Implement filter functionality
+  console.log('Packing dashboard filters:', filters);
 
   const stats = [
     {
@@ -61,6 +67,22 @@ const PackingDashboard: React.FC = () => {
         <h1 className="text-xl sm:text-2xl font-bold">Packing Dashboard</h1>
         <p className="text-green-100 text-sm sm:text-base">{isHub ? 'Hub' : 'Store'} Packing Operations</p>
       </div>
+
+      {/* Dashboard Filters */}
+      <DashboardFilters
+        onFiltersChange={setFilters}
+        statusOptions={[
+          { value: 'pending', label: 'Pending' },
+          { value: 'in_progress', label: 'In Progress' },
+          { value: 'packed', label: 'Packed' },
+          { value: 'ready_for_delivery', label: 'Ready for Delivery' }
+        ]}
+        categoryOptions={[
+          { value: 'orders', label: 'Orders' },
+          { value: 'products', label: 'Products' },
+          { value: 'staff', label: 'Staff' }
+        ]}
+      />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">

@@ -1,30 +1,30 @@
 import { useState } from 'react';
 import { DashboardFilters } from '../../components/dashboard/DashboardFilters';
 import type { FilterOptions } from '../../components/dashboard/DashboardFilters';
-import { OperationalReports } from '../../components/reports/OperationalReports';
+import { TaxGSTReports } from '../../components/reports/TaxGSTReports';
 
-export function PackingReportPage() {
+export function TaxGSTReportPage() {
   const [filters, setFilters] = useState<FilterOptions>({});
 
-  console.log('Packing report filters:', filters);
+  console.log('Tax GST report filters:', filters);
 
   return (
     <div className="p-6 space-y-6">
       <DashboardFilters
         onFiltersChange={setFilters}
         statusOptions={[
-          { value: 'completed', label: 'Completed' },
-          { value: 'in_progress', label: 'In Progress' },
+          { value: 'filed', label: 'Filed' },
           { value: 'pending', label: 'Pending' },
-          { value: 'delayed', label: 'Delayed' }
+          { value: 'overdue', label: 'Overdue' }
         ]}
         categoryOptions={[
-          { value: 'team_a', label: 'Team A' },
-          { value: 'team_b', label: 'Team B' },
-          { value: 'team_c', label: 'Team C' }
+          { value: 'cgst', label: 'CGST' },
+          { value: 'sgst', label: 'SGST' },
+          { value: 'igst', label: 'IGST' },
+          { value: 'cess', label: 'CESS' }
         ]}
       />
-      <OperationalReports />
+      <TaxGSTReports />
     </div>
   );
 }

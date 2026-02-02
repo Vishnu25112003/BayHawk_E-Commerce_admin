@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { RollbackProvider } from './context/RollbackContext';
 import { Layout } from './components/layout/Layout';
 import { ProtectedRoute as ProtectedRouteComponent } from './components/ProtectedRoute';
 import { ProcurementRoute } from './components/ProcurementRoute';
@@ -44,6 +45,10 @@ import { PackingReportPage } from './pages/reports/PackingReportPage';
 import { DeliveryReportPage } from './pages/reports/DeliveryReportPage';
 import { StockReportPage } from './pages/reports/StockReportPage';
 import { CustomerReportPage } from './pages/reports/CustomerReportPage';
+import { ProductDemandForecastPage } from './pages/reports/ProductDemandForecastPage';
+import { ProductTrendAnalysisPage } from './pages/reports/ProductTrendAnalysisPage';
+import { TaxGSTReportPage } from './pages/reports/TaxGSTReportPage';
+import { RollbackPage } from './pages/system/RollbackPage';
 import { GeneralSettingsPage } from './pages/settings/GeneralSettingsPage';
 import { DeliverySlotsPage } from './pages/settings/DeliverySlotsPage';
 import { ShippingChargesPage } from './pages/settings/ShippingChargesPage';
@@ -71,9 +76,10 @@ function AppRoutes() {
   const { isAuthenticated } = useAuth();
   
   return (
-    <Routes>
-      <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
-      <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+    <RollbackProvider>
+      <Routes>
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+        <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         
@@ -109,6 +115,10 @@ function AppRoutes() {
         <Route path="hub/reports/packing" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_packing']}><PackingReportPage /></MultiRoleRoute>} />
         <Route path="hub/reports/delivery" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_delivery']}><DeliveryReportPage /></MultiRoleRoute>} />
         <Route path="hub/reports/customer" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_REPORTS_CUSTOMER}><CustomerReportPage /></ProtectedRouteComponent>} />
+        <Route path="hub/reports/demand-forecast" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_REPORTS_SALES}><ProductDemandForecastPage /></ProtectedRouteComponent>} />
+        <Route path="hub/reports/trend-analysis" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_REPORTS_SALES}><ProductTrendAnalysisPage /></ProtectedRouteComponent>} />
+        <Route path="hub/reports/tax-gst" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_REPORTS_SALES}><TaxGSTReportPage /></ProtectedRouteComponent>} />
+        <Route path="hub/system/rollback" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_REPORTS_SALES}><RollbackPage /></ProtectedRouteComponent>} />
         <Route path="hub/reports" element={<ReportsPage />} />
         
         {/* Hub Orders Routes - Multiple Roles Accessible */}
@@ -168,6 +178,10 @@ function AppRoutes() {
         <Route path="store/reports/packing" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_packing']}><PackingReportPage /></MultiRoleRoute>} />
         <Route path="store/reports/delivery" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_delivery']}><DeliveryReportPage /></MultiRoleRoute>} />
         <Route path="store/reports/customer" element={<ProtectedRouteComponent permission="HUB_REPORTS_CUSTOMER"><CustomerReportPage /></ProtectedRouteComponent>} />
+        <Route path="store/reports/demand-forecast" element={<ProtectedRouteComponent permission="HUB_REPORTS_SALES"><ProductDemandForecastPage /></ProtectedRouteComponent>} />
+        <Route path="store/reports/trend-analysis" element={<ProtectedRouteComponent permission="HUB_REPORTS_SALES"><ProductTrendAnalysisPage /></ProtectedRouteComponent>} />
+        <Route path="store/reports/tax-gst" element={<ProtectedRouteComponent permission="HUB_REPORTS_SALES"><TaxGSTReportPage /></ProtectedRouteComponent>} />
+        <Route path="store/system/rollback" element={<ProtectedRouteComponent permission="HUB_REPORTS_SALES"><RollbackPage /></ProtectedRouteComponent>} />
         <Route path="store/reports" element={<ReportsPage />} />
         
         {/* Store Orders Routes - Multiple Roles Accessible */}
@@ -228,6 +242,10 @@ function AppRoutes() {
         <Route path="store/reports/delivery" element={<DeliveryReportPage />} />
         <Route path="store/reports/stock" element={<StockReportPage />} />
         <Route path="store/reports/customer" element={<CustomerReportPage />} />
+        <Route path="store/reports/demand-forecast" element={<ProductDemandForecastPage />} />
+        <Route path="store/reports/trend-analysis" element={<ProductTrendAnalysisPage />} />
+        <Route path="store/reports/tax-gst" element={<TaxGSTReportPage />} />
+        <Route path="store/system/rollback" element={<RollbackPage />} />
         <Route path="store/settings" element={<GeneralSettingsPage />} />
         <Route path="store/settings/delivery-slots" element={<DeliverySlotsPage />} />
         <Route path="store/settings/shipping-charges" element={<ShippingChargesPage />} />
@@ -272,6 +290,10 @@ function AppRoutes() {
         <Route path="reports/delivery" element={<DeliveryReportPage />} />
         <Route path="reports/stock" element={<StockReportPage />} />
         <Route path="reports/customer" element={<CustomerReportPage />} />
+        <Route path="reports/demand-forecast" element={<ProductDemandForecastPage />} />
+        <Route path="reports/trend-analysis" element={<ProductTrendAnalysisPage />} />
+        <Route path="reports/tax-gst" element={<TaxGSTReportPage />} />
+        <Route path="system/rollback" element={<RollbackPage />} />
         <Route path="settings" element={<GeneralSettingsPage />} />
         <Route path="settings/delivery-slots" element={<DeliverySlotsPage />} />
         <Route path="settings/shipping-charges" element={<ShippingChargesPage />} />
@@ -288,6 +310,7 @@ function AppRoutes() {
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
+    </RollbackProvider>
   );
 }
 
