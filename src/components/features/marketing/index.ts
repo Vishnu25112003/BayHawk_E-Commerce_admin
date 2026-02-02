@@ -1,0 +1,1 @@
+export { MarketingList } from './MarketingList';
