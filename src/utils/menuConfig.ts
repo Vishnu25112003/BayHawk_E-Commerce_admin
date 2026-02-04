@@ -66,7 +66,7 @@ export const HUB_MENU: MenuItem[] = [
   },
   {
     id: "hub-team-management",
-    label: "Team & User Management",
+    label: "Team & User",
     icon: Users,
     path: "/hub/team",
     module: "hub",
@@ -332,7 +332,7 @@ export const STORE_MENU: MenuItem[] = [
   },
   {
     id: "store-team-management",
-    label: "Team & User Management",
+    label: "Team & User",
     icon: Users,
     path: "/store/team",
     module: "store",
@@ -594,7 +594,7 @@ export const SUPER_ADMIN_MENU: MenuItem[] = [
   },
   {
     id: "team-user-management",
-    label: "Team & User ",
+    label: "Team & User",
     icon: Users,
     path: "/team",
     module: "both",
