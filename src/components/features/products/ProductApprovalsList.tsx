@@ -220,68 +220,111 @@ export function ProductApprovalsList({
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-3">
+                  {/* Header Section */}
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-semibold text-lg truncate">{request.productName}</h3>
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <h3 className="font-semibold text-lg">{request.productName}</h3>
                         <Badge variant={getStatusColor(request.status)}>
                           {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
                         </Badge>
                         <Badge variant={getPriorityColor(request.priority)}>
-                          {request.priority.charAt(0).toUpperCase() + request.priority.slice(1)}
+                          {request.priority.charAt(0).toUpperCase() + request.priority.slice(1)} Priority
+                        </Badge>
+                        <Badge variant={request.sourceType === 'hub' ? 'bg-purple-100 text-purple-800' : 'bg-orange-100 text-orange-800'}>
+                          {request.sourceType.toUpperCase()}
                         </Badge>
                       </div>
-                      <p className="text-gray-600 text-sm mb-1">{request.productNameTa}</p>
-                      <p className="text-sm text-gray-500 line-clamp-2">{request.description}</p>
+                      <p className="text-gray-600 text-sm mb-2">{request.productNameTa}</p>
+                      <p className="text-sm text-gray-700 leading-relaxed">{request.description}</p>
                     </div>
                     
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-xl font-bold text-green-600">₹{request.price}</p>
-                      <p className="text-sm text-gray-500">per {request.unit}</p>
+                    <div className="text-right flex-shrink-0 bg-green-50 p-3 rounded-lg border border-green-200">
+                      <p className="text-xs text-gray-600 mb-1">Price per Unit</p>
+                      <p className="text-2xl font-bold text-green-600">₹{request.price}</p>
+                      <p className="text-sm text-gray-600 font-medium">per {request.unit}</p>
                     </div>
                   </div>
 
-                  {/* Request Info */}
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-gray-400" />
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium truncate">{request.requestedBy}</p>
-                        <p className="text-xs text-gray-500 truncate">{request.requestedByRole}</p>
+                  {/* All Product Images */}
+                  {request.images.length > 1 && (
+                    <div className="mb-4">
+                      <p className="text-xs font-medium text-gray-600 mb-2">Product Images ({request.images.length})</p>
+                      <div className="grid grid-cols-4 gap-2">
+                        {request.images.map((img, idx) => (
+                          <img 
+                            key={idx}
+                            src={img} 
+                            alt={`${request.productName} ${idx + 1}`}
+                            className="w-full h-20 object-cover rounded-lg bg-gray-100 border"
+                          />
+                        ))}
                       </div>
                     </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-gray-400" />
-                      <div>
-                        <p className="text-sm font-medium">Request Date</p>
-                        <p className="text-xs text-gray-500">{new Date(request.requestDate).toLocaleDateString()}</p>
+                  )}
+
+                  {/* Request Information */}
+                  <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <p className="text-xs font-semibold text-blue-900 mb-2">Request Information</p>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-xs text-gray-600">Request ID</p>
+                          <p className="text-sm font-semibold text-gray-900 truncate">{request.id}</p>
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <Package className="h-4 w-4 text-gray-400" />
-                      <div>
-                        <p className="text-sm font-medium">Category</p>
-                        <p className="text-xs text-gray-500">{request.category}</p>
+                      
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-xs text-gray-600">Requested By</p>
+                          <p className="text-sm font-semibold text-gray-900 truncate">{request.requestedBy}</p>
+                          <p className="text-xs text-gray-500 truncate">{request.requestedByRole}</p>
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-gray-400" />
-                      <div>
-                        <p className="text-sm font-medium">Request ID</p>
-                        <p className="text-xs text-gray-500">{request.id}</p>
+                      
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                        <div>
+                          <p className="text-xs text-gray-600">Request Date</p>
+                          <p className="text-sm font-semibold text-gray-900">{new Date(request.requestDate).toLocaleDateString('en-IN', { 
+                            year: 'numeric', month: 'short', day: 'numeric' 
+                          })}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <Package className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                        <div>
+                          <p className="text-xs text-gray-600">Category</p>
+                          <p className="text-sm font-semibold text-gray-900">{request.category}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Product Specifications */}
+                  {Object.keys(request.specifications).length > 0 && (
+                    <div className="mb-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                      <p className="text-xs font-semibold text-purple-900 mb-2">Product Specifications</p>
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                        {Object.entries(request.specifications).map(([key, value]) => value && (
+                          <div key={key} className="bg-white p-2 rounded border border-purple-100">
+                            <p className="text-xs text-gray-600 capitalize mb-1">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+                            <p className="text-sm font-semibold text-gray-900">{value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Rejection Reason */}
                   {request.status === 'rejected' && request.reason && (
-                    <div className="mb-3 p-3 bg-red-50 rounded-lg">
+                    <div className="mb-3 p-3 bg-red-50 rounded-lg border border-red-200">
                       <div className="flex items-center gap-2 mb-1">
                         <AlertCircle className="h-4 w-4 text-red-600" />
-                        <span className="font-medium text-red-800 text-sm">Rejection Reason</span>
+                        <span className="font-semibold text-red-800 text-sm">Rejection Reason</span>
                       </div>
                       <p className="text-sm text-red-700">{request.reason}</p>
                     </div>

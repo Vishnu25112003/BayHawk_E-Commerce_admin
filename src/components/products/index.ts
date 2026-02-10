@@ -9,6 +9,7 @@ export { ProductDescriptionEditor } from './ProductDescriptionEditor';
 export { ProductVariantForm } from './ProductVariantForm';
 export { DayBasedPricing } from './DayBasedPricing';
 export { ProductTags } from './ProductTags';
+export { ComboInformationForm } from './ComboInformationForm';
 
 // Other product components
 export { NutritionCustomization } from './NutritionCustomization';
@@ -21,6 +22,7 @@ export type { ProductInformationData } from './ProductInformationForm';
 export type { CompleteProductFormData } from './CompleteProductForm';
 export type { DayBasedPricingData } from './DayBasedPricing';
 export type { ProductTagsData } from './ProductTags';
+export type { ComboInformationData, ComboItem } from './ComboInformationForm';
 
 // Nutrition types
 export interface SelectedNutrition {

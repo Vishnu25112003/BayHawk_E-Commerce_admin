@@ -101,7 +101,6 @@ export function CategoryList({
 }: CategoryListProps) {
   const [searchValue, setSearchValue] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [applicableFilter, setApplicableFilter] = useState('');
   const [bulkActionModal, setBulkActionModal] = useState<{
     isOpen: boolean;
     actionId: string;
@@ -119,9 +118,8 @@ export function CategoryList({
       (statusFilter === 'active' && category.isActive) ||
       (statusFilter === 'inactive' && !category.isActive);
     
-    const matchesApplicable = !applicableFilter || category.applicableFor === applicableFilter;
     
-    return matchesSearch && matchesStatus && matchesApplicable;
+    return matchesSearch && matchesStatus;
   });
 
   const {
@@ -203,18 +201,6 @@ export function CategoryList({
               { value: '', label: 'All Status' },
               { value: 'active', label: 'Visible' },
               { value: 'inactive', label: 'Hidden' }
-            ]
-          },
-          {
-            key: 'applicable',
-            label: 'Applicable For',
-            value: applicableFilter,
-            onChange: setApplicableFilter,
-            options: [
-              { value: '', label: 'All Types' },
-              { value: 'both', label: 'Both Hub & Store' },
-              { value: 'hub', label: 'Hub Only' },
-              { value: 'store', label: 'Store Only' }
             ]
           }
         ]}
@@ -347,17 +333,6 @@ export function CategoryList({
                     <span className="font-medium text-gray-900">
                       {category.productCount} products
                     </span>
-                    <Badge 
-                      variant={
-                        category.applicableFor === 'both' ? 'bg-blue-100 text-blue-800' :
-                        category.applicableFor === 'hub' ? 'bg-purple-100 text-purple-800' :
-                        'bg-orange-100 text-orange-800'
-                      }
-                      className="text-xs"
-                    >
-                      {category.applicableFor === 'both' ? 'Hub & Store' : 
-                       category.applicableFor === 'hub' ? 'Hub Only' : 'Store Only'}
-                    </Badge>
                   </div>
                   
                   {/* Action Buttons */}

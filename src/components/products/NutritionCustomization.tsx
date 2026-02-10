@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, Button } from '../ui';
-import { Plus, Minus, Info, Check, Eye, EyeOff } from 'lucide-react';
+import { Plus, Minus, Info, Check, Eye, EyeOff, X, Trash2 } from 'lucide-react';
 
 interface NutritionInfo {
   calories: number;
@@ -48,6 +48,12 @@ export function NutritionCustomization({
 }: NutritionCustomizationProps) {
   const [selectedQuantity, setSelectedQuantity] = useState(baseQuantity);
   const [showPreview, setShowPreview] = useState(true);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newNutritionName, setNewNutritionName] = useState('');
+  const [newNutritionValue, setNewNutritionValue] = useState(0);
+  const [newNutritionUnit, setNewNutritionUnit] = useState('g');
+  const [customNutrients, setCustomNutrients] = useState<Array<{key: string; label: string; unit: string; category?: string}>>([]);
+  const [removedFields, setRemovedFields] = useState<Set<string>>(new Set());
 
   const calculateNutrition = (value: number) => {
     const ratio = selectedQuantity / baseQuantity;
@@ -83,6 +89,59 @@ export function NutritionCustomization({
   const isNutritionSelected = (key: string, category?: string) => {
     const fullKey = category ? `${category}.${key}` : key;
     return selectedNutrition[fullKey] || false;
+  };
+
+  const addCustomNutrient = () => {
+    if (!newNutritionName.trim()) return;
+    
+    const key = newNutritionName.toLowerCase().replace(/\s+/g, '_');
+    const newField = {
+      key,
+      label: newNutritionName,
+      unit: newNutritionUnit
+    };
+    
+    setCustomNutrients([...customNutrients, newField]);
+    updateNutritionValue(key, newNutritionValue);
+    
+    // Reset form
+    setNewNutritionName('');
+    setNewNutritionValue(0);
+    setNewNutritionUnit('g');
+    setShowAddForm(false);
+  };
+
+  const removeCustomNutrient = (key: string) => {
+    setCustomNutrients(customNutrients.filter(n => n.key !== key));
+    
+    // Remove from nutrition data
+    const updatedNutrition = { ...nutrition };
+    delete (updatedNutrition as any)[key];
+    onNutritionChange(updatedNutrition);
+    
+    // Remove from selected
+    if (onSelectedNutritionChange) {
+      const updated = { ...selectedNutrition };
+      delete updated[key];
+      onSelectedNutritionChange(updated);
+    }
+  };
+
+  const removePredefinedField = (key: string, category?: string) => {
+    const fullKey = category ? `${category}.${key}` : key;
+    setRemovedFields(new Set(removedFields).add(fullKey));
+    
+    // Unselect if selected
+    if (onSelectedNutritionChange && selectedNutrition[fullKey]) {
+      const updated = { ...selectedNutrition };
+      delete updated[fullKey];
+      onSelectedNutritionChange(updated);
+    }
+  };
+
+  const isFieldRemoved = (key: string, category?: string) => {
+    const fullKey = category ? `${category}.${key}` : key;
+    return removedFields.has(fullKey);
   };
 
   const getSelectedNutritionCount = () => {
@@ -185,7 +244,7 @@ export function NutritionCustomization({
       <div className="mb-6">
         <h4 className="font-medium text-gray-900 mb-3">Basic Nutrition</h4>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-          {nutritionFields.map(field => {
+          {nutritionFields.filter(field => !isFieldRemoved(field.key)).map(field => {
             const isSelected = isNutritionSelected(field.key);
             return (
               <div key={field.key} className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
@@ -220,6 +279,14 @@ export function NutritionCustomization({
                     min="0"
                   />
                   <span className="text-xs text-gray-500 w-8">{field.unit}</span>
+                  <button
+                    type="button"
+                    onClick={() => removePredefinedField(field.key)}
+                    className="text-red-600 hover:text-red-800"
+                    title="Remove"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             );
@@ -231,7 +298,7 @@ export function NutritionCustomization({
       <div className="mb-6">
         <h4 className="font-medium text-gray-900 mb-3">Vitamins</h4>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-          {vitaminFields.map(field => {
+          {vitaminFields.filter(field => !isFieldRemoved(field.key, 'vitamins')).map(field => {
             const isSelected = isNutritionSelected(field.key, 'vitamins');
             return (
               <div key={field.key} className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
@@ -266,6 +333,14 @@ export function NutritionCustomization({
                     min="0"
                   />
                   <span className="text-xs text-gray-500 w-8">{field.unit}</span>
+                  <button
+                    type="button"
+                    onClick={() => removePredefinedField(field.key, 'vitamins')}
+                    className="text-red-600 hover:text-red-800"
+                    title="Remove"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             );
@@ -274,10 +349,10 @@ export function NutritionCustomization({
       </div>
 
       {/* Minerals */}
-      <div className="mb-4">
+      <div className="mb-6">
         <h4 className="font-medium text-gray-900 mb-3">Minerals</h4>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-          {mineralFields.map(field => {
+          {mineralFields.filter(field => !isFieldRemoved(field.key, 'minerals')).map(field => {
             const isSelected = isNutritionSelected(field.key, 'minerals');
             return (
               <div key={field.key} className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
@@ -312,11 +387,141 @@ export function NutritionCustomization({
                     min="0"
                   />
                   <span className="text-xs text-gray-500 w-8">{field.unit}</span>
+                  <button
+                    type="button"
+                    onClick={() => removePredefinedField(field.key, 'minerals')}
+                    className="text-red-600 hover:text-red-800"
+                    title="Remove"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             );
           })}
         </div>
+      </div>
+
+      {/* Custom Nutrition Values */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="font-medium text-gray-900">Custom Nutrition Values</h4>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => setShowAddForm(!showAddForm)}
+          >
+            <Plus className="mr-1 h-4 w-4" />
+            Add Custom Value
+          </Button>
+        </div>
+
+        {showAddForm && (
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg mb-3">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
+                <input
+                  type="text"
+                  value={newNutritionName}
+                  onChange={(e) => setNewNutritionName(e.target.value)}
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md"
+                  placeholder="e.g., Omega-3"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Value *</label>
+                <input
+                  type="number"
+                  value={newNutritionValue}
+                  onChange={(e) => setNewNutritionValue(Number(e.target.value))}
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md"
+                  step="0.1"
+                  min="0"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Unit *</label>
+                <select
+                  value={newNutritionUnit}
+                  onChange={(e) => setNewNutritionUnit(e.target.value)}
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md"
+                >
+                  <option value="g">g</option>
+                  <option value="mg">mg</option>
+                  <option value="mcg">mcg</option>
+                  <option value="IU">IU</option>
+                  <option value="kcal">kcal</option>
+                </select>
+              </div>
+              <div className="flex items-end gap-2">
+                <Button type="button" onClick={addCustomNutrient} size="sm" className="flex-1">
+                  Add
+                </Button>
+                <Button type="button" variant="secondary" onClick={() => setShowAddForm(false)} size="sm">
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {customNutrients.length > 0 ? (
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+            {customNutrients.map(field => {
+              const isSelected = isNutritionSelected(field.key);
+              return (
+                <div key={field.key} className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
+                  isSelected ? 'border-green-500 bg-green-50' : 'border-gray-200'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => toggleNutritionSelection(field.key)}
+                      className={`flex items-center justify-center w-5 h-5 rounded border-2 transition-colors ${
+                        isSelected 
+                          ? 'border-green-500 bg-green-500 text-white' 
+                          : 'border-gray-300 hover:border-green-400'
+                      }`}
+                    >
+                      {isSelected && <Check className="h-3 w-3" />}
+                    </button>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 cursor-pointer">
+                        {field.label}
+                      </label>
+                      <p className="text-xs text-gray-500">per {selectedQuantity} {baseUnit}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      value={(nutrition as any)[field.key] || 0}
+                      onChange={(e) => updateNutritionValue(field.key, Number(e.target.value) || 0)}
+                      className="w-20 px-2 py-1 border border-gray-300 rounded text-sm text-right"
+                      step="0.1"
+                      min="0"
+                    />
+                    <span className="text-xs text-gray-500 w-8">{field.unit}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeCustomNutrient(field.key)}
+                      className="text-red-600 hover:text-red-800"
+                      title="Remove"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-4 border-2 border-dashed border-gray-300 rounded-lg">
+            <p className="text-sm text-gray-500">No custom nutrition values added yet</p>
+          </div>
+        )}
       </div>
 
       {/* Nutrition Facts Preview - Only Selected Items */}
@@ -379,6 +584,16 @@ export function NutritionCustomization({
                     <div key={field.key} className="flex justify-between">
                       <span>
                         <strong>{field.label}</strong> {calculateNutrition(nutrition.minerals[field.key as keyof typeof nutrition.minerals])}{field.unit}
+                      </span>
+                      <span className="font-semibold">*</span>
+                    </div>
+                  ))}
+                  
+                  {/* Custom Nutrients - Only Selected */}
+                  {customNutrients.filter(field => isNutritionSelected(field.key)).map(field => (
+                    <div key={field.key} className="flex justify-between">
+                      <span>
+                        <strong>{field.label}</strong> {calculateNutrition((nutrition as any)[field.key] || 0)}{field.unit}
                       </span>
                       <span className="font-semibold">*</span>
                     </div>

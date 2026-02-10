@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Modal, Badge, Card } from '../../components/ui';
 import { CategoryForm, CategoryList, type CategoryFormData, type Category } from '../../components/categories';
-import { Plus, Package, Eye, History, FileText } from 'lucide-react';
+import { Plus, Package, History, FileText, Fish, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { categoriesApi } from '../../utils/api';
 
 // Mock categories data with enhanced structure
 const mockCategories: Category[] = [
+  // Hub Categories
   {
     id: '1',
     name: 'Sea Fish',
@@ -16,7 +18,7 @@ const mockCategories: Category[] = [
     image: undefined,
     isActive: true,
     order: 0,
-    applicableFor: 'both',
+    type: 'hub' as 'hub',
     productCount: 25,
     createdAt: '2024-01-01',
     updatedAt: '2024-01-15'
@@ -31,7 +33,7 @@ const mockCategories: Category[] = [
     image: undefined,
     isActive: true,
     order: 1,
-    applicableFor: 'both',
+    type: 'hub' as 'hub',
     productCount: 18,
     createdAt: '2024-01-01',
     updatedAt: '2024-01-10'
@@ -46,7 +48,7 @@ const mockCategories: Category[] = [
     image: undefined,
     isActive: true,
     order: 2,
-    applicableFor: 'hub',
+    type: 'hub' as 'hub',
     productCount: 15,
     createdAt: '2024-01-01',
     updatedAt: '2024-01-12'
@@ -61,43 +63,29 @@ const mockCategories: Category[] = [
     image: undefined,
     isActive: true,
     order: 3,
-    applicableFor: 'both',
+    type: 'hub' as 'hub',
     productCount: 8,
     createdAt: '2024-01-01',
     updatedAt: '2024-01-08'
   },
+  // Store Categories
   {
     id: '5',
-    name: 'Chicken',
-    nameTa: 'கோழி',
-    description: 'Fresh chicken products including whole, cuts, and processed items',
-    icon: 'chicken',
+    name: 'Meat',
+    nameTa: 'இறைச்சி',
+    description: 'Fresh meat products including chicken, mutton, and other varieties',
+    icon: 'meat',
     color: 'red',
     image: undefined,
     isActive: true,
     order: 4,
-    applicableFor: 'store',
-    productCount: 22,
+    type: 'store' as 'store',
+    productCount: 38,
     createdAt: '2024-01-01',
     updatedAt: '2024-01-14'
   },
   {
     id: '6',
-    name: 'Mutton',
-    nameTa: 'ஆட்டு இறைச்சி',
-    description: 'Fresh mutton and goat meat products',
-    icon: 'meat',
-    color: 'red',
-    image: undefined,
-    isActive: true,
-    order: 5,
-    applicableFor: 'store',
-    productCount: 16,
-    createdAt: '2024-01-01',
-    updatedAt: '2024-01-11'
-  },
-  {
-    id: '7',
     name: 'Eggs',
     nameTa: 'முட்டை',
     description: 'Fresh eggs from various sources',
@@ -105,26 +93,133 @@ const mockCategories: Category[] = [
     color: 'yellow',
     image: undefined,
     isActive: true,
-    order: 6,
-    applicableFor: 'store',
+    order: 5,
     productCount: 12,
+    type: 'store' as 'store',
     createdAt: '2024-01-01',
     updatedAt: '2024-01-13'
   },
   {
-    id: '8',
-    name: 'Spices & Seasonings',
-    nameTa: 'மசாலா பொருட்கள்',
+    id: '7',
+    name: 'Spices',
+    nameTa: 'மசாலா',
     description: 'Cooking spices, herbs, and seasonings',
     icon: 'spices',
     color: 'green',
     image: undefined,
-    isActive: false,
-    order: 7,
-    applicableFor: 'store',
-    productCount: 5,
+    isActive: true,
+    order: 6,
+    productCount: 24,
     createdAt: '2024-01-01',
+    type: 'store' as 'store',
     updatedAt: '2024-01-09'
+  },
+  {
+    id: '8',
+    name: 'Ready to Eat',
+    nameTa: 'உடனடி உணவு',
+    description: 'Pre-cooked meals and ready-to-eat food items',
+    icon: 'utensils',
+    color: 'purple',
+    image: undefined,
+    isActive: true,
+    order: 7,
+    productCount: 15,
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-16',
+    type: 'store' as 'store'
+  },
+  {
+    id: '9',
+    name: 'Ready to Cook',
+    nameTa: 'சமைக்க தயார்',
+    description: 'Pre-marinated and ready-to-cook products',
+    icon: 'chef-hat',
+    color: 'indigo',
+    image: undefined,
+    isActive: true,
+    order: 8,
+    productCount: 20,
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-17',
+    type: 'store' as 'store'
+  },
+  // Additional Hub Categories
+  {
+    id: '10',
+    name: 'Exotic Fish',
+    nameTa: 'அரிய மீன்',
+    description: 'Rare and exotic fish varieties',
+    icon: 'fish',
+    color: 'cyan',
+    image: undefined,
+    isActive: true,
+    order: 4,
+    productCount: 8,
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-18',
+    type: 'hub' as 'hub'
+  },
+  {
+    id: '11',
+    name: 'Frozen Fish',
+    nameTa: 'உறைந்த மீன்',
+    description: 'Frozen fish products for longer shelf life',
+    icon: 'fish',
+    color: 'blue',
+    image: undefined,
+    isActive: true,
+    order: 5,
+    productCount: 12,
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-19',
+    type: 'hub' as 'hub'
+  },
+  // Additional Store Categories
+  {
+    id: '12',
+    name: 'Dairy Products',
+    nameTa: 'பால் பொருட்கள்',
+    description: 'Milk, cheese, butter, and other dairy items',
+    icon: 'egg',
+    color: 'yellow',
+    image: undefined,
+    isActive: true,
+    order: 9,
+    productCount: 15,
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-20',
+    type: 'store' as 'store'
+  },
+  {
+    id: '13',
+    name: 'Vegetables',
+    nameTa: 'காய்கறிகள்',
+    description: 'Fresh vegetables and greens',
+    icon: 'vegetable',
+    color: 'green',
+    image: undefined,
+    isActive: true,
+    order: 10,
+    productCount: 30,
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-21',
+    type: 'store' as 'store'
+  },
+  {
+    id: '14',
+    name: 'Fruits',
+    nameTa: 'பழங்கள்',
+    description: 'Fresh seasonal fruits',
+    icon: 'fruit',
+    color: 'pink',
+    image: undefined,
+    isActive: true,
+    order: 11,
+    productCount: 25,
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-22',
+    type: 'store' as 'store'
   }
 ];
 
@@ -136,19 +231,44 @@ export function CategoriesPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'hub' | 'store'>('hub');
 
-  // Filter categories based on user's access (but show all for management)
-  const getFilteredCategories = () => {
-    // For category management, show all categories regardless of user type
-    // The applicableFor field will control where they can be used
-    return categories.sort((a, b) => a.order - b.order);
+  // Fetch categories from API
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      const response = await categoriesApi.getAll();
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+      // Fallback to mock data if API fails
+      setCategories(mockCategories);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const filteredCategories = getFilteredCategories();
+  // Filter categories by type
+  const hubCategories = categories.filter(cat => cat.type === 'hub').sort((a, b) => a.order - b.order);
+  const storeCategories = categories.filter(cat => cat.type === 'store').sort((a, b) => a.order - b.order);
+  
+  // Get display categories based on active tab
+  const displayCategories = activeTab === 'hub' ? hubCategories : storeCategories;
 
   const handleAddCategory = () => {
     setSelectedCategory(null);
     setShowAddModal(true);
+  };
+
+  const getInitialFormData = () => {
+    if (selectedCategory) return selectedCategory;
+    // Set type based on activeTab for new categories
+    return { type: activeTab } as Partial<CategoryFormData>;
   };
 
   const handleEditCategory = (category: Category) => {
@@ -161,54 +281,99 @@ export function CategoriesPage() {
     setShowViewModal(true);
   };
 
-  const handleDeleteCategory = (category: Category) => {
+  const handleDeleteCategory = async (category: Category) => {
     if (category.productCount > 0) {
       alert(`Cannot delete category "${category.name}" because it has ${category.productCount} products. Please move or delete the products first.`);
       return;
     }
     
     if (confirm(`Are you sure you want to delete the category "${category.name}"? This action cannot be undone.`)) {
-      setCategories(prev => prev.filter(cat => cat.id !== category.id));
-      console.log('Delete category:', category.id);
+      try {
+        setLoading(true);
+        await categoriesApi.delete(category.id);
+        setCategories(prev => prev.filter(cat => cat.id !== category.id));
+        alert('Category deleted successfully');
+      } catch (error) {
+        console.error('Failed to delete category:', error);
+        alert('Failed to delete category. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  const handleSaveCategory = (categoryData: CategoryFormData) => {
-    if (selectedCategory) {
-      // Update existing category
-      setCategories(prev => prev.map(cat => 
-        cat.id === selectedCategory.id 
-          ? { 
-              ...cat, 
-              ...categoryData, 
-              updatedAt: new Date().toISOString().slice(0, 10)
-            }
-          : cat
-      ));
-      console.log('Update category:', selectedCategory.id, categoryData);
-    } else {
-      // Create new category
-      const newCategory: Category = {
-        ...categoryData,
-        id: Date.now().toString(),
-        productCount: 0,
-        createdAt: new Date().toISOString().slice(0, 10),
-        updatedAt: new Date().toISOString().slice(0, 10),
-        order: categories.length
-      };
-      setCategories(prev => [...prev, newCategory]);
-      console.log('Create category:', newCategory);
+  const handleSaveCategory = async (categoryData: CategoryFormData) => {
+    try {
+      setLoading(true);
+      
+      // Prepare form data for image upload
+      const formData = new FormData();
+      Object.entries(categoryData).forEach(([key, value]) => {
+        if (key === 'image' && value instanceof File) {
+          formData.append('image', value);
+        } else if (value !== undefined && value !== null) {
+          formData.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value));
+        }
+      });
+
+      if (selectedCategory) {
+        // Update existing category
+        await categoriesApi.update(selectedCategory.id, formData);
+        setCategories(prev => prev.map(cat => 
+          cat.id === selectedCategory.id 
+            ? { 
+                ...cat, 
+                ...categoryData, 
+                updatedAt: new Date().toISOString().slice(0, 10)
+              }
+            : cat
+        ));
+        alert('Category updated successfully! Changes will reflect across all Hub and Store interfaces.');
+      } else {
+        // Create new category
+        const response = await categoriesApi.create(formData);
+        const newCategory: Category = {
+          ...response.data,
+          productCount: 0,
+        };
+        setCategories(prev => [...prev, newCategory]);
+        alert('Category created successfully! Changes will reflect across all Hub and Store interfaces.');
+      }
+      
+      setShowAddModal(false);
+      setShowEditModal(false);
+      setSelectedCategory(null);
+      
+      // Refresh categories to get latest data
+      await fetchCategories();
+    } catch (error) {
+      console.error('Failed to save category:', error);
+      alert('Failed to save category. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    
-    setShowAddModal(false);
-    setShowEditModal(false);
-    setSelectedCategory(null);
-    alert(`Category ${selectedCategory ? 'updated' : 'created'} successfully! Changes will reflect across all Hub and Store interfaces.`);
   };
 
-  const handleReorderCategories = (reorderedCategories: Category[]) => {
-    setCategories(reorderedCategories);
-    console.log('Reorder categories:', reorderedCategories.map(cat => ({ id: cat.id, order: cat.order })));
+  const handleReorderCategories = async (reorderedCategories: Category[]) => {
+    try {
+      setLoading(true);
+      
+      // Update local state immediately for better UX
+      setCategories(reorderedCategories);
+      
+      // Send reorder request to backend
+      const categoryIds = reorderedCategories.map(cat => cat.id);
+      await categoriesApi.reorder({ categoryIds });
+      
+      console.log('Categories reordered successfully');
+    } catch (error) {
+      console.error('Failed to reorder categories:', error);
+      alert('Failed to save category order. Please try again.');
+      // Revert to original order on error
+      await fetchCategories();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleViewHistory = (category: Category) => {
@@ -219,19 +384,25 @@ export function CategoriesPage() {
   // Bulk actions handler for categories
   const handleCategoryBulkAction = async (actionId: string, selectedIds: string[], data?: any) => {
     try {
+      setLoading(true);
+      
       switch (actionId) {
         case 'show':
+          await categoriesApi.bulkUpdate({ ids: selectedIds, updates: { isActive: true } });
           setCategories(prev => prev.map(cat => 
             selectedIds.includes(cat.id) ? { ...cat, isActive: true, updatedAt: new Date().toISOString().slice(0, 10) } : cat
           ));
-          console.log(`Showing ${selectedIds.length} categories:`, selectedIds);
+          alert(`${selectedIds.length} categories are now visible`);
           break;
+          
         case 'hide':
+          await categoriesApi.bulkUpdate({ ids: selectedIds, updates: { isActive: false } });
           setCategories(prev => prev.map(cat => 
             selectedIds.includes(cat.id) ? { ...cat, isActive: false, updatedAt: new Date().toISOString().slice(0, 10) } : cat
           ));
-          console.log(`Hiding ${selectedIds.length} categories:`, selectedIds);
+          alert(`${selectedIds.length} categories are now hidden`);
           break;
+          
         case 'delete':
           const categoriesToDelete = categories.filter(cat => selectedIds.includes(cat.id));
           const categoriesWithProducts = categoriesToDelete.filter(cat => cat.productCount > 0);
@@ -241,142 +412,294 @@ export function CategoriesPage() {
             return;
           }
           
+          // Delete categories one by one
+          await Promise.all(selectedIds.map(id => categoriesApi.delete(id)));
           setCategories(prev => prev.filter(cat => !selectedIds.includes(cat.id)));
-          console.log(`Deleting ${selectedIds.length} categories:`, selectedIds);
+          alert(`${selectedIds.length} categories deleted successfully`);
           break;
+          
         default:
           console.log(`Bulk action ${actionId} performed on ${selectedIds.length} categories`, data);
       }
+      
+      // Refresh categories to ensure sync
+      await fetchCategories();
     } catch (error) {
       console.error('Category bulk action failed:', error);
       alert('Bulk action failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const getCategoryStats = () => {
     return {
-      total: filteredCategories.length,
-      visible: filteredCategories.filter(cat => cat.isActive).length,
-      hidden: filteredCategories.filter(cat => !cat.isActive).length,
-      hubOnly: filteredCategories.filter(cat => cat.applicableFor === 'hub').length,
-      storeOnly: filteredCategories.filter(cat => cat.applicableFor === 'store').length,
-      both: filteredCategories.filter(cat => cat.applicableFor === 'both').length,
-      totalProducts: filteredCategories.reduce((sum, cat) => sum + cat.productCount, 0)
+      totalHub: hubCategories.length,
+      totalStore: storeCategories.length,
+      visibleHub: hubCategories.filter(cat => cat.isActive).length,
+      visibleStore: storeCategories.filter(cat => cat.isActive).length,
+      totalProducts: categories.reduce((sum, cat) => sum + cat.productCount, 0),
+      activeDisplay: displayCategories.filter(cat => cat.isActive).length
     };
   };
 
   const stats = getCategoryStats();
+  
+  const getPageInfo = () => {
+    if (user?.loginType === "hub") {
+      return {
+        title: "Hub Category Management",
+        description: "Manage fish and seafood categories for hub operations",
+      };
+    } else if (user?.loginType === "store") {
+      return {
+        title: "Store Category Management",
+        description: "Manage meat, eggs, and other categories for store operations",
+      };
+    } else {
+      return {
+        title: "Category Management",
+        description: "Manage categories for Hub (Fish) and Store (Meat, Eggs, etc.)",
+      };
+    }
+  };
+
+  const getAddButtonText = () => {
+    if (user?.loginType === 'super_admin') {
+      return activeTab === 'hub' ? 'Add Hub Category' : 'Add Store Category';
+    }
+    return 'Add Category';
+  };
+
+  const pageInfo = getPageInfo();
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="w-full py-4 sm:py-6 lg:py-8">
+      <div className="w-full py-2 sm:py-4 md:py-6 lg:py-8">
         <div className="space-y-4 sm:space-y-6">
-          {/* Header */}
+          
+          {/* Header Section */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex-1 min-w-0">
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 truncate">
-                  Category Management
-                </h1>
-                <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
-                  Manage universal categories for both Hub and Store. Changes reflect across all interfaces.
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <Package className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+                  </div>
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+                    {pageInfo.title}
+                  </h1>
+                </div>
+                <p className="text-sm sm:text-base text-gray-600 mb-3">
+                  {pageInfo.description}
                 </p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="bg-blue-100 text-blue-700" className="text-xs font-medium">
+                    {displayCategories.length} Categories
+                  </Badge>
+                  <Badge variant="bg-green-100 text-green-700" className="text-xs font-medium">
+                    {stats.activeDisplay} Active
+                  </Badge>
+                  {user?.loginType === 'super_admin' && (
+                    <Badge variant="bg-purple-100 text-purple-700" className="text-xs font-medium">
+                      {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} View
+                    </Badge>
+                  )}
+                </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <Button 
                   variant="secondary" 
                   onClick={() => setShowHistoryModal(true)}
-                  className="w-full sm:w-auto flex-shrink-0 px-4 py-2"
+                  className="w-full sm:w-auto px-4 py-2 border-gray-300 hover:bg-gray-50"
                 >
-                  <History className="mr-2 h-4 w-4" /> 
-                  <span className="hidden sm:inline">History</span>
+                  <History className="mr-2 h-4 w-4" />
                   <span className="sm:hidden">History</span>
+                  <span className="hidden sm:inline">History</span>
                 </Button>
                 <Button 
                   onClick={handleAddCategory} 
-                  className="w-full sm:w-auto flex-shrink-0 px-4 py-2 sm:px-6 sm:py-3"
+                  className="w-full sm:w-auto px-4 py-2 sm:px-6 sm:py-3 bg-blue-600 hover:bg-blue-700"
                 >
-                  <Plus className="mr-2 h-4 w-4" /> 
-                  <span className="hidden sm:inline">Add Category</span>
+                  <Plus className="mr-2 h-4 w-4" />
                   <span className="sm:hidden">Add Category</span>
+                  <span className="hidden sm:inline">{getAddButtonText()}</span>
                 </Button>
               </div>
             </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-            <Card className="p-3 sm:p-4 lg:p-6 hover:shadow-md transition-shadow">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-blue-500">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs sm:text-sm text-gray-600 truncate font-medium">Total Categories</p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mt-1">
-                    {stats.total}
+                  <p className="text-sm font-medium text-gray-600 mb-1">Hub Categories</p>
+                  <p className="text-2xl font-bold text-blue-900">
+                    {stats.totalHub}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">{stats.totalProducts} products</p>
+                  <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    {stats.visibleHub} visible
+                  </p>
                 </div>
-                <div className="p-2 sm:p-3 bg-blue-100 rounded-lg flex-shrink-0">
-                  <Package className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-blue-600" />
+                <div className="p-3 bg-blue-100 rounded-xl">
+                  <Fish className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
             </Card>
 
-            <Card className="p-3 sm:p-4 lg:p-6 hover:shadow-md transition-shadow">
+            <Card className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-orange-500">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs sm:text-sm text-gray-600 truncate font-medium">Visible</p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600 mt-1">
-                    {stats.visible}
+                  <p className="text-sm font-medium text-gray-600 mb-1">Store Categories</p>
+                  <p className="text-2xl font-bold text-orange-600">
+                    {stats.totalStore}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Active categories</p>
+                  <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                    <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                    {stats.visibleStore} visible
+                  </p>
                 </div>
-                <div className="p-2 sm:p-3 bg-green-100 rounded-lg flex-shrink-0">
-                  <Eye className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-green-600" />
+                <div className="p-3 bg-orange-100 rounded-xl">
+                  <ShoppingBag className="h-6 w-6 text-orange-600" />
                 </div>
               </div>
             </Card>
 
-            <Card className="p-3 sm:p-4 lg:p-6 hover:shadow-md transition-shadow">
+            <Card className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-gray-500">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs sm:text-sm text-gray-600 truncate font-medium">Hub & Store</p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600 mt-1">
-                    {stats.both}
+                  <p className="text-sm font-medium text-gray-600 mb-1">Total</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.totalHub + stats.totalStore}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Universal categories</p>
+                  <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                    <span className="w-2 h-2 bg-gray-500 rounded-full"></span>
+                    All categories
+                  </p>
                 </div>
-                <div className="p-2 sm:p-3 bg-blue-100 rounded-lg flex-shrink-0">
-                  <Package className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-blue-600" />
+                <div className="p-3 bg-gray-100 rounded-xl">
+                  <Package className="h-6 w-6 text-gray-600" />
                 </div>
               </div>
             </Card>
 
-            <Card className="p-3 sm:p-4 lg:p-6 hover:shadow-md transition-shadow">
+            <Card className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-purple-500">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs sm:text-sm text-gray-600 truncate font-medium">Specific</p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-600 mt-1">
-                    {stats.hubOnly + stats.storeOnly}
+                  <p className="text-sm font-medium text-gray-600 mb-1">Total Products</p>
+                  <p className="text-2xl font-bold text-purple-600">
+                    {stats.totalProducts}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Hub/Store only</p>
+                  <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                    <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                    Using categories
+                  </p>
                 </div>
-                <div className="p-2 sm:p-3 bg-purple-100 rounded-lg flex-shrink-0">
-                  <Package className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-purple-600" />
+                <div className="p-3 bg-purple-100 rounded-xl">
+                  <Package className="h-6 w-6 text-purple-600" />
                 </div>
               </div>
             </Card>
           </div>
 
-          {/* Categories List with Drag & Drop */}
-          <Card className="overflow-hidden">
+          {/* Tab Section - Only for Super Admin */}
+          {user?.loginType === 'super_admin' && (
+            <Card className="overflow-hidden">
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Category Types</h3>
+                <p className="text-sm text-gray-600">Switch between hub and store category management</p>
+              </div>
+              <div className="flex gap-2 border-b overflow-x-auto pb-4">
+                {[
+                  { 
+                    id: 'hub', 
+                    label: 'Hub Categories', 
+                    count: hubCategories.length,
+                    description: 'Fish & Seafood',
+                    icon: '🐟'
+                  },
+                  { 
+                    id: 'store', 
+                    label: 'Store Categories', 
+                    count: storeCategories.length,
+                    description: 'Meat, Eggs & More',
+                    icon: '🥩'
+                  }
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as 'hub' | 'store')}
+                    className={`flex items-center gap-3 px-4 py-3 border-b-2 transition-all whitespace-nowrap text-sm min-w-0 rounded-t-lg ${
+                      activeTab === tab.id 
+                        ? 'border-blue-600 text-blue-600 bg-blue-50' 
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span className="text-lg">{tab.icon}</span>
+                    <div className="text-left">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{tab.label}</span>
+                        <Badge 
+                          variant={activeTab === tab.id ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600"} 
+                          className="text-xs font-medium"
+                        >
+                          {tab.count}
+                        </Badge>
+                      </div>
+                      <span className="text-xs text-gray-500">{tab.description}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Categories List */}
+          <Card className="overflow-hidden shadow-sm border border-gray-200">
+            <div className="bg-gray-50 px-4 sm:px-6 py-3 border-b border-gray-200">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {user?.loginType === 'super_admin' 
+                      ? `${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Categories`
+                      : "Categories"
+                    }
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Manage and organize your category catalog
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="bg-blue-100 text-blue-700" className="text-xs font-medium">
+                    {displayCategories.length} Total
+                  </Badge>
+                  <Badge variant="bg-green-100 text-green-700" className="text-xs font-medium">
+                    {stats.activeDisplay} Active
+                  </Badge>
+                </div>
+              </div>
+            </div>
+            {loading && (
+              <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <p className="text-sm text-gray-600">Loading...</p>
+                </div>
+              </div>
+            )}
             <CategoryList
-              categories={filteredCategories}
+              categories={displayCategories}
               onView={handleViewCategory}
               onEdit={handleEditCategory}
               onDelete={handleDeleteCategory}
               onReorder={handleReorderCategories}
               onBulkAction={handleCategoryBulkAction}
-              title="Categories"
+              title={user?.loginType === 'super_admin' 
+                ? `${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Categories`
+                : "Categories"
+              }
               allowReordering={user?.loginType === 'super_admin'}
             />
           </Card>
@@ -388,10 +711,11 @@ export function CategoriesPage() {
               setShowAddModal(false);
               setSelectedCategory(null);
             }}
-            title="Add New Category"
+            title={`Add New ${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Category`}
             size="xl"
           >
             <CategoryForm
+              initialData={getInitialFormData()}
               onSave={handleSaveCategory}
               onCancel={() => {
                 setShowAddModal(false);
@@ -472,14 +796,6 @@ export function CategoriesPage() {
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant={selectedCategory.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
                     {selectedCategory.isActive ? 'Visible' : 'Hidden'}
-                  </Badge>
-                  <Badge variant={
-                    selectedCategory.applicableFor === 'both' ? 'bg-blue-100 text-blue-800' :
-                    selectedCategory.applicableFor === 'hub' ? 'bg-purple-100 text-purple-800' :
-                    'bg-orange-100 text-orange-800'
-                  }>
-                    {selectedCategory.applicableFor === 'both' ? 'Hub & Store' : 
-                     selectedCategory.applicableFor === 'hub' ? 'Hub Only' : 'Store Only'}
                   </Badge>
                 </div>
               </div>

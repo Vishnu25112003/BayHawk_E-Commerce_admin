@@ -656,6 +656,11 @@ export function ProductsPage() {
               onView={handleViewProduct}
               onEdit={handleEditProduct}
               onDelete={handleDeleteProduct}
+              onToggleVisibility={(product) => {
+                console.log('Toggle visibility for:', product.id, 'Current:', product.isActive);
+                // In real app, call API to toggle product visibility
+                alert(`Product "${product.nameEn}" ${product.isActive ? 'hidden' : 'shown'} successfully!`);
+              }}
               onBulkAction={handleProductBulkAction}
               title=""
               additionalFilters={user?.loginType === 'super_admin' ? [
@@ -692,21 +697,6 @@ export function ProductsPage() {
             title={selectedProduct ? "Edit Product" : "Add New Product"}
             size="xl"
           >
-            <div className="mb-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Package className="h-5 w-5 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    {selectedProduct ? "Edit Product Information" : "Create New Product"}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {selectedProduct ? "Update product details and settings" : "Fill in the product information below"}
-                  </p>
-                </div>
-              </div>
-            </div>
             <CompleteProductForm
               onSave={(productData: any) => {
                 console.log("Product data:", productData);
@@ -718,12 +708,109 @@ export function ProductsPage() {
                 setSelectedProduct(null);
               }}
               initialData={selectedProduct ? {
+                // Basic Info
                 nameEn: selectedProduct.nameEn,
                 nameTa: selectedProduct.nameTa,
                 category: selectedProduct.category,
+                hsnNumber: selectedProduct.sku || '',
+                variant: selectedProduct.variants[0]?.type || '',
+                fishSize: selectedProduct.variants[0]?.size || '',
+                maxSize: selectedProduct.variants[0]?.grossWeight || '',
+                basePriceMin: selectedProduct.variants[0]?.price || 0,
+                basePriceMax: selectedProduct.variants[0]?.price || 0,
+                fishCountMin: 0,
+                fishCountMax: 0,
                 isBestSeller: selectedProduct.isBestSeller,
                 isRareProduct: selectedProduct.isRare,
                 isActive: selectedProduct.isActive,
+                
+                // New fields
+                productType: '',
+                season: '',
+                metaTitle: '',
+                metaDescription: '',
+                
+                // Combo data
+                isCombo: false,
+                comboData: {
+                  comboName: '',
+                  comboOfferPercent: 0,
+                  comboDescription: '',
+                  comboItems: [],
+                  isBestSeller: false,
+                  isRareProduct: false,
+                  isActive: true,
+                  productType: '',
+                  season: '',
+                  metaTitle: '',
+                  metaDescription: ''
+                },
+                
+                // Other sections
+                images: [],
+                primaryImageIndex: 0,
+                description: selectedProduct.description || '',
+                variants: selectedProduct.variants.map(v => ({
+                  id: v.id,
+                  type: v.type,
+                  size: v.size,
+                  grossWeight: v.grossWeight,
+                  netWeight: v.netWeight,
+                  pieces: v.pieces,
+                  serves: v.serves,
+                  skuNumber: '',
+                  actualPrice: v.price,
+                  salesPrice: v.price,
+                  stock: v.stock,
+                  igst: 0,
+                  cgst: 0,
+                  sgst: 0,
+                  cuttingTypeId: ''
+                })),
+                
+                // Day-based pricing
+                dayBasedPricing: {
+                  enabled: false,
+                  dayPrices: [
+                    { day: 'monday', price: 0, enabled: false },
+                    { day: 'tuesday', price: 0, enabled: false },
+                    { day: 'wednesday', price: 0, enabled: false },
+                    { day: 'thursday', price: 0, enabled: false },
+                    { day: 'friday', price: 0, enabled: false },
+                    { day: 'saturday', price: 0, enabled: false },
+                    { day: 'sunday', price: 0, enabled: false },
+                  ]
+                },
+                
+                // Product tags
+                productTags: {
+                  tags: []
+                },
+                
+                // Nutrition
+                nutrition: {
+                  calories: selectedProduct.nutritionalInfo?.calories || 0,
+                  protein: selectedProduct.nutritionalInfo?.protein || 0,
+                  carbs: 0,
+                  fat: selectedProduct.nutritionalInfo?.fat || 0,
+                  fiber: 0,
+                  sugar: 0,
+                  sodium: 0,
+                  cholesterol: 0,
+                  vitamins: {
+                    vitaminA: 0,
+                    vitaminC: 0,
+                    vitaminD: 0,
+                    vitaminB12: 0,
+                  },
+                  minerals: {
+                    calcium: 0,
+                    iron: selectedProduct.nutritionalInfo?.iron || 0,
+                    potassium: 0,
+                    magnesium: 0,
+                  },
+                },
+                selectedNutrition: {},
               } : undefined}
             />
           </Modal>

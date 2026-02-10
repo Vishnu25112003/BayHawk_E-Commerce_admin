@@ -212,7 +212,7 @@ export function StockBatchForm({ initialData, onSave, onCancel, isEdit = false }
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Quantity/Count *
+              Quantity/Count per kg *
             </label>
             <Input
               type="number"

@@ -12,7 +12,7 @@ interface CategoryFormData {
   image?: File | string;
   isActive: boolean;
   order: number;
-  applicableFor: 'hub' | 'store' | 'both';
+  type: 'hub' | 'store';
 }
 
 interface CategoryFormProps {
@@ -58,7 +58,7 @@ export function CategoryForm({ initialData, onSave, onCancel, isEdit = false }: 
     image: initialData?.image || undefined,
     isActive: initialData?.isActive !== undefined ? initialData.isActive : true,
     order: initialData?.order || 0,
-    applicableFor: initialData?.applicableFor || 'both',
+    type: initialData?.type || 'hub',
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(
@@ -166,16 +166,15 @@ export function CategoryForm({ initialData, onSave, onCancel, isEdit = false }: 
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Applicable For
+              Category Type *
             </label>
             <select
-              value={formData.applicableFor}
-              onChange={(e) => handleInputChange('applicableFor', e.target.value)}
+              value={formData.type}
+              onChange={(e) => handleInputChange('type', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="both">Both Hub & Store</option>
-              <option value="hub">Hub Only</option>
-              <option value="store">Store Only</option>
+              <option value="hub">Hub (Fish Products)</option>
+              <option value="store">Store (Meat, Eggs, etc.)</option>
             </select>
           </div>
         </div>

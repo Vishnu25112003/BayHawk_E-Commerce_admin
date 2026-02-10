@@ -98,6 +98,17 @@ export const marketingApi = {
   sendNotification: (data: unknown) => api.post('/notifications/send', data),
 };
 
+// Categories APIs
+export const categoriesApi = {
+  getAll: (params?: Record<string, string>) => api.get('/categories', { params }),
+  getById: (id: string) => api.get(`/categories/${id}`),
+  create: (data: unknown) => api.post('/categories', data),
+  update: (id: string, data: unknown) => api.patch(`/categories/${id}`, data),
+  delete: (id: string) => api.delete(`/categories/${id}`),
+  reorder: (data: { categoryIds: string[] }) => api.post('/categories/reorder', data),
+  bulkUpdate: (data: { ids: string[]; updates: unknown }) => api.patch('/categories/bulk', data),
+};
+
 // Zones APIs
 export const zonesApi = {
   getAll: () => api.get('/zones'),

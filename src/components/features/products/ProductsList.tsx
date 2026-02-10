@@ -8,7 +8,7 @@ import {
 import { Card, Badge } from '../../ui';
 import { 
   Eye, Edit, Trash2, Package, Image, CheckSquare, Square, Minus,
-  Archive, ToggleLeft, ToggleRight
+  Archive, ToggleLeft, ToggleRight, EyeOff
 } from 'lucide-react';
 import { formatCurrency, getStatusColor } from '../../../utils/helpers';
 import type { Product } from '../../../types';
@@ -18,6 +18,7 @@ interface ProductsListProps {
   onView?: (product: Product) => void;
   onEdit?: (product: Product) => void;
   onDelete?: (product: Product) => void;
+  onToggleVisibility?: (product: Product) => void;
   onBulkAction?: (actionId: string, selectedIds: string[], data?: any) => Promise<void>;
   title?: string;
   additionalFilters?: Array<{
@@ -69,6 +70,7 @@ export function ProductsList({
   onView, 
   onEdit, 
   onDelete,
+  onToggleVisibility,
   onBulkAction,
   title = 'Products',
   additionalFilters = []
@@ -278,6 +280,17 @@ export function ProductsList({
 
               {/* Action Buttons */}
               <div className="flex gap-2 flex-shrink-0">
+                <button 
+                  onClick={() => onToggleVisibility?.(product)}
+                  className={`p-2 rounded-lg transition-colors ${
+                    product.isActive 
+                      ? 'hover:bg-yellow-50 text-yellow-600' 
+                      : 'hover:bg-green-50 text-green-600'
+                  }`}
+                  title={product.isActive ? 'Hide Product' : 'Show Product'}
+                >
+                  {product.isActive ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
                 <button 
                   onClick={() => onView?.(product)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors" 

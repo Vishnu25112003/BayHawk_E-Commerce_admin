@@ -268,122 +268,235 @@ export function StockBatchList({
 
               {/* Batch Content */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between mb-3">
+                {/* Header Section */}
+                <div className="flex items-start justify-between mb-4">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-gray-900 truncate">{batch.productName}</h3>
-                      <div className="flex flex-wrap items-center gap-1">
-                        <Badge variant={getStatusColor(batch.status)} className="text-xs">
-                          {batch.status.charAt(0).toUpperCase() + batch.status.slice(1)}
-                        </Badge>
-                        {batch.certifications.length > 0 && (
-                          <Badge variant="bg-blue-100 text-blue-800" className="text-xs">
-                            {batch.certifications.length} Cert{batch.certifications.length > 1 ? 's' : ''}
-                          </Badge>
-                        )}
-                        {batch.chemicalFree === 'organic' && (
-                          <Badge variant="bg-green-100 text-green-800" className="text-xs">Organic</Badge>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                      <div>
-                        <p className="text-gray-500">Batch Number</p>
-                        <p className="font-mono text-xs">{batch.batchNumber}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-500">Traceability</p>
-                        <p className="font-mono text-xs">{batch.traceabilityCode}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-500">Quantity</p>
-                        <p className="font-medium">{batch.quantity} × {batch.individualWeight}{batch.quantityUnit}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-500">Category</p>
-                        <Badge variant="bg-gray-100 text-gray-800" className="text-xs">
-                          {batch.category.replace('-', ' ')}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    {/* Additional Info Row */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mt-3 pt-3 border-t border-gray-100">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3 text-gray-400" />
-                        <span className="text-gray-500">Received:</span>
-                        <span className="text-xs">{new Date(batch.receivedDate).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3 text-gray-400" />
-                        <span className="text-gray-500">Expiry:</span>
-                        <span className={`text-xs font-medium ${getExpiryColor(batch.daysUntilExpiry)}`}>
-                          {getExpiryStatus(batch.daysUntilExpiry)}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3 text-gray-400" />
-                        <span className="text-gray-500">Origin:</span>
-                        <span className="text-xs">{batch.harvestOrigin || batch.countryOfOrigin}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Thermometer className="h-3 w-3 text-gray-400" />
-                        <span className="text-gray-500">Storage:</span>
-                        <span className="text-xs">{batch.storageTemperature}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Value & Actions */}
-                  <div className="flex flex-col items-end gap-3 ml-4 flex-shrink-0">
-                    <div className="text-right">
-                      <p className="font-semibold text-lg">{formatCurrency(batch.totalValue)}</p>
-                      <p className="text-xs text-gray-500">Total Value</p>
-                    </div>
-                    
-                    <div className="flex gap-1">
-                      <button 
-                        onClick={() => onView?.(batch)}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors" 
-                        title="View Details"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </button>
-                      <button 
-                        onClick={() => onEdit?.(batch)}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors" 
-                        title="Edit"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </button>
-                      {showApprovalActions && batch.status === 'pending' && (
-                        <>
-                          <button 
-                            onClick={() => onApprove?.(batch)}
-                            className="p-2 hover:bg-green-50 rounded-lg transition-colors text-green-600" 
-                            title="Approve"
-                          >
-                            <CheckCircle className="h-4 w-4" />
-                          </button>
-                          <button 
-                            onClick={() => onReject?.(batch)}
-                            className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600" 
-                            title="Reject"
-                          >
-                            <XCircle className="h-4 w-4" />
-                          </button>
-                        </>
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <h3 className="font-semibold text-lg text-gray-900">{batch.productName}</h3>
+                      <Badge variant={getStatusColor(batch.status)} className="text-xs">
+                        {batch.status.charAt(0).toUpperCase() + batch.status.slice(1)}
+                      </Badge>
+                      <Badge variant="bg-purple-100 text-purple-800" className="text-xs capitalize">
+                        {batch.qualityGrade.replace('-', ' ')}
+                      </Badge>
+                      {batch.chemicalFree === 'organic' && (
+                        <Badge variant="bg-green-100 text-green-800" className="text-xs">Organic</Badge>
                       )}
-                      <button 
-                        onClick={() => onDelete?.(batch)}
-                        className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600" 
-                        title="Delete"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      {batch.chemicalFree === 'yes' && (
+                        <Badge variant="bg-green-100 text-green-800" className="text-xs">Chemical Free</Badge>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center gap-3 text-xs text-gray-600 mb-2">
+                      <span className="font-mono bg-gray-100 px-2 py-1 rounded">{batch.batchNumber}</span>
+                      <span className="font-mono bg-blue-50 px-2 py-1 rounded text-blue-700">{batch.traceabilityCode}</span>
                     </div>
                   </div>
+                  
+                  <div className="text-right flex-shrink-0 bg-green-50 p-3 rounded-lg border border-green-200 ml-4">
+                    <p className="text-xs text-gray-600 mb-1">Total Value</p>
+                    <p className="text-2xl font-bold text-green-600">{formatCurrency(batch.totalValue)}</p>
+                  </div>
+                </div>
+
+                {/* Batch Information Grid */}
+                <div className="mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-xs font-semibold text-blue-900 mb-2">Batch Information</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                    <div>
+                      <p className="text-xs text-gray-600">Category</p>
+                      <p className="font-semibold text-gray-900 capitalize">{batch.category.replace('-', ' ')}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600">Individual Weight</p>
+                      <p className="font-semibold text-gray-900">{batch.individualWeight} {batch.quantityUnit}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600">Total Quantity</p>
+                      <p className="font-semibold text-gray-900">{batch.quantity} units</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600">Catch Type</p>
+                      <p className="font-semibold text-gray-900 capitalize">{batch.catchType}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dates & Expiry */}
+                <div className="mb-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <p className="text-xs font-semibold text-yellow-900 mb-2">Dates & Expiry</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3 text-yellow-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-600">Catch/Slaughter</p>
+                        <p className="text-xs font-semibold text-gray-900">{new Date(batch.catchSlaughterDate).toLocaleDateString('en-IN', { 
+                          month: 'short', day: 'numeric', year: 'numeric' 
+                        })}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3 text-yellow-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-600">Received Date</p>
+                        <p className="text-xs font-semibold text-gray-900">{new Date(batch.receivedDate).toLocaleDateString('en-IN', { 
+                          month: 'short', day: 'numeric', year: 'numeric' 
+                        })}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-yellow-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-600">Expiry Date</p>
+                        <p className={`text-xs font-semibold ${getExpiryColor(batch.daysUntilExpiry)}`}>
+                          {new Date(batch.expiryDate).toLocaleDateString('en-IN', { 
+                            month: 'short', day: 'numeric', year: 'numeric' 
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-yellow-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-600">Days Until Expiry</p>
+                        <p className={`text-xs font-bold ${getExpiryColor(batch.daysUntilExpiry)}`}>
+                          {getExpiryStatus(batch.daysUntilExpiry)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Origin & Source */}
+                <div className="mb-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                  <p className="text-xs font-semibold text-purple-900 mb-2">Origin & Source</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3 text-purple-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-600">Harvest Origin</p>
+                        <p className="text-xs font-semibold text-gray-900">{batch.harvestOrigin}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3 text-purple-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-600">Country</p>
+                        <p className="text-xs font-semibold text-gray-900">{batch.countryOfOrigin}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600">Created By</p>
+                      <p className="text-xs font-semibold text-gray-900">{batch.createdBy}</p>
+                      <p className="text-xs text-gray-500">{batch.createdByRole}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600">Chemical Status</p>
+                      <p className="text-xs font-semibold text-gray-900 capitalize">{batch.chemicalFree}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Storage & Packaging */}
+                <div className="mb-3 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+                  <p className="text-xs font-semibold text-indigo-900 mb-2">Storage & Packaging</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                    <div className="flex items-center gap-1">
+                      <Package className="h-3 w-3 text-indigo-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-600">Packaging Type</p>
+                        <p className="text-xs font-semibold text-gray-900">{batch.packagingType}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Thermometer className="h-3 w-3 text-indigo-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-600">Storage Temperature</p>
+                        <p className="text-xs font-semibold text-gray-900">{batch.storageTemperature}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600">Quality Grade</p>
+                      <p className="text-xs font-semibold text-gray-900 capitalize">{batch.qualityGrade.replace('-', ' ')}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Certifications */}
+                {batch.certifications.length > 0 && (
+                  <div className="mb-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                    <p className="text-xs font-semibold text-green-900 mb-2">Certifications ({batch.certifications.length})</p>
+                    <div className="flex flex-wrap gap-2">
+                      {batch.certifications.map(cert => (
+                        <Badge key={cert} variant="bg-green-100 text-green-800" className="text-xs">
+                          {cert}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Approval/Rejection Info */}
+                {batch.status === 'approved' && batch.approvedBy && (
+                  <div className="mb-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                    <p className="text-xs font-semibold text-green-900 mb-1">Approval Information</p>
+                    <p className="text-xs text-green-700">
+                      Approved by <strong>{batch.approvedBy}</strong> on{' '}
+                      {batch.approvedDate && new Date(batch.approvedDate).toLocaleDateString('en-IN', { 
+                        year: 'numeric', month: 'long', day: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+                )}
+
+                {batch.status === 'rejected' && batch.rejectionReason && (
+                  <div className="mb-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                    <p className="text-xs font-semibold text-red-900 mb-1">Rejection Reason</p>
+                    <p className="text-xs text-red-700">{batch.rejectionReason}</p>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-2 pt-3 border-t">
+                  <button 
+                    onClick={() => onView?.(batch)}
+                    className="flex items-center gap-1 px-3 py-1.5 text-xs border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <Eye className="h-3 w-3" />
+                    View Details
+                  </button>
+                  <button 
+                    onClick={() => onEdit?.(batch)}
+                    className="flex items-center gap-1 px-3 py-1.5 text-xs border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <Edit className="h-3 w-3" />
+                    Edit
+                  </button>
+                  {showApprovalActions && batch.status === 'pending' && (
+                    <>
+                      <button 
+                        onClick={() => onApprove?.(batch)}
+                        className="flex items-center gap-1 px-3 py-1.5 text-xs bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                      >
+                        <CheckCircle className="h-3 w-3" />
+                        Approve
+                      </button>
+                      <button 
+                        onClick={() => onReject?.(batch)}
+                        className="flex items-center gap-1 px-3 py-1.5 text-xs bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                      >
+                        <XCircle className="h-3 w-3" />
+                        Reject
+                      </button>
+                    </>
+                  )}
+                  <button 
+                    onClick={() => onDelete?.(batch)}
+                    className="flex items-center gap-1 px-3 py-1.5 text-xs border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                    Delete
+                  </button>
                 </div>
               </div>
             </div>

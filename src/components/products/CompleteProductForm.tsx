@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Button } from '../ui';
-import { Save, Scissors, Plus, Info, Eye, EyeOff } from 'lucide-react';
+import { Save, Scissors, Plus, Info, Eye, EyeOff, Package } from 'lucide-react';
 import { ProductInformationForm, type ProductInformationData } from './ProductInformationForm';
+import { ComboInformationForm, type ComboInformationData } from './ComboInformationForm';
 import { ProductImageUpload } from './ProductImageUpload';
 import { ProductDescriptionEditor } from './ProductDescriptionEditor';
 import { ProductVariantForm } from './ProductVariantForm';
@@ -56,6 +57,8 @@ interface SelectedNutrition {
 }
 
 interface CompleteProductFormData extends ProductInformationData {
+  isCombo: boolean;
+  comboData: ComboInformationData;
   images: File[];
   primaryImageIndex: number;
   description: string;
@@ -108,6 +111,7 @@ const mockCuttingTypes = [
 
 export function CompleteProductForm({ onSave, onCancel, initialData }: CompleteProductFormProps) {
   const [formData, setFormData] = useState<CompleteProductFormData>({
+    isCombo: initialData?.isCombo || false,
     nameEn: initialData?.nameEn || '',
     nameTa: initialData?.nameTa || '',
     category: initialData?.category || '',
@@ -122,6 +126,23 @@ export function CompleteProductForm({ onSave, onCancel, initialData }: CompleteP
     isBestSeller: initialData?.isBestSeller || false,
     isRareProduct: initialData?.isRareProduct || false,
     isActive: initialData?.isActive || true,
+    productType: initialData?.productType || '',
+    season: initialData?.season || '',
+    metaTitle: initialData?.metaTitle || '',
+    metaDescription: initialData?.metaDescription || '',
+    comboData: initialData?.comboData || {
+      comboName: '',
+      comboOfferPercent: 0,
+      comboDescription: '',
+      comboItems: [],
+      isBestSeller: false,
+      isRareProduct: false,
+      isActive: true,
+      productType: '',
+      season: '',
+      metaTitle: '',
+      metaDescription: ''
+    },
     images: initialData?.images || [],
     primaryImageIndex: initialData?.primaryImageIndex || 0,
     description: initialData?.description || '',
@@ -194,6 +215,23 @@ export function CompleteProductForm({ onSave, onCancel, initialData }: CompleteP
     setFormData(prev => ({
       ...prev,
       [field]: value
+    }));
+  };
+
+  const handleComboInfoChange = (field: keyof ComboInformationData, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      comboData: {
+        ...prev.comboData,
+        [field]: value
+      }
+    }));
+  };
+
+  const handleToggleCombo = () => {
+    setFormData(prev => ({
+      ...prev,
+      isCombo: !prev.isCombo
     }));
   };
 
@@ -277,10 +315,17 @@ export function CompleteProductForm({ onSave, onCancel, initialData }: CompleteP
   };
 
   const handleSave = () => {
-    // Validate required fields
-    if (!formData.nameEn || !formData.category) {
-      alert('Please fill in all required fields (Product Name English, Category)');
-      return;
+    // Validate required fields based on combo or regular product
+    if (formData.isCombo) {
+      if (!formData.comboData.comboName || !formData.comboData.productType || !formData.comboData.metaTitle || !formData.comboData.metaDescription || formData.comboData.comboItems.length === 0) {
+        alert('Please fill in all required combo fields (Combo Name, Products, Product Type, Meta Title, Meta Description)');
+        return;
+      }
+    } else {
+      if (!formData.nameEn || !formData.category || !formData.productType || !formData.metaTitle || !formData.metaDescription) {
+        alert('Please fill in all required fields (Product Name English, Category, Product Type, Meta Title, Meta Description)');
+        return;
+      }
     }
     
     // Validate at least one variant
@@ -294,6 +339,30 @@ export function CompleteProductForm({ onSave, onCancel, initialData }: CompleteP
 
   return (
     <div className="space-y-6 max-h-[80vh] overflow-y-auto">
+      {/* Header with Combo Toggle */}
+      <Card>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Package className="h-6 w-6 text-blue-600" />
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">
+                {formData.isCombo ? 'Create Combo Product' : 'Create New Product'}
+              </h2>
+              <p className="text-sm text-gray-600">
+                {formData.isCombo ? 'Bundle multiple products with special offers' : 'Add a single product to your catalog'}
+              </p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant={formData.isCombo ? "primary" : "secondary"}
+            onClick={handleToggleCombo}
+          >
+            {formData.isCombo ? 'Switch to Single Product' : 'Switch to Combo Product'}
+          </Button>
+        </div>
+      </Card>
+
       {/* Product Visibility Section */}
       <Card>
         <div className="flex items-center justify-between">
@@ -345,26 +414,48 @@ export function CompleteProductForm({ onSave, onCancel, initialData }: CompleteP
         </div>
       </Card>
 
-      {/* Product Information Section */}
-      <ProductInformationForm
-        data={{
-          nameEn: formData.nameEn,
-          nameTa: formData.nameTa,
-          category: formData.category,
-          hsnNumber: formData.hsnNumber,
-          variant: formData.variant,
-          fishSize: formData.fishSize,
-          maxSize: formData.maxSize,
-          basePriceMin: formData.basePriceMin,
-          basePriceMax: formData.basePriceMax,
-          fishCountMin: formData.fishCountMin,
-          fishCountMax: formData.fishCountMax,
-          isBestSeller: formData.isBestSeller,
-          isRareProduct: formData.isRareProduct,
-          isActive: formData.isActive,
-        }}
-        onChange={handleProductInfoChange}
-      />
+      {/* Product/Combo Information Section - Conditional */}
+      {!formData.isCombo ? (
+        <ProductInformationForm
+          data={{
+            nameEn: formData.nameEn,
+            nameTa: formData.nameTa,
+            category: formData.category,
+            hsnNumber: formData.hsnNumber,
+            variant: formData.variant,
+            fishSize: formData.fishSize,
+            maxSize: formData.maxSize,
+            basePriceMin: formData.basePriceMin,
+            basePriceMax: formData.basePriceMax,
+            fishCountMin: formData.fishCountMin,
+            fishCountMax: formData.fishCountMax,
+            isBestSeller: formData.isBestSeller,
+            isRareProduct: formData.isRareProduct,
+            isActive: formData.isActive,
+            productType: formData.productType,
+            season: formData.season,
+            metaTitle: formData.metaTitle,
+            metaDescription: formData.metaDescription,
+          }}
+          onChange={handleProductInfoChange}
+        />
+      ) : (
+        <ComboInformationForm
+          data={formData.comboData}
+          onChange={handleComboInfoChange}
+          availableCategories={[
+            { id: '1', name: 'Sea Fish' },
+            { id: '2', name: 'Freshwater Fish' },
+            { id: '3', name: 'Shell Fish' },
+            { id: '4', name: 'Dry Fish' },
+            { id: '5', name: 'Meat' },
+            { id: '6', name: 'Eggs' },
+            { id: '7', name: 'Spices' },
+            { id: '8', name: 'Ready to Eat' },
+            { id: '9', name: 'Ready to Cook' }
+          ]}
+        />
+      )}
 
       {/* Product Image Section */}
       <ProductImageUpload

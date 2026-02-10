@@ -17,6 +17,10 @@ interface ProductInformationData {
   isBestSeller: boolean;
   isRareProduct: boolean;
   isActive: boolean;
+  productType: 'fresh' | 'frozen' | 'processed' | '';
+  season: string;
+  metaTitle: string;
+  metaDescription: string;
 }
 
 interface ProductInformationFormProps {
@@ -26,19 +30,20 @@ interface ProductInformationFormProps {
 
 // Mock categories data - in real app, this would come from API/context
 const mockCategories = [
+  // Hub Categories
   {
     id: '1',
     name: 'Sea Fish',
     nameTa: 'கடல் மீன்',
     isActive: true,
-    applicableFor: 'both' as const
+    applicableFor: 'hub' as const
   },
   {
     id: '2',
     name: 'Freshwater Fish',
     nameTa: 'நன்னீர் மீன்',
     isActive: true,
-    applicableFor: 'both' as const
+    applicableFor: 'hub' as const
   },
   {
     id: '3',
@@ -52,34 +57,42 @@ const mockCategories = [
     name: 'Dry Fish',
     nameTa: 'காய்ந்த மீன்',
     isActive: true,
-    applicableFor: 'both' as const
+    applicableFor: 'hub' as const
   },
+  // Store Categories
   {
     id: '5',
-    name: 'Chicken',
-    nameTa: 'கோழி',
+    name: 'Meat',
+    nameTa: 'இறைச்சி',
     isActive: true,
     applicableFor: 'store' as const
   },
   {
     id: '6',
-    name: 'Mutton',
-    nameTa: 'ஆட்டு இறைச்சி',
-    isActive: true,
-    applicableFor: 'store' as const
-  },
-  {
-    id: '7',
     name: 'Eggs',
     nameTa: 'முட்டை',
     isActive: true,
     applicableFor: 'store' as const
   },
   {
+    id: '7',
+    name: 'Spices',
+    nameTa: 'மசாலா',
+    isActive: true,
+    applicableFor: 'store' as const
+  },
+  {
     id: '8',
-    name: 'Spices & Seasonings',
-    nameTa: 'மசாலா பொருட்கள்',
-    isActive: false,
+    name: 'Ready to Eat',
+    nameTa: 'உடனடி உணவு',
+    isActive: true,
+    applicableFor: 'store' as const
+  },
+  {
+    id: '9',
+    name: 'Ready to Cook',
+    nameTa: 'சமைக்க தயார்',
+    isActive: true,
     applicableFor: 'store' as const
   }
 ];
@@ -96,10 +109,11 @@ export function ProductInformationForm({ data, onChange }: ProductInformationFor
       // Only show active categories
       if (!category.isActive) return false;
       
-      // Filter by applicability
-      return category.applicableFor === 'both' || 
-             category.applicableFor === userType ||
-             userType === 'both'; // Super admin sees all
+      // Super admin sees all categories
+      if (userType === 'both') return true;
+      
+      // Filter by applicability for hub/store users
+      return category.applicableFor === userType;
     });
   };
 
@@ -240,7 +254,7 @@ export function ProductInformationForm({ data, onChange }: ProductInformationFor
       </div>
 
       {/* Third Row: Base Price and Fish Count */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 mb-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Base Price (₹) *
@@ -295,6 +309,71 @@ export function ProductInformationForm({ data, onChange }: ProductInformationFor
               />
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Fourth Row: Product Type and Season */}
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 mb-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Product Type *
+          </label>
+          <select
+            value={data.productType}
+            onChange={(e) => onChange('productType', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select Type</option>
+            <option value="fresh">Fresh</option>
+            <option value="frozen">Frozen</option>
+            <option value="processed">Processed</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Season
+          </label>
+          <input
+            type="text"
+            value={data.season}
+            onChange={(e) => onChange('season', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="April - December"
+          />
+        </div>
+      </div>
+
+      {/* Fifth Row: SEO Meta Tags */}
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Meta Title Tag *
+          </label>
+          <input
+            type="text"
+            value={data.metaTitle}
+            onChange={(e) => onChange('metaTitle', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Fresh Seer Fish - Premium Quality | BayHawk"
+            maxLength={60}
+          />
+          <p className="text-xs text-gray-500 mt-1">{data.metaTitle.length}/60 characters</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Meta Description *
+          </label>
+          <textarea
+            value={data.metaDescription}
+            onChange={(e) => onChange('metaDescription', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Buy fresh seer fish online. Premium quality, cleaned and delivered to your doorstep. Rich in omega-3 and protein."
+            rows={3}
+            maxLength={160}
+          />
+          <p className="text-xs text-gray-500 mt-1">{data.metaDescription.length}/160 characters</p>
         </div>
       </div>
     </Card>

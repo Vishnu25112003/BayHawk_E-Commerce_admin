@@ -398,23 +398,30 @@ export function ProductApprovalPage() {
             size="xl"
           >
             {selectedRequest && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Product Image */}
-              <div>
-                <img 
-                  src={selectedRequest.images[0]} 
-                  alt={selectedRequest.productName}
-                  className="w-full h-64 object-cover rounded-lg bg-gray-100"
-                />
-              </div>
-              
-              {/* Product Info */}
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-2xl font-bold mb-2">{selectedRequest.productName}</h3>
-                  <p className="text-gray-600 mb-3">{selectedRequest.productNameTa}</p>
-                  <div className="flex gap-2 mb-3">
+              <div className="space-y-6 max-h-[70vh] overflow-y-auto">
+                {/* Product Images */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {selectedRequest.images.map((img, idx) => (
+                    <img 
+                      key={idx}
+                      src={img} 
+                      alt={`${selectedRequest.productName} ${idx + 1}`}
+                      className="w-full h-32 object-cover rounded-lg bg-gray-100 border"
+                    />
+                  ))}
+                </div>
+                
+                {/* Product Header */}
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-100">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{selectedRequest.productName}</h3>
+                      <p className="text-lg text-gray-700 mb-3">{selectedRequest.productNameTa}</p>
+                      <p className="text-gray-600 leading-relaxed">{selectedRequest.description}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2">
                     <Badge variant={selectedRequest.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
                       selectedRequest.status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
                       {selectedRequest.status.charAt(0).toUpperCase() + selectedRequest.status.slice(1)}
@@ -423,75 +430,131 @@ export function ProductApprovalPage() {
                       selectedRequest.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}>
                       {selectedRequest.priority.charAt(0).toUpperCase() + selectedRequest.priority.slice(1)} Priority
                     </Badge>
+                    <Badge variant="bg-blue-100 text-blue-800">
+                      {selectedRequest.category}
+                    </Badge>
+                    <Badge variant={selectedRequest.sourceType === 'hub' ? 'bg-purple-100 text-purple-800' : 'bg-orange-100 text-orange-800'}>
+                      {selectedRequest.sourceType.toUpperCase()}
+                    </Badge>
                   </div>
-                  <p className="text-gray-700">{selectedRequest.description}</p>
                 </div>
                 
-                <div className="border-t pt-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-2xl font-bold text-green-600">₹{selectedRequest.price}</span>
-                    <span className="text-gray-500">per {selectedRequest.unit}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Request Details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t">
-              <div className="space-y-3">
-                <h4 className="font-semibold">Request Information</h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Request ID:</span>
-                    <span className="font-medium">{selectedRequest.id}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Requested By:</span>
-                    <span className="font-medium">{selectedRequest.requestedBy}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Role:</span>
-                    <span className="font-medium">{selectedRequest.requestedByRole}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Date:</span>
-                    <span className="font-medium">{new Date(selectedRequest.requestDate).toLocaleDateString()}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Source:</span>
-                    <span className="font-medium capitalize">{selectedRequest.sourceType}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Category:</span>
-                    <span className="font-medium">{selectedRequest.category}</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <h4 className="font-semibold">Product Specifications</h4>
-                <div className="space-y-2">
-                  {Object.entries(selectedRequest.specifications).map(([key, value]) => (
-                    <div key={key} className="flex justify-between">
-                      <span className="text-gray-600 capitalize">{key}:</span>
-                      <span className="font-medium">{value}</span>
+                {/* Pricing Information */}
+                <Card className="p-6 bg-green-50 border-green-200">
+                  <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <span className="text-green-600">💰</span> Pricing Details
+                  </h4>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Price per Unit</p>
+                      <p className="text-3xl font-bold text-green-600">₹{selectedRequest.price}</p>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            {selectedRequest.status === 'rejected' && selectedRequest.reason && (
-              <div className="p-4 bg-red-50 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <AlertCircle className="h-5 w-5 text-red-600" />
-                  <span className="font-semibold text-red-800">Rejection Reason</span>
-                </div>
-                <p className="text-red-700">{selectedRequest.reason}</p>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600 mb-1">Unit</p>
+                      <p className="text-xl font-semibold text-gray-900">{selectedRequest.unit}</p>
+                    </div>
+                  </div>
+                </Card>
+                
+                {/* Request Information */}
+                <Card className="p-6">
+                  <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <span>📋</span> Request Information
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600 font-medium">Request ID:</span>
+                        <span className="font-semibold text-blue-600">{selectedRequest.id}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600 font-medium">Requested By:</span>
+                        <span className="font-semibold">{selectedRequest.requestedBy}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600 font-medium">Role:</span>
+                        <span className="font-semibold">{selectedRequest.requestedByRole}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600 font-medium">Request Date:</span>
+                        <span className="font-semibold">{new Date(selectedRequest.requestDate).toLocaleDateString('en-IN', { 
+                          year: 'numeric', month: 'long', day: 'numeric' 
+                        })}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600 font-medium">Source Type:</span>
+                        <span className="font-semibold capitalize">{selectedRequest.sourceType}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600 font-medium">Category:</span>
+                        <span className="font-semibold">{selectedRequest.category}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+                
+                {/* Product Specifications */}
+                <Card className="p-6 bg-blue-50 border-blue-200">
+                  <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <span>📊</span> Product Specifications
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {Object.entries(selectedRequest.specifications).map(([key, value]) => (
+                      <div key={key} className="bg-white p-4 rounded-lg border">
+                        <p className="text-sm text-gray-600 capitalize mb-1">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+                        <p className="font-semibold text-gray-900">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+                
+                {/* Rejection Reason */}
+                {selectedRequest.status === 'rejected' && selectedRequest.reason && (
+                  <Card className="p-6 bg-red-50 border-red-200">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="h-6 w-6 text-red-600 flex-shrink-0 mt-1" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-red-800 mb-2">Rejection Reason</h4>
+                        <p className="text-red-700 leading-relaxed">{selectedRequest.reason}</p>
+                      </div>
+                    </div>
+                  </Card>
+                )}
+                
+                {/* Action Buttons */}
+                {selectedRequest.status === 'pending' && (
+                  <div className="flex gap-3 pt-4 border-t">
+                    <Button 
+                      variant="secondary"
+                      onClick={() => setShowViewModal(false)}
+                      className="flex-1"
+                    >
+                      Close
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setShowViewModal(false);
+                        handleReject(selectedRequest);
+                      }}
+                      className="flex-1 bg-red-600 hover:bg-red-700"
+                    >
+                      Reject
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setShowViewModal(false);
+                        handleApprove(selectedRequest);
+                      }}
+                      className="flex-1 bg-green-600 hover:bg-green-700"
+                    >
+                      Approve
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
-          </div>
-        )}
       </Modal>
 
       {/* Approve Modal */}
