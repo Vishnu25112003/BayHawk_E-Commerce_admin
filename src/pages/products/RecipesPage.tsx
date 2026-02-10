@@ -592,8 +592,8 @@ export function RecipesPage() {
               type="button"
               onClick={() => {
                 // Validate required fields
-                if (!newRecipe.name || !newRecipe.category || !videoUrl) {
-                  alert('Please fill in all required fields including recipe name, category, and video URL');
+                if (!newRecipe.name || !newRecipe.category) {
+                  alert('Please fill in all required fields: recipe name and category');
                   return;
                 }
 
@@ -612,7 +612,7 @@ export function RecipesPage() {
                   ingredients: newRecipe.ingredients || [],
                   instructions: newRecipe.instructions || [],
                   images: images,
-                  videoUrl: videoUrl,
+                  videoUrl: videoUrl || undefined,
                   additionalVideos: videoFiles.map(vf => ({
                     id: vf.id,
                     type: 'file' as const,
@@ -892,13 +892,6 @@ export function RecipesPage() {
               <button 
                 type="button"
                 onClick={() => {
-                  // Validate required fields
-                  const finalVideoUrl = videoUrl || selectedRecipe.videoUrl;
-                  if (!finalVideoUrl) {
-                    alert('Video URL is required');
-                    return;
-                  }
-
                   const images = mediaItems.filter(item => item.type === 'image').map(item => item.url);
                   const videoFiles = mediaItems.filter(item => item.type === 'video-file');
 
@@ -914,7 +907,7 @@ export function RecipesPage() {
                     ingredients: newRecipe.ingredients || selectedRecipe.ingredients,
                     instructions: newRecipe.instructions || selectedRecipe.instructions,
                     images: images.length > 0 ? images : selectedRecipe.images,
-                    videoUrl: finalVideoUrl,
+                    videoUrl: videoUrl || selectedRecipe.videoUrl || undefined,
                     additionalVideos: videoFiles.length > 0 ? videoFiles.map(vf => ({
                       id: vf.id,
                       type: 'file' as const,

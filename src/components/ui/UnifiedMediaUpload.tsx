@@ -34,7 +34,7 @@ export function UnifiedMediaUpload({
   const [urlError, setUrlError] = useState('');
 
   const validateVideoUrl = (url: string) => {
-    if (!url) return 'Video URL is required';
+    if (!url) return '';
     
     try {
       new URL(url);
@@ -144,7 +144,7 @@ export function UnifiedMediaUpload({
       {/* Video URL Section - Required */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Recipe Video URL * <span className="text-red-500">(Required)</span>
+          Recipe Video URL (Optional)
         </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -156,7 +156,7 @@ export function UnifiedMediaUpload({
             value={videoUrl}
             onChange={(e) => handleVideoUrlChange(e.target.value)}
             className={`pl-10 ${urlError ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
-            required
+            
           />
           {videoUrl && !urlError && (
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -333,7 +333,7 @@ export function UnifiedMediaUpload({
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
         <h4 className="text-sm font-medium text-blue-900 mb-1">Media Guidelines:</h4>
         <ul className="text-xs text-blue-800 space-y-1">
-          <li>• <strong>Video URL is required</strong> - Use YouTube, Vimeo, or direct video links</li>
+          <li>• <strong>Video URL is optional</strong> - Use YouTube, Vimeo, or direct video links</li>
           <li>• Add recipe images to showcase the cooking process and final dish</li>
           <li>• Optional video files for additional cooking demonstrations</li>
           <li>• Keep files under 10MB for better performance</li>

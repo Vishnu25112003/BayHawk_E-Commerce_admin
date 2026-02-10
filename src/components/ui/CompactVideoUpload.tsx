@@ -31,7 +31,7 @@ export function CompactVideoUpload({
   const [urlError, setUrlError] = useState('');
 
   const validateVideoUrl = (url: string) => {
-    if (!url) return 'Video URL is required';
+    if (!url) return '';
     
     // Basic URL validation
     try {
@@ -118,7 +118,7 @@ export function CompactVideoUpload({
       {/* Video URL Input - Mandatory */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Video URL * <span className="text-red-500">(Required)</span>
+          Video URL (Optional)
         </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -130,7 +130,7 @@ export function CompactVideoUpload({
             value={videoUrl}
             onChange={(e) => handleVideoUrlChange(e.target.value)}
             className={`pl-10 ${urlError ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
-            required
+            
           />
           {videoUrl && !urlError && (
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
