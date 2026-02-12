@@ -16,6 +16,7 @@ import { EnhancedOrderItem } from './EnhancedOrderItem';
 import { SavedAddressSelector } from './SavedAddressSelector';
 import { PaymentStatusSelector } from './PaymentStatusSelector';
 import { SimpleDiscountEntry } from './SimpleDiscountEntry';
+import { SpecialProductNotice } from './SpecialProductNotice';
 import { 
   X, 
   Search, 
@@ -48,6 +49,8 @@ const manualOrderSchema = z.object({
   state: z.string().min(2, 'State is required'),
   pincode: z.string().regex(/^\d{6}$/, 'Pincode must be 6 digits'),
   addressType: z.enum(['home', 'work', 'other']),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
   items: z.array(z.object({
     productId: z.string().min(1, 'Product is required'),
     variantId: z.string().min(1, 'Variant is required'),
@@ -85,6 +88,8 @@ export function ManualOrderForm({ moduleType, products = sampleProducts, hubs = 
   const [isEliteMember, setIsEliteMember] = useState(false);
   const [selectedSavedAddress, setSelectedSavedAddress] = useState<any>(null);
   const [showManualAddress, setShowManualAddress] = useState(false);
+  const [showMapPicker, setShowMapPicker] = useState(false);
+  const [mapLocation, setMapLocation] = useState<{lat: number; lng: number} | null>(null);
   
   const surgeCharges = 30;
   const deliveryCharges = 50;
@@ -529,6 +534,90 @@ export function ManualOrderForm({ moduleType, products = sampleProducts, hubs = 
                   placeholder="Landmark, Area"
                 />
 
+                {/* Pin Map Location */}
+                <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <h5 className="font-semibold text-blue-900">Pin Map Location</h5>
+                        <p className="text-xs text-blue-700">Mark exact delivery location on map</p>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => setShowMapPicker(!showMapPicker)}
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      {showMapPicker ? 'Close Map' : 'Open Map'}
+                    </Button>
+                  </div>
+
+                  {mapLocation && (
+                    <div className="flex items-center gap-2 text-sm text-blue-800 bg-white p-2 rounded border border-blue-300">
+                      <MapPin className="h-4 w-4" />
+                      <span className="font-medium">Location Pinned:</span>
+                      <span className="text-xs">Lat: {mapLocation.lat.toFixed(6)}, Lng: {mapLocation.lng.toFixed(6)}</span>
+                    </div>
+                  )}
+
+                  {showMapPicker && (
+                    <div className="mt-3 space-y-3">
+                      <div className="bg-white border-2 border-blue-300 rounded-lg p-4 h-64 flex items-center justify-center">
+                        <div className="text-center">
+                          <MapPin className="h-12 w-12 text-blue-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-600 mb-3">Click on map to pin location</p>
+                          <div className="text-xs text-gray-500">
+                            <p>Map integration placeholder</p>
+                            <p className="mt-1">Integrate Google Maps / Leaflet here</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Quick Location Buttons */}
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => {
+                            if (navigator.geolocation) {
+                              navigator.geolocation.getCurrentPosition((position) => {
+                                const location = {
+                                  lat: position.coords.latitude,
+                                  lng: position.coords.longitude
+                                };
+                                setMapLocation(location);
+                                setValue('latitude', location.lat);
+                                setValue('longitude', location.lng);
+                              });
+                            }
+                          }}
+                          className="flex-1"
+                        >
+                          Use Current Location
+                        </Button>
+                        {mapLocation && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              setMapLocation(null);
+                              setValue('latitude', undefined);
+                              setValue('longitude', undefined);
+                            }}
+                            className="text-red-600"
+                          >
+                            Clear Location
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Input
                     label="Pincode"
@@ -901,33 +990,10 @@ export function ManualOrderForm({ moduleType, products = sampleProducts, hubs = 
             </div>
 
             {/* Special Product Notices */}
-            {(hasRareProducts || hasExoticProducts) && (
-              <div className="space-y-2">
-                {hasRareProducts && (
-                  <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                    <div className="flex items-start gap-2">
-                      <Crown className="h-4 w-4 text-orange-600 mt-0.5" />
-                      <div className="text-sm text-orange-800">
-                        <p className="font-medium">Rare Products in Order:</p>
-                        <p>These items have limited availability. Alternate products will be delivered if rare items are unavailable during procurement.</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {hasExoticProducts && (
-                  <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                    <div className="flex items-start gap-2">
-                      <Clock className="h-4 w-4 text-purple-600 mt-0.5" />
-                      <div className="text-sm text-purple-800">
-                        <p className="font-medium">Exotic Products in Order:</p>
-                        <p>These imported delicacies require 2-7 days for delivery due to quality checks and import procedures.</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+            <SpecialProductNotice 
+              hasRareProducts={hasRareProducts}
+              hasExoticProducts={hasExoticProducts}
+            />
           </Card>
         )}
 

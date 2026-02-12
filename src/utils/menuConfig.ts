@@ -80,14 +80,6 @@ export const HUB_MENU: MenuItem[] = [
         module: "hub",
         requiredRoles: ["hub_main_admin"],
       },
-      {
-        id: "hub-delivery-agents",
-        label: "Delivery Agents",
-        icon: null,
-        path: "/hub/team/delivery-agents",
-        module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_delivery"],
-      },
     ],
   },
   {
@@ -346,14 +338,6 @@ export const STORE_MENU: MenuItem[] = [
         module: "store",
         requiredRoles: ["store_main_admin"],
       },
-      {
-        id: "store-delivery-agents",
-        label: "Delivery Agents",
-        icon: null,
-        path: "/store/team/delivery-agents",
-        module: "store",
-        requiredRoles: ["store_main_admin", "store_delivery"],
-      },
     ],
   },
   {
@@ -604,13 +588,6 @@ export const SUPER_ADMIN_MENU: MenuItem[] = [
         label: "Team Members",
         icon: null,
         path: "/team",
-        module: "both",
-      },
-      {
-        id: "delivery-agents",
-        label: "Delivery Agents",
-        icon: null,
-        path: "/team/delivery-agents",
         module: "both",
       },
       {

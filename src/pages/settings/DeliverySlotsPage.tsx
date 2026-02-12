@@ -8,6 +8,7 @@ interface DeliverySlot {
   startTime: string;
   endTime: string;
   capacity: number;
+  cutoffTime: string;
   isActive: boolean;
   days: string[];
 }
@@ -27,6 +28,7 @@ export function DeliverySlotsPage() {
       startTime: '07:00',
       endTime: '09:00',
       capacity: 50,
+      cutoffTime: '06:00',
       isActive: true,
       days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     },
@@ -36,6 +38,7 @@ export function DeliverySlotsPage() {
       startTime: '13:00',
       endTime: '15:00',
       capacity: 50,
+      cutoffTime: '12:00',
       isActive: true,
       days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     },
@@ -45,6 +48,7 @@ export function DeliverySlotsPage() {
       startTime: '19:00',
       endTime: '21:00',
       capacity: 50,
+      cutoffTime: '18:00',
       isActive: true,
       days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     }
@@ -76,6 +80,7 @@ export function DeliverySlotsPage() {
       startTime: '10:00',
       endTime: '12:00',
       capacity: 30,
+      cutoffTime: '09:00',
       isActive: true,
       days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
     };
@@ -138,15 +143,28 @@ export function DeliverySlotsPage() {
       <Card>
         <div className="flex items-center gap-3 mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
           <Clock className="h-5 w-5 text-blue-600" />
-          <div>
+          <div className="flex-1">
             <h2 className="text-lg font-semibold text-gray-900">Time Slots Configuration</h2>
-            <p className="text-sm text-gray-600">Set up available delivery time slots</p>
+            <p className="text-sm text-gray-600">Set up available delivery time slots with cut-off times</p>
+          </div>
+        </div>
+
+        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="flex items-start gap-3">
+            <div className="p-1 bg-yellow-100 rounded">
+              <Clock className="h-4 w-4 text-yellow-700" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-yellow-900 text-sm">Cut-off Time Limit</h3>
+              <p className="text-sm text-yellow-800 mt-1">
+                Set a cut-off time for each delivery slot. Orders placed after the cut-off time will not be accepted for that slot.
+                For example, if a slot is 7:00 AM - 9:00 AM with a cut-off at 6:00 AM, customers must order before 6:00 AM to get delivery in that slot.
+              </p>
+            </div>
           </div>
         </div>
 
         <div className="space-y-6">
-          <p className="text-sm text-gray-700 font-medium">Cut-off time limit for every delivery slot.</p>
-          
           {slots.map((slot) => (
             <div key={slot.id} className="border border-gray-200 rounded-lg p-4 space-y-4">
               <div className="flex items-center justify-between">
@@ -172,7 +190,7 @@ export function DeliverySlotsPage() {
                 </div>
               </div>
 
-              <div className="grid gap-4 grid-cols-4">
+              <div className="grid gap-4 grid-cols-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Slot Name</label>
                   <Input
@@ -204,6 +222,22 @@ export function DeliverySlotsPage() {
                     />
                     <Clock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
                   </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Cut-off Time
+                    <span className="text-xs text-gray-500 ml-1">(Order deadline)</span>
+                  </label>
+                  <div className="relative">
+                    <Input
+                      type="time"
+                      value={slot.cutoffTime}
+                      onChange={(e) => updateSlot(slot.id, { cutoffTime: e.target.value })}
+                      className="w-full bg-yellow-50 border-yellow-300"
+                    />
+                    <Clock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-yellow-600 pointer-events-none" />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Orders accepted until</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Capacity</label>

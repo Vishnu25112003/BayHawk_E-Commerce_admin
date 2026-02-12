@@ -17,6 +17,8 @@ interface DeliveryAgent {
   phone: string;
   vehicleNo: string;
   vehicleType: string;
+  agentType: 'employee' | 'partner';
+  monthlySalary?: number;
   rating: number;
   deliveries: number;
   status: 'available' | 'delivering' | 'offline';
@@ -91,6 +93,7 @@ export function DeliveryAgentsList({
   const [searchValue, setSearchValue] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [vehicleFilter, setVehicleFilter] = useState('');
+  const [agentTypeFilter, setAgentTypeFilter] = useState('');
   const [bulkActionModal, setBulkActionModal] = useState<{
     isOpen: boolean;
     actionId: string;
@@ -106,8 +109,9 @@ export function DeliveryAgentsList({
     
     const matchesStatus = !statusFilter || agent.status === statusFilter;
     const matchesVehicle = !vehicleFilter || agent.vehicleType === vehicleFilter;
+    const matchesAgentType = !agentTypeFilter || agent.agentType === agentTypeFilter;
     
-    return matchesSearch && matchesStatus && matchesVehicle;
+    return matchesSearch && matchesStatus && matchesVehicle && matchesAgentType;
   });
 
   const {
@@ -150,6 +154,17 @@ export function DeliveryAgentsList({
         onSearchChange={setSearchValue}
         placeholder="Search agents..."
         filters={[
+          {
+            key: 'agentType',
+            label: 'Agent Type',
+            value: agentTypeFilter,
+            onChange: setAgentTypeFilter,
+            options: [
+              { value: '', label: 'All Types' },
+              { value: 'employee', label: 'Employees' },
+              { value: 'partner', label: 'Partners' }
+            ]
+          },
           {
             key: 'status',
             label: 'Status',
@@ -247,9 +262,12 @@ export function DeliveryAgentsList({
                           <StatusIcon className="h-3 w-3" />
                           {agent.status.charAt(0).toUpperCase() + agent.status.slice(1)}
                         </Badge>
+                        <Badge variant={agent.agentType === 'employee' ? 'bg-purple-100 text-purple-800' : 'bg-orange-100 text-orange-800'}>
+                          {agent.agentType === 'employee' ? '👤 Employee' : '🤝 Partner'}
+                        </Badge>
                       </div>
                       
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-gray-600">
                         <div className="flex items-center gap-1">
                           <Phone className="h-4 w-4" />
                           <span className="truncate">{agent.phone}</span>
@@ -266,6 +284,16 @@ export function DeliveryAgentsList({
                           <MapPin className="h-4 w-4" />
                           <span>{agent.deliveries} deliveries</span>
                         </div>
+                        {agent.agentType === 'employee' && agent.monthlySalary && (
+                          <div className="flex items-center gap-1 text-purple-600 font-medium">
+                            <span>₹{agent.monthlySalary.toLocaleString()}/mo</span>
+                          </div>
+                        )}
+                        {agent.agentType === 'partner' && (
+                          <div className="flex items-center gap-1 text-orange-600 font-medium">
+                            <span>Per Order</span>
+                          </div>
+                        )}
                       </div>
                     </div>
 

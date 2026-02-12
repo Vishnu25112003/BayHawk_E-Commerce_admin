@@ -9,7 +9,6 @@ import { DeliveryRoute } from './components/DeliveryRoute';
 import { MultiRoleRoute } from './components/MultiRoleRoute';
 import { PERMISSIONS } from './utils/rbac';
 import { ProcurementReportsPage } from './pages/reports/ProcurementReportsPage';
-import { DeliveryAgentPage } from './pages/delivery/DeliveryAgentPage';
 import { LoginPage } from './pages/dashboard/auth/LoginPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import ProcurementDashboard from './pages/dashboard/ProcurementDashboard';
@@ -124,8 +123,7 @@ function AppRoutes() {
         {/* Hub Orders Routes - Multiple Roles Accessible */}
         <Route path="hub/orders/*" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_packing', 'hub_delivery']}><OrdersPage /></MultiRoleRoute>} />
         
-        {/* Hub Team Routes - Delivery Accessible */}
-        <Route path="hub/team/delivery-agents" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
+        {/* Hub Team Routes */}
         <Route path="hub/team/*" element={<ProtectedRouteComponent permission={PERMISSIONS.HUB_TEAM_VIEW}><TeamPage /></ProtectedRouteComponent>} />
         
         {/* Hub Labeling Routes - Packing Accessible */}
@@ -187,8 +185,7 @@ function AppRoutes() {
         {/* Store Orders Routes - Multiple Roles Accessible */}
         <Route path="store/orders/*" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_packing', 'store_delivery']}><OrdersPage /></MultiRoleRoute>} />
         
-        {/* Store Team Routes - Delivery Accessible */}
-        <Route path="store/team/delivery-agents" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
+        {/* Store Team Routes */}
         <Route path="store/team/*" element={<ProtectedRouteComponent permission={PERMISSIONS.STORE_TEAM_VIEW}><TeamPage /></ProtectedRouteComponent>} />
         
         {/* Store Labeling Routes - Packing Accessible */}
@@ -218,7 +215,6 @@ function AppRoutes() {
         {/* Store Routes */}
         <Route path="store/orders/manual" element={<StoreManualOrderPage />} />
         <Route path="store/orders/pre-orders" element={<StorePreOrderPage />} />
-        <Route path="store/team/delivery-agents" element={<DeliveryAgentPage />} />
         <Route path="store/team/custom-roles" element={<CustomRolesPage />} />
         <Route path="store/products/categories" element={<CategoriesPage />} />
         <Route path="store/products/cutting-types" element={<CuttingTypePage />} />
@@ -277,7 +273,6 @@ function AppRoutes() {
         <Route path="referral" element={<ReferralPage />} />
         <Route path="hubs" element={<HubPage />} />
         <Route path="stores" element={<StorePage />} />
-        <Route path="team/delivery-agents" element={<DeliveryAgentPage />} />
         <Route path="team/custom-roles" element={<CustomRolesPage />} />
         <Route path="recipes" element={<RecipesPage />} />
         <Route path="membership" element={<MembershipPage />} />

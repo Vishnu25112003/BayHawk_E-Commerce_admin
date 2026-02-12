@@ -1,5 +1,5 @@
 import { Button, Badge } from '../../ui';
-import { Crown, Clock, Package, AlertTriangle, X, Minus, Plus, ArrowRight } from 'lucide-react';
+import { Crown, Clock, Package, X, Minus, Plus, ArrowRight } from 'lucide-react';
 import { formatCurrency } from '../../../utils/helpers';
 import type { Product } from '../../../types';
 
@@ -143,21 +143,53 @@ export function EnhancedOrderItem({
       {/* Product Type Information */}
       <div className="border-t pt-3">
         {isRare && (
-          <div className="flex items-start gap-2 p-2 bg-orange-50 border border-orange-200 rounded">
-            <AlertTriangle className="h-4 w-4 text-orange-600 mt-0.5" />
-            <div className="text-xs text-orange-800">
-              <p className="font-medium">Rare Product Notice:</p>
-              <p>Available for next slot delivery. {hasAlternate ? 'Alternate product selected.' : 'No alternate selected - may be unavailable.'}</p>
+          <div className="p-3 bg-orange-50 border-l-4 border-orange-400 rounded">
+            <div className="flex items-start gap-2 mb-2">
+              <Crown className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
+              <p className="font-semibold text-orange-900 text-sm">Rare Product</p>
+            </div>
+            <div className="space-y-1.5 text-xs text-orange-800 ml-6">
+              <div className="flex gap-2">
+                <span className="font-medium min-w-[90px]">Availability:</span>
+                <span>Can order for next available slot</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-medium min-w-[90px]">Requirement:</span>
+                <span>Must ask customer for alternate product preference</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-medium min-w-[90px]">Fallback:</span>
+                <span>If unavailable during procurement, alternate will be delivered</span>
+              </div>
+              {hasAlternate && (
+                <div className="mt-2 pt-2 border-t border-orange-200">
+                  <span className="font-medium text-green-700">✓ Alternate product selected</span>
+                </div>
+              )}
+              {!hasAlternate && (
+                <div className="mt-2 pt-2 border-t border-orange-200">
+                  <span className="font-medium text-red-700">⚠ No alternate selected - Please add one</span>
+                </div>
+              )}
             </div>
           </div>
         )}
         
         {isExotic && (
-          <div className="flex items-start gap-2 p-2 bg-purple-50 border border-purple-200 rounded">
-            <Clock className="h-4 w-4 text-purple-600 mt-0.5" />
-            <div className="text-xs text-purple-800">
-              <p className="font-medium">Exotic Product:</p>
-              <p>Requires 2-7 days for delivery. Imported delicacy with premium quality assurance.</p>
+          <div className="p-3 bg-purple-50 border-l-4 border-purple-400 rounded">
+            <div className="flex items-start gap-2 mb-2">
+              <Clock className="h-4 w-4 text-purple-600 mt-0.5 flex-shrink-0" />
+              <p className="font-semibold text-purple-900 text-sm">Exotic Product</p>
+            </div>
+            <div className="space-y-1.5 text-xs text-purple-800 ml-6">
+              <div className="flex gap-2">
+                <span className="font-medium min-w-[90px]">Delivery Time:</span>
+                <span>Requires 2-7 days for delivery</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-medium min-w-[90px]">Reason:</span>
+                <span>Imported delicacy requiring quality checks and import procedures</span>
+              </div>
             </div>
           </div>
         )}

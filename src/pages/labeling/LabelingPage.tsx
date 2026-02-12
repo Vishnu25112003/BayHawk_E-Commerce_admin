@@ -197,7 +197,7 @@ export function LabelingPage() {
     orientation: "portrait",
   });
 
-  const [activeTab, setActiveTab] = useState<"design" | "data" | "preview" | "slips" | "bill">(
+  const [activeTab, setActiveTab] = useState<"design" | "data" | "preview" | "slips" | "bill" | "print">(
     "design",
   );
   const [selectedFields, setSelectedFields] = useState<string[]>(
@@ -206,6 +206,25 @@ export function LabelingPage() {
   const [labelQuantity, setLabelQuantity] = useState(1);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
+
+  // Print Filters State
+  const [printFilters, setPrintFilters] = useState({
+    dateFrom: '',
+    dateTo: '',
+    customer: '',
+    invoiceNumber: '',
+    product: '',
+    selectedOrders: [] as string[]
+  });
+
+  // Mock Orders Data
+  const mockOrders = [
+    { id: 'ORD-001', date: '2024-02-10', customer: 'Rajesh Kumar', invoice: 'INV-2024-001', product: 'Fresh Salmon', amount: 850 },
+    { id: 'ORD-002', date: '2024-02-10', customer: 'Priya Sharma', invoice: 'INV-2024-002', product: 'Tuna Steak', amount: 1200 },
+    { id: 'ORD-003', date: '2024-02-11', customer: 'Arun Patel', invoice: 'INV-2024-003', product: 'Prawns', amount: 650 },
+    { id: 'ORD-004', date: '2024-02-11', customer: 'Lakshmi Devi', invoice: 'INV-2024-004', product: 'Crab', amount: 1450 },
+    { id: 'ORD-005', date: '2024-02-12', customer: 'Rajesh Kumar', invoice: 'INV-2024-005', product: 'Lobster', amount: 2100 },
+  ];
 
   // Slip Configuration State
   const [slipConfig, setSlipConfig] = useState<SlipConfig>({
@@ -479,6 +498,15 @@ export function LabelingPage() {
                     <Receipt className="mr-1 h-3 w-3" />
                     Bill
                   </Button>
+                  <Button
+                    variant={activeTab === "print" ? "primary" : "secondary"}
+                    size="sm"
+                    onClick={() => setActiveTab("print")}
+                    className="text-xs sm:text-sm"
+                  >
+                    <Printer className="mr-1 h-3 w-3" />
+                    Print Slips
+                  </Button>
                 </div>
               </div>
 
@@ -514,6 +542,153 @@ export function LabelingPage() {
                     alert("Bill saved successfully!");
                   }}
                 />
+              )}
+
+              {activeTab === "print" && (
+                <div className="space-y-6">
+                  {/* Filters */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 className="font-semibold mb-4 flex items-center gap-2">
+                      <Calendar className="h-5 w-5 text-blue-600" />
+                      Filter Orders for Printing
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <Input
+                        label="From Date"
+                        type="date"
+                        value={printFilters.dateFrom}
+                        onChange={(e) => setPrintFilters({ ...printFilters, dateFrom: e.target.value })}
+                      />
+                      <Input
+                        label="To Date"
+                        type="date"
+                        value={printFilters.dateTo}
+                        onChange={(e) => setPrintFilters({ ...printFilters, dateTo: e.target.value })}
+                      />
+                      <Input
+                        label="Customer Name"
+                        value={printFilters.customer}
+                        onChange={(e) => setPrintFilters({ ...printFilters, customer: e.target.value })}
+                        placeholder="Search customer..."
+                      />
+                      <Input
+                        label="Invoice Number"
+                        value={printFilters.invoiceNumber}
+                        onChange={(e) => setPrintFilters({ ...printFilters, invoiceNumber: e.target.value })}
+                        placeholder="INV-2024-001"
+                      />
+                      <Input
+                        label="Product Name"
+                        value={printFilters.product}
+                        onChange={(e) => setPrintFilters({ ...printFilters, product: e.target.value })}
+                        placeholder="Search product..."
+                      />
+                      <div className="flex items-end">
+                        <Button
+                          variant="secondary"
+                          onClick={() => setPrintFilters({ dateFrom: '', dateTo: '', customer: '', invoiceNumber: '', product: '', selectedOrders: [] })}
+                          className="w-full"
+                        >
+                          Clear Filters
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Orders List */}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-semibold">
+                        Orders ({printFilters.selectedOrders.length} selected)
+                      </h3>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setPrintFilters({ ...printFilters, selectedOrders: mockOrders.map(o => o.id) })}
+                        >
+                          Select All
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setPrintFilters({ ...printFilters, selectedOrders: [] })}
+                        >
+                          Deselect All
+                        </Button>
+                        <Button
+                          size="sm"
+                          disabled={printFilters.selectedOrders.length === 0}
+                          onClick={() => alert(`Printing ${printFilters.selectedOrders.length} delivery slips...`)}
+                        >
+                          <Printer className="mr-2 h-4 w-4" />
+                          Print Selected
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      {mockOrders
+                        .filter(order => {
+                          if (printFilters.dateFrom && order.date < printFilters.dateFrom) return false;
+                          if (printFilters.dateTo && order.date > printFilters.dateTo) return false;
+                          if (printFilters.customer && !order.customer.toLowerCase().includes(printFilters.customer.toLowerCase())) return false;
+                          if (printFilters.invoiceNumber && !order.invoice.toLowerCase().includes(printFilters.invoiceNumber.toLowerCase())) return false;
+                          if (printFilters.product && !order.product.toLowerCase().includes(printFilters.product.toLowerCase())) return false;
+                          return true;
+                        })
+                        .map(order => (
+                          <div
+                            key={order.id}
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                              printFilters.selectedOrders.includes(order.id)
+                                ? 'bg-blue-50 border-blue-300'
+                                : 'bg-white hover:bg-gray-50'
+                            }`}
+                            onClick={() => {
+                              const selected = printFilters.selectedOrders.includes(order.id)
+                                ? printFilters.selectedOrders.filter(id => id !== order.id)
+                                : [...printFilters.selectedOrders, order.id];
+                              setPrintFilters({ ...printFilters, selectedOrders: selected });
+                            }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4">
+                                <input
+                                  type="checkbox"
+                                  checked={printFilters.selectedOrders.includes(order.id)}
+                                  onChange={() => {}}
+                                  className="h-4 w-4 rounded"
+                                />
+                                <div>
+                                  <p className="font-semibold">{order.id}</p>
+                                  <p className="text-sm text-gray-600">{order.date}</p>
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium">{order.customer}</p>
+                                  <p className="text-xs text-gray-500">{order.invoice}</p>
+                                </div>
+                                <div>
+                                  <p className="text-sm">{order.product}</p>
+                                  <p className="text-xs text-gray-500">₹{order.amount}</p>
+                                </div>
+                              </div>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  alert(`Printing delivery slip for ${order.id}...`);
+                                }}
+                              >
+                                <Printer className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
               )}
             </Card>
           </div>

@@ -217,8 +217,16 @@ export interface DeliveryAgent {
   id: string;
   name: string;
   phone: string;
+  email?: string;
+  address?: string;
   vehicleNo: string;
+  vehicleType?: string;
   agentType: 'employee' | 'partner';
+  monthlySalary?: number; // For employees only
+  drivingLicenseNo?: string;
+  licenseExpiryDate?: string;
+  emergencyContact?: string;
+  emergencyContactName?: string;
   rating: number;
   deliveries: number;
   isActive: boolean;
@@ -742,6 +750,8 @@ export interface Hub {
     staff: number;
   };
   deliveryRadius?: number;
+  selectedZones?: string[];
+  deliverySlots?: string[];
   isActive: boolean;
   connectedStores: string[];
   createdBy: string;
@@ -782,6 +792,8 @@ export interface Store {
   };
   hubId: string;
   deliveryRadius: number;
+  selectedZones?: string[];
+  deliverySlots?: string[];
   isActive: boolean;
   createdBy: string;
   createdAt: string;

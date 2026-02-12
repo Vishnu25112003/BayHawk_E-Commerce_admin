@@ -11,7 +11,8 @@ import {
   FileText, 
   CheckCircle,
   Calculator,
-  Receipt} from 'lucide-react';
+  Receipt,
+  AlertCircle} from 'lucide-react';
 import { formatCurrency } from '../../../utils/helpers';
 import type { Order } from '../../../types';
 
@@ -95,7 +96,7 @@ export function PaymentRecordModal({ isOpen, onClose, order, onSubmit }: Payment
     <Modal isOpen={isOpen} onClose={onClose} title="Record Payment" size="lg">
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
         {/* Order Summary */}
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border-2 border-blue-200">
           <div className="flex items-center gap-3 mb-4">
             <div className="h-10 w-10 rounded-lg bg-blue-600 flex items-center justify-center">
               <Receipt className="h-5 w-5 text-white" />
@@ -115,9 +116,9 @@ export function PaymentRecordModal({ isOpen, onClose, order, onSubmit }: Payment
               <p className="text-sm text-gray-600">Paid Amount</p>
               <p className="text-lg font-bold text-green-600">{formatCurrency(paidAmount)}</p>
             </div>
-            <div className="text-center p-3 bg-white rounded-lg">
-              <p className="text-sm text-gray-600">Pending Amount</p>
-              <p className="text-lg font-bold text-orange-600">{formatCurrency(pendingAmount)}</p>
+            <div className="text-center p-3 bg-white rounded-lg border-2 border-orange-400 shadow-md">
+              <p className="text-sm font-semibold text-orange-700">Balance to Pay</p>
+              <p className="text-2xl font-bold text-orange-600">{formatCurrency(pendingAmount)}</p>
             </div>
             <div className="text-center p-3 bg-white rounded-lg">
               <p className="text-sm text-gray-600">Payment Status</p>
@@ -127,11 +128,26 @@ export function PaymentRecordModal({ isOpen, onClose, order, onSubmit }: Payment
                   order.paymentStatus === 'partial' ? 'warning' : 'danger'
                 }
               >
-                {order.paymentStatus.toUpperCase()}
+                {order.paymentStatus === 'partial' ? 'PARTIALLY PAID' : order.paymentStatus.toUpperCase()}
               </Badge>
             </div>
           </div>
         </div>
+
+        {/* Balance Alert for Partial Payments */}
+        {order.paymentStatus === 'partial' && pendingAmount > 0 && (
+          <div className="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h4 className="font-semibold text-orange-900">Partial Payment Pending</h4>
+                <p className="text-sm text-orange-700 mt-1">
+                  Customer needs to pay <span className="font-bold">{formatCurrency(pendingAmount)}</span> to complete this order.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Payment Amount */}
         <div className="space-y-4">
@@ -210,7 +226,7 @@ export function PaymentRecordModal({ isOpen, onClose, order, onSubmit }: Payment
                 <div>
                   <span className="text-blue-700">New Status:</span>
                   <p className="font-bold text-blue-900">
-                    {remainingAfterPayment <= 0 ? 'PAID' : 'PARTIAL'}
+                    {remainingAfterPayment <= 0 ? 'PAID' : 'PARTIALLY PAID'}
                   </p>
                 </div>
               </div>

@@ -67,6 +67,10 @@ const preOrderSchema = z.object({
   paymentMethod: z.enum(['advance_full', 'advance_partial', 'cod_on_delivery']),
   orderSource: z.enum(['whatsapp', 'instagram', 'facebook', 'manual', 'subscription']),
   
+  // Bulk Order Charges
+  packingCharges: z.number().min(0, 'Packing charges must be positive').optional(),
+  deliveryCharges: z.number().min(0, 'Delivery charges must be positive').optional(),
+  
   // Special Instructions
   specialInstructions: z.string().optional(),
   occasionType: z.string().optional(),
@@ -197,8 +201,17 @@ export function PreOrderForm({ moduleType, products, hubs, onSubmit }: PreOrderF
       ? (subtotal * recurrenceData.discountValue) / 100 
       : recurrenceData.discountValue) : 0;
   const totalDiscount = eliteDiscount + recurrenceDiscount;
-  const deliveryCharges = isEliteMember && subtotal >= 349 ? 0 : 50;
-  const total = Math.max(0, subtotal - totalDiscount + deliveryCharges);
+  const baseDeliveryCharges = isEliteMember && subtotal >= 349 ? 0 : 50;
+  
+  // Add bulk order charges
+  const watchedPackingCharges = watch('packingCharges') || 0;
+  const watchedDeliveryCharges = watch('deliveryCharges') || 0;
+  
+  const finalDeliveryCharges = selectedPreOrderType === 'bulk_order' 
+    ? watchedDeliveryCharges 
+    : baseDeliveryCharges;
+  
+  const total = Math.max(0, subtotal - totalDiscount + finalDeliveryCharges + (selectedPreOrderType === 'bulk_order' ? watchedPackingCharges : 0));
   const remainingAmount = total - (watchedAdvancePayment || 0);
 
   const handleCustomerDataChange = (data: { name: string; phone: string; email: string; isElite: boolean }) => {
@@ -692,6 +705,41 @@ export function PreOrderForm({ moduleType, products, hubs, onSubmit }: PreOrderF
             </div>
           </div>
 
+          {/* Bulk Order Charges - Only show for bulk_order type */}
+          {selectedPreOrderType === 'bulk_order' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Packing Charges
+                </label>
+                <Input
+                  type="number"
+                  {...register('packingCharges', { valueAsNumber: true })}
+                  placeholder="0"
+                  error={errors.packingCharges?.message}
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Special packaging charges for bulk orders
+                </p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Delivery Charges
+                </label>
+                <Input
+                  type="number"
+                  {...register('deliveryCharges', { valueAsNumber: true })}
+                  placeholder="0"
+                  error={errors.deliveryCharges?.message}
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Additional delivery charges for bulk quantity
+                </p>
+              </div>
+            </div>
+          )}
+
           <Select
             label="Order Source"
             {...register('orderSource')}
@@ -752,10 +800,16 @@ export function PreOrderForm({ moduleType, products, hubs, onSubmit }: PreOrderF
                         <span>-{formatCurrency(recurrenceDiscount)}</span>
                       </div>
                     )}
+                    {selectedPreOrderType === 'bulk_order' && watchedPackingCharges > 0 && (
+                      <div className="flex justify-between text-green-700">
+                        <span>Packing Charges:</span>
+                        <span>+{formatCurrency(watchedPackingCharges)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between">
                       <span className="text-gray-600">Delivery Charges:</span>
-                      <span className={deliveryCharges === 0 ? 'text-green-600' : ''}>
-                        {deliveryCharges === 0 ? 'FREE' : formatCurrency(deliveryCharges)}
+                      <span className={finalDeliveryCharges === 0 ? 'text-green-600' : ''}>
+                        {finalDeliveryCharges === 0 ? 'FREE' : formatCurrency(finalDeliveryCharges)}
                       </span>
                     </div>
                     <div className="flex justify-between text-lg font-semibold border-t pt-2">
@@ -797,7 +851,7 @@ export function PreOrderForm({ moduleType, products, hubs, onSubmit }: PreOrderF
                     </span>
                   </div>
                   <div className="text-sm text-yellow-700">
-                    <p>Total Savings: {formatCurrency(totalDiscount + (50 - deliveryCharges))}</p>
+                    <p>Total Savings: {formatCurrency(totalDiscount + (50 - finalDeliveryCharges))}</p>
                     <p className="text-xs mt-1">
                       {isEliteMember && 'Includes Elite member discount and free delivery'}
                       {recurrenceData?.isRecurring && (isEliteMember ? ' + recurring order discount' : 'Includes recurring order discount')}

@@ -14,9 +14,15 @@ interface AgentBatch {
   id: string;
   agentName: string;
   agentPhone: string;
+  agentType: 'employee' | 'partner';
   assignedAt: string;
   orders: BatchOrder[];
   totalValue: number;
+  partnerPricing?: {
+    pricePerOrder: number;
+    totalAmount: number;
+    paymentStatus: 'pending' | 'paid';
+  };
 }
 
 interface BatchOrdersViewProps {
@@ -29,13 +35,35 @@ export function BatchOrdersView({ batches }: BatchOrdersViewProps) {
       {batches.map(batch => (
         <Card key={batch.id} className="p-4">
           <div className="flex items-center justify-between mb-4 pb-3 border-b">
-            <div>
-              <h3 className="font-semibold text-gray-900">{batch.agentName}</h3>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="font-semibold text-gray-900">{batch.agentName}</h3>
+                <Badge variant={batch.agentType === 'employee' ? 'bg-purple-100 text-purple-800' : 'bg-orange-100 text-orange-800'}>
+                  {batch.agentType === 'employee' ? '👤 Employee' : '🤝 Partner'}
+                </Badge>
+              </div>
               <p className="text-sm text-gray-600">{batch.agentPhone}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-600">Total Value</p>
-              <p className="text-lg font-bold text-green-600">₹{batch.totalValue}</p>
+              <p className="text-sm text-gray-600">Order Value</p>
+              <p className="text-lg font-bold text-green-600">₹{batch.totalValue.toLocaleString()}</p>
+              {batch.agentType === 'partner' && batch.partnerPricing && (
+                <div className="mt-2 pt-2 border-t">
+                  <p className="text-xs text-gray-600">Delivery Charges</p>
+                  <p className="text-sm font-semibold text-orange-600">
+                    ₹{batch.partnerPricing.totalAmount.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    (₹{batch.partnerPricing.pricePerOrder} × {batch.orders.length} orders)
+                  </p>
+                  <Badge 
+                    variant={batch.partnerPricing.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}
+                    className="mt-1"
+                  >
+                    {batch.partnerPricing.paymentStatus === 'paid' ? '✓ Paid' : '⏳ Pending'}
+                  </Badge>
+                </div>
+              )}
             </div>
           </div>
 

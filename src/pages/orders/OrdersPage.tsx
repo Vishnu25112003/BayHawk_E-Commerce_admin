@@ -38,6 +38,7 @@ export function OrdersPage() {
   const [thirdPartyOrderId, setThirdPartyOrderId] = useState<string>('');
   const [showBatchDeliveryModal, setShowBatchDeliveryModal] = useState(false);
   const [batchOrderIds, setBatchOrderIds] = useState<string[]>([]);
+  const [dateFilter, setDateFilter] = useState({ startDate: '', endDate: '' });
   const { isLoading, withLoading } = useLoading(true);
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<CreateOrderInput>({
@@ -710,10 +711,23 @@ export function OrdersPage() {
     }
   };
 
-  // Filter orders based on active tab
+  // Filter orders based on active tab and date
   const tabFilteredOrders = filteredOrders.filter(order => {
-    if (activeTab === 'all') return true;
-    return order.moduleType === activeTab;
+    // Tab filter
+    if (activeTab !== 'all' && order.moduleType !== activeTab) return false;
+    
+    // Date filter
+    if (dateFilter.startDate || dateFilter.endDate) {
+      const orderDate = new Date(order.createdAt);
+      if (dateFilter.startDate && orderDate < new Date(dateFilter.startDate)) return false;
+      if (dateFilter.endDate) {
+        const endDate = new Date(dateFilter.endDate);
+        endDate.setHours(23, 59, 59, 999);
+        if (orderDate > endDate) return false;
+      }
+    }
+    
+    return true;
   });
 
   // Calculate statistics using RBAC filtered orders
@@ -804,32 +818,64 @@ export function OrdersPage() {
         {/* Tab Navigation */}
         <Card className="p-0 overflow-hidden">
           <div className="border-b border-gray-200">
-            <nav className="flex overflow-x-auto px-4 sm:px-6" aria-label="Tabs">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id as 'all' | 'hub' | 'store')}
-                    className={`
-                      flex items-center gap-2 py-3 sm:py-4 px-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap
-                      ${isActive
-                        ? 'border-blue-500 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                      }
-                    `}
+            <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 gap-4">
+              {/* Tabs on the left */}
+              <nav className="flex overflow-x-auto" aria-label="Tabs">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon;
+                  const isActive = activeTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id as 'all' | 'hub' | 'store')}
+                      className={`
+                        flex items-center gap-2 py-2 px-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap
+                        ${isActive
+                          ? 'border-blue-500 text-blue-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }
+                      `}
+                    >
+                      <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                      <span className="hidden sm:inline">{tab.label}</span>
+                      <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+                      <Badge variant={isActive ? 'info' : 'default'} className="ml-1 text-xs">
+                        {tab.count}
+                      </Badge>
+                    </button>
+                  );
+                })}
+              </nav>
+
+              {/* Date Filter on the right */}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <Input
+                  type="date"
+                  value={dateFilter.startDate}
+                  onChange={(e) => setDateFilter(prev => ({ ...prev, startDate: e.target.value }))}
+                  placeholder="Start Date"
+                  className="w-36 text-sm"
+                />
+                <span className="text-gray-500">-</span>
+                <Input
+                  type="date"
+                  value={dateFilter.endDate}
+                  onChange={(e) => setDateFilter(prev => ({ ...prev, endDate: e.target.value }))}
+                  placeholder="End Date"
+                  className="w-36 text-sm"
+                />
+                {(dateFilter.startDate || dateFilter.endDate) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setDateFilter({ startDate: '', endDate: '' })}
+                    className="text-xs"
                   >
-                    <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="hidden sm:inline">{tab.label}</span>
-                    <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
-                    <Badge variant={isActive ? 'info' : 'default'} className="ml-1 text-xs">
-                      {tab.count}
-                    </Badge>
-                  </button>
-                );
-              })}
-            </nav>
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Statistics Section */}

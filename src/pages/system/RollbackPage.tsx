@@ -4,7 +4,9 @@ import { RollbackDashboard } from '../../components/rollback/RollbackDashboard';
 export function RollbackPage() {
   return (
     <RollbackProvider>
-      <RollbackDashboard />
+      <div className="p-6">
+        <RollbackDashboard />
+      </div>
     </RollbackProvider>
   );
 }

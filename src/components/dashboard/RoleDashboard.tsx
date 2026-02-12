@@ -42,7 +42,7 @@ export function RoleDashboard() {
         icon: Truck,
         color: 'bg-purple-500',
         hoverColor: 'hover:bg-purple-600',
-        href: '/delivery-agents'
+        href: '/team'
       });
       return actions; // Return early to avoid showing other actions
     }

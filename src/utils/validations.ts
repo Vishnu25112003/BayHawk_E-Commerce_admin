@@ -124,6 +124,8 @@ export const storeSchema = z.object({
   }),
   hubId: z.string().min(1, 'Hub is required'),
   deliveryRadius: z.number().min(0),
+  assignAllSlots: z.boolean().optional(),
+  deliverySlots: z.array(z.string()).optional(),
   isActive: z.boolean(),
   zoneId: z.string().optional(),
 });

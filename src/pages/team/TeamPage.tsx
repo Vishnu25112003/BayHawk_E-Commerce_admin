@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Card, Button, Input, Select, Table, Th, Td, Modal, Badge } from '../../components/ui';
-import { Plus, Search, Eye, Edit, UserPlus, Users, Shield, Package, Truck, Navigation, Clock, Phone } from 'lucide-react';
+import { Plus, Search, Eye, Edit, UserPlus, Users, Shield, Package, Truck, Navigation, Clock, Phone, MessageCircle, ShoppingBag, CreditCard, Calendar } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { filterDataByModule } from '../../utils/rbac';
-import { TeamMembersList } from '../../components/features/team';
+import { TeamMembersList, BatchOrderAssignment, BatchOrdersView, DeliveryAgentForm, AgentChat } from '../../components/features/team';
 import type { TeamMember, Customer } from '../../types';
 
 const mockTeam: TeamMember[] = [
@@ -23,6 +23,38 @@ const mockCustomers: Customer[] = [
   { id: '4', name: 'Lakshmi Devi', email: 'lakshmi@email.com', phone: '+91 9876543223', totalOrders: 67, totalSpent: 42000, walletBalance: 500, membershipPlan: 'Premium', isActive: true, createdAt: '2023-03-10' },
 ];
 
+const mockCustomerOrders: Record<string, Array<{
+  id: string;
+  date: string;
+  items: number;
+  amount: number;
+  status: string;
+  paymentMethod: string;
+}>> = {
+  '1': [
+    { id: 'ORD-2024-045', date: '2024-02-10', items: 8, amount: 1250, status: 'delivered', paymentMethod: 'UPI' },
+    { id: 'ORD-2024-038', date: '2024-02-08', items: 5, amount: 850, status: 'delivered', paymentMethod: 'Card' },
+    { id: 'ORD-2024-029', date: '2024-02-05', items: 12, amount: 1890, status: 'delivered', paymentMethod: 'Wallet' },
+    { id: 'ORD-2024-018', date: '2024-02-01', items: 6, amount: 720, status: 'cancelled', paymentMethod: 'UPI' },
+    { id: 'ORD-2024-012', date: '2024-01-28', items: 10, amount: 1450, status: 'delivered', paymentMethod: 'Cash' },
+  ],
+  '2': [
+    { id: 'ORD-2024-042', date: '2024-02-09', items: 7, amount: 980, status: 'delivered', paymentMethod: 'Card' },
+    { id: 'ORD-2024-035', date: '2024-02-06', items: 4, amount: 650, status: 'delivered', paymentMethod: 'UPI' },
+    { id: 'ORD-2024-025', date: '2024-02-03', items: 9, amount: 1320, status: 'in_transit', paymentMethod: 'Wallet' },
+  ],
+  '3': [
+    { id: 'ORD-2024-040', date: '2024-02-09', items: 5, amount: 750, status: 'delivered', paymentMethod: 'UPI' },
+    { id: 'ORD-2024-030', date: '2024-02-05', items: 3, amount: 420, status: 'delivered', paymentMethod: 'Cash' },
+  ],
+  '4': [
+    { id: 'ORD-2024-046', date: '2024-02-11', items: 15, amount: 2100, status: 'processing', paymentMethod: 'Card' },
+    { id: 'ORD-2024-044', date: '2024-02-10', items: 8, amount: 1150, status: 'delivered', paymentMethod: 'UPI' },
+    { id: 'ORD-2024-041', date: '2024-02-09', items: 11, amount: 1680, status: 'delivered', paymentMethod: 'Wallet' },
+    { id: 'ORD-2024-036', date: '2024-02-07', items: 6, amount: 890, status: 'delivered', paymentMethod: 'Card' },
+  ],
+};
+
 const mockDeliveryAgents = [
   { 
     id: '1', 
@@ -30,21 +62,16 @@ const mockDeliveryAgents = [
     phone: '+91 9876543230', 
     vehicleNo: 'TN 01 AB 1234', 
     vehicleType: 'bike',
+    agentType: 'employee' as const,
+    monthlySalary: 18000,
     rating: 4.8, 
     deliveries: 234, 
     isActive: true,
     status: 'delivering',
+    currentOrders: 3,
     moduleType: 'hub',
     hubId: 'hub_1',
-    currentOrder: {
-      orderId: 'ORD-2024-001',
-      customerName: 'Rajesh Kumar',
-      customerPhone: '+91 9876543220',
-      deliveryAddress: '123, Anna Nagar, Chennai - 600040',
-      orderValue: 850,
-      estimatedTime: '15 mins',
-      currentLocation: 'Near Anna Nagar Tower'
-    }
+    currentOrder: null
   },
   { 
     id: '2', 
@@ -52,10 +79,13 @@ const mockDeliveryAgents = [
     phone: '+91 9876543231', 
     vehicleNo: 'TN 01 CD 5678', 
     vehicleType: 'auto',
+    agentType: 'partner' as const,
+    pricePerOrder: 50,
     rating: 4.6, 
     deliveries: 189, 
     isActive: true,
     status: 'available',
+    currentOrders: 0,
     moduleType: 'hub',
     hubId: 'hub_1',
     currentOrder: null
@@ -66,21 +96,16 @@ const mockDeliveryAgents = [
     phone: '+91 9876543232', 
     vehicleNo: 'TN 01 EF 9012', 
     vehicleType: 'van',
+    agentType: 'partner' as const,
+    pricePerOrder: 75,
     rating: 4.9, 
     deliveries: 312, 
     isActive: true,
     status: 'delivering',
+    currentOrders: 2,
     moduleType: 'store',
     storeId: 'store_1',
-    currentOrder: {
-      orderId: 'ORD-2024-002',
-      customerName: 'Priya Sharma',
-      customerPhone: '+91 9876543221',
-      deliveryAddress: '456, T. Nagar, Chennai - 600017',
-      orderValue: 1200,
-      estimatedTime: '8 mins',
-      currentLocation: 'T. Nagar Main Road'
-    }
+    currentOrder: null
   },
   { 
     id: '4', 
@@ -88,10 +113,13 @@ const mockDeliveryAgents = [
     phone: '+91 9876543233', 
     vehicleNo: 'TN 01 GH 3456', 
     vehicleType: 'bike',
+    agentType: 'employee' as const,
+    monthlySalary: 16000,
     rating: 4.7, 
     deliveries: 156, 
     isActive: true,
     status: 'available',
+    currentOrders: 0,
     moduleType: 'store',
     storeId: 'store_1',
     currentOrder: null
@@ -102,21 +130,16 @@ const mockDeliveryAgents = [
     phone: '+91 9876543234', 
     vehicleNo: 'TN 01 IJ 7890', 
     vehicleType: 'auto',
+    agentType: 'partner' as const,
+    pricePerOrder: 60,
     rating: 4.5, 
     deliveries: 98, 
     isActive: true,
     status: 'delivering',
+    currentOrders: 1,
     moduleType: 'store',
     storeId: 'store_2',
-    currentOrder: {
-      orderId: 'ORD-2024-003',
-      customerName: 'Lakshmi Devi',
-      customerPhone: '+91 9876543223',
-      deliveryAddress: '789, Velachery, Chennai - 600042',
-      orderValue: 1450,
-      estimatedTime: '12 mins',
-      currentLocation: 'Velachery Main Road'
-    }
+    currentOrder: null
   },
   { 
     id: '6', 
@@ -124,10 +147,13 @@ const mockDeliveryAgents = [
     phone: '+91 9876543235', 
     vehicleNo: 'TN 01 KL 2345', 
     vehicleType: 'bike',
+    agentType: 'employee' as const,
+    monthlySalary: 15000,
     rating: 4.3, 
     deliveries: 67, 
     isActive: true,
     status: 'available',
+    currentOrders: 0,
     moduleType: 'hub',
     hubId: 'hub_1',
     currentOrder: null
@@ -138,36 +164,152 @@ const mockDeliveryAgents = [
     phone: '+91 9876543236', 
     vehicleNo: 'TN 01 MN 6789', 
     vehicleType: 'van',
+    agentType: 'employee' as const,
+    monthlySalary: 20000,
     rating: 4.4, 
     deliveries: 145, 
     isActive: false,
     status: 'offline',
+    currentOrders: 0,
     moduleType: 'store',
     storeId: 'store_1',
     currentOrder: null
   },
 ];
 
+const mockBatchAssignments = [
+  {
+    id: "BATCH-001",
+    agentName: "Murugan K",
+    agentPhone: "+91 9876543230",
+    agentType: "employee" as const,
+    assignedAt: "Today, 10:30 AM",
+    totalValue: 2700,
+    orders: [
+      {
+        id: "ORD-091",
+        customerName: "Amit Singh",
+        deliveryAddress: "12 MG Road, Chennai",
+        orderValue: 900,
+        estimatedTime: "11:00 AM",
+        status: "delivered",
+      },
+      {
+        id: "ORD-092",
+        customerName: "Neha Gupta",
+        deliveryAddress: "45 Park Street, Chennai",
+        orderValue: 1200,
+        estimatedTime: "11:30 AM",
+        status: "in_transit",
+      },
+      {
+        id: "ORD-093",
+        customerName: "Ravi Kumar",
+        deliveryAddress: "78 Lake View, Chennai",
+        orderValue: 600,
+        estimatedTime: "12:00 PM",
+        status: "assigned",
+      },
+    ],
+  },
+  {
+    id: "BATCH-002",
+    agentName: "Vijay M",
+    agentPhone: "+91 9876543232",
+    agentType: "partner" as const,
+    assignedAt: "Today, 11:00 AM",
+    totalValue: 3200,
+    partnerPricing: {
+      pricePerOrder: 75,
+      totalAmount: 150,
+      paymentStatus: "pending" as const,
+    },
+    orders: [
+      {
+        id: "ORD-094",
+        customerName: "Priya Sharma",
+        deliveryAddress: "23 Anna Nagar, Chennai",
+        orderValue: 1500,
+        estimatedTime: "11:30 AM",
+        status: "in_transit",
+      },
+      {
+        id: "ORD-095",
+        customerName: "Karthik Raja",
+        deliveryAddress: "67 T Nagar, Chennai",
+        orderValue: 1700,
+        estimatedTime: "12:00 PM",
+        status: "assigned",
+      },
+    ],
+  },
+  {
+    id: "BATCH-003",
+    agentName: "Senthil R",
+    agentPhone: "+91 9876543231",
+    agentType: "partner" as const,
+    assignedAt: "Today, 9:15 AM",
+    totalValue: 4100,
+    partnerPricing: {
+      pricePerOrder: 50,
+      totalAmount: 200,
+      paymentStatus: "paid" as const,
+    },
+    orders: [
+      {
+        id: "ORD-088",
+        customerName: "Lakshmi Devi",
+        deliveryAddress: "89 Velachery, Chennai",
+        orderValue: 1450,
+        estimatedTime: "10:00 AM",
+        status: "delivered",
+      },
+      {
+        id: "ORD-089",
+        customerName: "Rajesh Kumar",
+        deliveryAddress: "34 Adyar, Chennai",
+        orderValue: 1350,
+        estimatedTime: "10:30 AM",
+        status: "delivered",
+      },
+      {
+        id: "ORD-090",
+        customerName: "Anitha S",
+        deliveryAddress: "56 Mylapore, Chennai",
+        orderValue: 800,
+        estimatedTime: "11:00 AM",
+        status: "delivered",
+      },
+      {
+        id: "ORD-096",
+        customerName: "Suresh M",
+        deliveryAddress: "12 Nungambakkam, Chennai",
+        orderValue: 500,
+        estimatedTime: "11:30 AM",
+        status: "delivered",
+      },
+    ],
+  },
+];
+
+
 export function TeamPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'team' | 'customers' | 'delivery'>('team');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [deliveryView, setDeliveryView] = useState<'all' | 'available' | 'delivering' | 'offline'>('all');
+  const [deliveryView, setDeliveryView] = useState<'all' | 'available' | 'delivering' | 'offline' | 'batches'>('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showBatchModal, setShowBatchModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<any>(null);
   const [showAssignOrderModal, setShowAssignOrderModal] = useState(false);
   const [showTrackModal, setShowTrackModal] = useState(false);
-  const [newAgent, setNewAgent] = useState({
-    name: '',
-    phone: '',
-    vehicleNo: '',
-    vehicleType: ''
-  });
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [showOrderHistoryModal, setShowOrderHistoryModal] = useState(false);
   const [newMember, setNewMember] = useState({
     name: '',
     email: '',
@@ -308,11 +450,14 @@ export function TeamPage() {
     }
   };
 
-  const handleAddDeliveryAgent = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Adding delivery agent:', newAgent);
-    setShowAddModal(false);
-    setNewAgent({ name: '', phone: '', vehicleNo: '', vehicleType: '' });
+  const handleChatAgent = (agent: any) => {
+    setSelectedAgent(agent);
+    setShowChatModal(true);
+  };
+
+  const handleViewOrderHistory = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setShowOrderHistoryModal(true);
   };
 
   return (
@@ -451,14 +596,23 @@ export function TeamPage() {
                     <Td>
                       <div className="flex gap-2">
                         <button 
+                          onClick={() => handleViewOrderHistory(customer)}
+                          className="p-1 hover:bg-blue-50 rounded text-blue-600"
+                          title="Order History"
+                        >
+                          <ShoppingBag className="h-5 w-5" />
+                        </button>
+                        <button 
                           onClick={() => handleViewCustomer(customer)}
                           className="p-1 hover:bg-gray-100 rounded"
+                          title="View Details"
                         >
                           <Eye className="h-5 w-5" />
                         </button>
                         <button 
                           onClick={() => handleEditCustomer(customer)}
                           className="p-1 hover:bg-gray-100 rounded"
+                          title="Edit"
                         >
                           <Edit className="h-5 w-5" />
                         </button>
@@ -529,7 +683,8 @@ export function TeamPage() {
               { id: 'all', label: 'All Agents', count: filteredDeliveryAgents.length },
               { id: 'available', label: 'Available', count: filteredDeliveryAgents.filter(a => a.status === 'available').length },
               { id: 'delivering', label: 'On Delivery', count: filteredDeliveryAgents.filter(a => a.status === 'delivering').length },
-              { id: 'offline', label: 'Offline', count: filteredDeliveryAgents.filter(a => a.status === 'offline').length }
+              { id: 'offline', label: 'Offline', count: filteredDeliveryAgents.filter(a => a.status === 'offline').length },
+              { id: 'batches', label: 'Batch Orders', count: mockBatchAssignments.length }
             ].map(tab => (
               <button
                 key={tab.id}
@@ -542,9 +697,25 @@ export function TeamPage() {
                 <Badge variant="bg-gray-100 text-gray-600">{tab.count}</Badge>
               </button>
             ))}
+            {deliveryView !== 'batches' && (
+              <Button
+                onClick={() => setShowBatchModal(true)}
+                size="sm"
+                className="ml-auto"
+              >
+                <Package className="h-4 w-4 mr-2" />
+                Assign Batch
+              </Button>
+            )}
           </div>
 
+          {/* Batch Orders View */}
+          {deliveryView === 'batches' && (
+            <BatchOrdersView batches={mockBatchAssignments} />
+          )}
+
           {/* Delivery Agents List */}
+          {deliveryView !== 'batches' && (
           <div className="space-y-4">
             {(() => {
               let filteredAgents = filteredDeliveryAgents;
@@ -571,78 +742,54 @@ export function TeamPage() {
                 
                 return (
                   <Card key={agent.id} className="p-4">
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      {/* Agent Avatar */}
+                      <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                        {agent.name.charAt(0)}
+                      </div>
+                      
                       {/* Agent Info */}
-                      <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <div className="p-3 bg-gray-100 rounded-full flex-shrink-0">
-                          <Truck className="h-5 w-5 text-gray-600" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <h3 className="font-semibold text-base">{agent.name}</h3>
+                          <Badge variant={getDeliveryStatusColor(agent.status)} className="flex items-center gap-1 text-xs">
+                            <StatusIcon className="h-3 w-3" />
+                            {agent.status.charAt(0).toUpperCase() + agent.status.slice(1)}
+                          </Badge>
+                          <Badge variant={agent.agentType === 'employee' ? 'bg-purple-100 text-purple-800' : 'bg-orange-100 text-orange-800'}>
+                            {agent.agentType === 'employee' ? '👤 Employee' : '🤝 Partner'}
+                          </Badge>
+                          {hasCurrentOrder && (
+                            <Badge variant="bg-blue-100 text-blue-800">
+                              {agent.currentOrders || 1} active
+                            </Badge>
+                          )}
                         </div>
                         
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-1">
-                            <h3 className="font-semibold text-base truncate">{agent.name}</h3>
-                            <Badge variant={getDeliveryStatusColor(agent.status)} className="flex items-center gap-1 text-xs flex-shrink-0">
-                              <StatusIcon className="h-3 w-3" />
-                              {agent.status.charAt(0).toUpperCase() + agent.status.slice(1)}
-                            </Badge>
-                          </div>
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
-                            <span>{agent.phone}</span>
-                            <span className="font-mono">{agent.vehicleNo}</span>
-                            <span className="flex items-center gap-1">
-                              ⭐ {agent.rating}
-                            </span>
-                          </div>
+                        <div className="flex items-center gap-4 text-sm text-gray-600 flex-wrap">
+                          <span className="flex items-center gap-1">
+                            <Phone className="h-3 w-3" />
+                            {agent.phone}
+                          </span>
+                          <span className="flex items-center gap-1 font-mono">
+                            <Truck className="h-3 w-3" />
+                            {agent.vehicleNo}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            ⭐ {agent.rating} ({agent.deliveries} deliveries)
+                          </span>
                         </div>
-                      </div>
-
-                      {/* Current Order Status */}
-                      <div className="hidden md:flex items-center gap-4 flex-shrink-0">
-                        {hasCurrentOrder ? (
-                          <div className="text-right">
-                            <p className="text-sm font-medium text-blue-600">{agent.currentOrder.orderId}</p>
-                            <p className="text-xs text-gray-500 truncate max-w-32">{agent.currentOrder.customerName}</p>
-                            <p className="text-xs text-green-600">₹{agent.currentOrder.orderValue}</p>
-                          </div>
-                        ) : (
-                          <div className="text-right">
-                            <p className="text-sm font-medium text-green-600">Available</p>
-                            <p className="text-xs text-gray-500">{agent.deliveries} deliveries</p>
-                          </div>
-                        )}
                       </div>
 
                       {/* Actions */}
                       <div className="flex items-center gap-2 flex-shrink-0">
-                        {hasCurrentOrder && (
-                          <>
-                            <button 
-                              onClick={() => handleCallCustomer(agent)}
-                              className="p-2 hover:bg-gray-100 rounded-lg transition-colors" 
-                              title="Call Customer"
-                            >
-                              <Phone className="h-5 w-5 text-green-600" />
-                            </button>
-                            <button 
-                              onClick={() => handleTrackAgent(agent)}
-                              className="p-2 hover:bg-blue-100 rounded-lg transition-colors" 
-                              title="Track Live"
-                            >
-                              <Navigation className="h-5 w-5 text-blue-600" />
-                            </button>
-                          </>
-                        )}
-                        
-                        {!hasCurrentOrder && (
-                          <button 
-                            onClick={() => handleAssignOrder(agent)}
-                            className="p-2 hover:bg-green-100 rounded-lg transition-colors" 
-                            title="Assign Order"
-                          >
-                            <Plus className="h-5 w-5 text-green-600" />
-                          </button>
-                        )}
-                        
+                        <button 
+                          onClick={() => handleChatAgent(agent)}
+                          className="p-2 hover:bg-blue-50 rounded-lg transition-colors" 
+                          title="Chat"
+                        >
+                          <MessageCircle className="h-5 w-5 text-blue-600" />
+                        </button>
                         <button 
                           onClick={() => handleViewAgent(agent)}
                           className="p-2 hover:bg-gray-100 rounded-lg transition-colors" 
@@ -659,33 +806,32 @@ export function TeamPage() {
                         </button>
                       </div>
                     </div>
-
-                    {/* Mobile Order Info */}
-                    {hasCurrentOrder && (
-                      <div className="md:hidden mt-3 pt-3 border-t">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-medium text-blue-600">{agent.currentOrder.orderId}</p>
-                            <p className="text-xs text-gray-600">{agent.currentOrder.customerName}</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sm font-medium text-green-600">₹{agent.currentOrder.orderValue}</p>
-                            <p className="text-xs text-blue-600">{agent.currentOrder.estimatedTime}</p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </Card>
                 );
               });
             })()}
           </div>
+          )}
         </div>
       )}
 
       {/* Add Modal */}
-      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title={`Add ${activeTab === 'team' ? 'Team Member' : activeTab === 'customers' ? 'Customer' : 'Delivery Agent'}`}>
-        <form onSubmit={activeTab === 'delivery' ? handleAddDeliveryAgent : handleAddMember} className="space-y-4">
+      <Modal 
+        isOpen={showAddModal} 
+        onClose={() => setShowAddModal(false)} 
+        title={`Add ${activeTab === 'team' ? 'Team Member' : activeTab === 'customers' ? 'Customer' : 'Delivery Agent'}`}
+        size={activeTab === 'delivery' ? 'xl' : 'md'}
+      >
+        {activeTab === 'delivery' ? (
+          <DeliveryAgentForm
+            onSubmit={(data) => {
+              console.log('Adding delivery agent:', data);
+              setShowAddModal(false);
+            }}
+            onCancel={() => setShowAddModal(false)}
+          />
+        ) : (
+        <form onSubmit={handleAddMember} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input 
               label="Full Name" 
@@ -885,32 +1031,6 @@ export function TeamPage() {
             </>
           )}
           
-          {activeTab === 'delivery' && (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input 
-                  label="Vehicle Number" 
-                  placeholder="TN 01 AB 1234" 
-                  value={newAgent.vehicleNo}
-                  onChange={e => setNewAgent({...newAgent, vehicleNo: e.target.value})}
-                  required
-                />
-                <Select 
-                  label="Vehicle Type" 
-                  value={newAgent.vehicleType}
-                  onChange={e => setNewAgent({...newAgent, vehicleType: e.target.value})}
-                  options={[
-                    { value: '', label: 'Select Vehicle Type' },
-                    { value: 'bike', label: 'Motorcycle' },
-                    { value: 'auto', label: 'Auto Rickshaw' },
-                    { value: 'van', label: 'Delivery Van' }
-                  ]} 
-                  required
-                />
-              </div>
-            </>
-          )}
-          
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button 
               type="button" 
@@ -925,6 +1045,7 @@ export function TeamPage() {
             </Button>
           </div>
         </form>
+        )}
       </Modal>
 
       {/* View Modal */}
@@ -1072,6 +1193,64 @@ export function TeamPage() {
                     <span className="font-semibold text-blue-600">₹{selectedCustomer.walletBalance}</span>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Order History Section */}
+            <div className="border-t pt-6">
+              <div className="flex items-center gap-2 mb-4">
+                <ShoppingBag className="h-5 w-5 text-gray-700" />
+                <h4 className="font-medium text-gray-900">Order History</h4>
+                <Badge variant="bg-gray-100 text-gray-600">
+                  {mockCustomerOrders[selectedCustomer.id]?.length || 0} orders
+                </Badge>
+              </div>
+              
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {mockCustomerOrders[selectedCustomer.id]?.map((order: any) => (
+                  <Card key={order.id} className="p-4 hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-blue-50 rounded-lg">
+                          <Package className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">{order.id}</p>
+                          <p className="text-xs text-gray-500 flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {order.date}
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant={
+                        order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                        order.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
+                        order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }>
+                        {order.status.replace('_', ' ').toUpperCase()}
+                      </Badge>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-600">Items:</span>
+                        <p className="font-medium">{order.items} items</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Amount:</span>
+                        <p className="font-medium text-green-600">₹{order.amount}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-600 flex items-center gap-1">
+                          <CreditCard className="h-3 w-3" />
+                          Payment:
+                        </span>
+                        <p className="font-medium">{order.paymentMethod}</p>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
               </div>
             </div>
 
@@ -1728,6 +1907,162 @@ export function TeamPage() {
                 </Button>
               </div>
             )}
+          </div>
+        )}
+      </Modal>
+
+      {/* Batch Order Assignment Modal */}
+      <Modal
+        isOpen={showBatchModal}
+        onClose={() => setShowBatchModal(false)}
+        title="Assign Batch Orders"
+        size="xl"
+      >
+        <BatchOrderAssignment
+          agents={filteredDeliveryAgents}
+          orders={[
+            { id: 'ORD-101', customerName: 'Rajesh Kumar', deliveryAddress: '123 Anna Nagar, Chennai', orderValue: 850, estimatedTime: '2:30 PM' },
+            { id: 'ORD-102', customerName: 'Priya Sharma', deliveryAddress: '456 T Nagar, Chennai', orderValue: 1200, estimatedTime: '3:00 PM' },
+            { id: 'ORD-103', customerName: 'Arun Patel', deliveryAddress: '789 Velachery, Chennai', orderValue: 650, estimatedTime: '3:30 PM' },
+          ]}
+          onAssign={(agentId, orderIds) => {
+            console.log('Batch assigned:', { agentId, orderIds });
+            setShowBatchModal(false);
+          }}
+          onCancel={() => setShowBatchModal(false)}
+        />
+      </Modal>
+
+      {/* Agent Chat Modal */}
+      <Modal
+        isOpen={showChatModal}
+        onClose={() => {
+          setShowChatModal(false);
+          setSelectedAgent(null);
+        }}
+        title="Chat with Delivery Agent"
+        size="lg"
+      >
+        {selectedAgent && (
+          <AgentChat
+            agentId={selectedAgent.id}
+            agentName={selectedAgent.name}
+            onClose={() => {
+              setShowChatModal(false);
+              setSelectedAgent(null);
+            }}
+          />
+        )}
+      </Modal>
+
+      {/* Customer Order History Modal */}
+      <Modal
+        isOpen={showOrderHistoryModal}
+        onClose={() => {
+          setShowOrderHistoryModal(false);
+          setSelectedCustomer(null);
+        }}
+        title={selectedCustomer ? `Order History - ${selectedCustomer.name}` : 'Order History'}
+        size="xl"
+      >
+        {selectedCustomer && (
+          <div className="space-y-4">
+            {/* Customer Summary */}
+            <Card className="p-4 bg-gradient-to-r from-blue-50 to-purple-50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                    {selectedCustomer.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{selectedCustomer.name}</h3>
+                    <p className="text-sm text-gray-600">{selectedCustomer.email}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600">Total Orders</p>
+                  <p className="text-2xl font-bold text-blue-600">{selectedCustomer.totalOrders}</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* Order Stats */}
+            <div className="grid grid-cols-3 gap-4">
+              <Card className="p-4 text-center">
+                <p className="text-sm text-gray-600">Total Spent</p>
+                <p className="text-xl font-bold text-green-600">₹{selectedCustomer.totalSpent.toLocaleString()}</p>
+              </Card>
+              <Card className="p-4 text-center">
+                <p className="text-sm text-gray-600">Wallet Balance</p>
+                <p className="text-xl font-bold text-blue-600">₹{selectedCustomer.walletBalance}</p>
+              </Card>
+              <Card className="p-4 text-center">
+                <p className="text-sm text-gray-600">Member Since</p>
+                <p className="text-sm font-semibold text-gray-900">
+                  {new Date(selectedCustomer.createdAt).toLocaleDateString()}
+                </p>
+              </Card>
+            </div>
+
+            {/* Orders List */}
+            <div className="space-y-3 max-h-[500px] overflow-y-auto">
+              {mockCustomerOrders[selectedCustomer.id]?.map((order: any) => (
+                <Card key={order.id} className="p-4 hover:shadow-lg transition-shadow">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-50 rounded-lg">
+                        <Package className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">{order.id}</p>
+                        <p className="text-sm text-gray-500 flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {order.date}
+                        </p>
+                      </div>
+                    </div>
+                    <Badge variant={
+                      order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                      order.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
+                      order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }>
+                      {order.status.replace('_', ' ').toUpperCase()}
+                    </Badge>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">Items:</span>
+                      <p className="font-medium">{order.items} items</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Amount:</span>
+                      <p className="font-medium text-green-600">₹{order.amount}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600 flex items-center gap-1">
+                        <CreditCard className="h-3 w-3" />
+                        Payment:
+                      </span>
+                      <p className="font-medium">{order.paymentMethod}</p>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+
+            <div className="flex justify-end pt-4 border-t">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowOrderHistoryModal(false);
+                  setSelectedCustomer(null);
+                }}
+              >
+                Close
+              </Button>
+            </div>
           </div>
         )}
       </Modal>

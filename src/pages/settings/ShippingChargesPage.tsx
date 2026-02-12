@@ -9,12 +9,14 @@ interface ShippingZone {
   baseCharge: number;
   freeDeliveryThreshold: number;
   expressCharge: number;
+  expressDeliveryEnabled: boolean;
   isActive: boolean;
 }
 
 export function ShippingChargesPage() {
   const [globalSettings, setGlobalSettings] = useState({
     freeDeliveryThreshold: 500,
+    shipmentModel: 'hub_only' as 'hub_only' | 'hub_and_store',
     hubDeliveryCharge: 40,
     storeDeliveryCharge: 30,
     expressDeliveryEnabled: true,
@@ -33,6 +35,7 @@ export function ShippingChargesPage() {
       baseCharge: 30,
       freeDeliveryThreshold: 500,
       expressCharge: 40,
+      expressDeliveryEnabled: true,
       isActive: true
     },
     {
@@ -42,6 +45,7 @@ export function ShippingChargesPage() {
       baseCharge: 40,
       freeDeliveryThreshold: 600,
       expressCharge: 50,
+      expressDeliveryEnabled: true,
       isActive: true
     },
     {
@@ -51,6 +55,7 @@ export function ShippingChargesPage() {
       baseCharge: 45,
       freeDeliveryThreshold: 700,
       expressCharge: 60,
+      expressDeliveryEnabled: false,
       isActive: true
     }
   ]);
@@ -70,6 +75,7 @@ export function ShippingChargesPage() {
       baseCharge: 35,
       freeDeliveryThreshold: 500,
       expressCharge: 45,
+      expressDeliveryEnabled: true,
       isActive: true
     };
     setZones([...zones, newZone]);
@@ -109,6 +115,56 @@ export function ShippingChargesPage() {
         </div>
 
         <div className="space-y-6">
+          {/* Shipment Model Selection */}
+          <div className="border-b pb-6">
+            <h3 className="font-medium mb-4">Shipment Delivery Model</h3>
+            <div className="space-y-3">
+              <label className="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                <input
+                  type="radio"
+                  name="shipmentModel"
+                  checked={globalSettings.shipmentModel === 'hub_only'}
+                  onChange={() => setGlobalSettings({ ...globalSettings, shipmentModel: 'hub_only' })}
+                  className="mt-1"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Truck className="h-5 w-5 text-blue-600" />
+                    <span className="font-medium">Shipment 1: Hub Delivery Only</span>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Direct delivery from hub to customer. Single delivery charge applies.
+                  </p>
+                  <div className="mt-2 text-xs text-gray-500 bg-blue-50 p-2 rounded">
+                    Example: Hub → Customer (₹{globalSettings.hubDeliveryCharge})
+                  </div>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                <input
+                  type="radio"
+                  name="shipmentModel"
+                  checked={globalSettings.shipmentModel === 'hub_and_store'}
+                  onChange={() => setGlobalSettings({ ...globalSettings, shipmentModel: 'hub_and_store' })}
+                  className="mt-1"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Truck className="h-5 w-5 text-purple-600" />
+                    <span className="font-medium">Shipment 2: Hub + Store Delivery</span>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Two-tier delivery: Hub to Store, then Store to Customer. Combined charges apply.
+                  </p>
+                  <div className="mt-2 text-xs text-gray-500 bg-purple-50 p-2 rounded">
+                    Example: Hub → Store (₹{globalSettings.hubDeliveryCharge}) + Store → Customer (₹{globalSettings.storeDeliveryCharge}) = Total: ₹{globalSettings.hubDeliveryCharge + globalSettings.storeDeliveryCharge}
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+
           <div>
             <h3 className="font-medium mb-3">Free Delivery Threshold</h3>
             <div className="flex items-center gap-2">
@@ -127,10 +183,17 @@ export function ShippingChargesPage() {
           </div>
 
           <div>
-            <h3 className="font-medium mb-3">Default Delivery Charges</h3>
+            <h3 className="font-medium mb-3">
+              Delivery Charges Configuration
+              <span className="ml-2 text-sm font-normal text-gray-500">
+                ({globalSettings.shipmentModel === 'hub_only' ? 'Hub Only Model' : 'Hub + Store Model'})
+              </span>
+            </h3>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Hub Delivery (₹)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Hub Delivery Charge (₹)
+                </label>
                 <Input
                   type="number"
                   value={globalSettings.hubDeliveryCharge}
@@ -139,21 +202,37 @@ export function ShippingChargesPage() {
                     hubDeliveryCharge: parseInt(e.target.value)
                   })}
                 />
-                <p className="text-xs text-gray-500 mt-1">Charge for hub-to-customer delivery</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {globalSettings.shipmentModel === 'hub_only' 
+                    ? 'Direct hub-to-customer delivery charge' 
+                    : 'Hub-to-store delivery charge'}
+                </p>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Store Delivery (₹)</label>
-                <Input
-                  type="number"
-                  value={globalSettings.storeDeliveryCharge}
-                  onChange={(e) => setGlobalSettings({
-                    ...globalSettings,
-                    storeDeliveryCharge: parseInt(e.target.value)
-                  })}
-                />
-                <p className="text-xs text-gray-500 mt-1">Charge for store-to-customer delivery</p>
-              </div>
+              {globalSettings.shipmentModel === 'hub_and_store' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Store Delivery Charge (₹)
+                  </label>
+                  <Input
+                    type="number"
+                    value={globalSettings.storeDeliveryCharge}
+                    onChange={(e) => setGlobalSettings({
+                      ...globalSettings,
+                      storeDeliveryCharge: parseInt(e.target.value)
+                    })}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Store-to-customer delivery charge</p>
+                </div>
+              )}
             </div>
+            {globalSettings.shipmentModel === 'hub_and_store' && (
+              <div className="mt-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                <p className="text-sm text-purple-800">
+                  <strong>Total Delivery Charge:</strong> ₹{globalSettings.hubDeliveryCharge + globalSettings.storeDeliveryCharge}
+                  <span className="text-xs ml-2">(Hub: ₹{globalSettings.hubDeliveryCharge} + Store: ₹{globalSettings.storeDeliveryCharge})</span>
+                </p>
+              </div>
+            )}
           </div>
 
           <div>
@@ -294,12 +373,43 @@ export function ShippingChargesPage() {
                   value={zone.freeDeliveryThreshold}
                   onChange={(e) => updateZone(zone.id, { freeDeliveryThreshold: parseInt(e.target.value) })}
                 />
-                <Input
-                  label="Express Charge (₹)"
-                  type="number"
-                  value={zone.expressCharge}
-                  onChange={(e) => updateZone(zone.id, { expressCharge: parseInt(e.target.value) })}
-                />
+              </div>
+
+              {/* Express Delivery Section */}
+              <div className="border-t pt-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Zap className="h-5 w-5 text-yellow-600" />
+                    <h4 className="font-medium text-gray-900">Express Delivery</h4>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={zone.expressDeliveryEnabled}
+                      onChange={(e) => updateZone(zone.id, { expressDeliveryEnabled: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+                  </label>
+                </div>
+                {zone.expressDeliveryEnabled ? (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                    <Input
+                      label="Express Delivery Charge (₹)"
+                      type="number"
+                      value={zone.expressCharge}
+                      onChange={(e) => updateZone(zone.id, { expressCharge: parseInt(e.target.value) })}
+                      className="bg-white"
+                    />
+                    <p className="text-xs text-yellow-700 mt-2">
+                      Additional charge for express/priority delivery in this zone
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
+                    Express delivery is disabled for this zone
+                  </p>
+                )}
               </div>
 
               <div>

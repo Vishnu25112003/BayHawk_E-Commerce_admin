@@ -1,5 +1,8 @@
 import { FileText, FileSpreadsheet } from 'lucide-react';
 import { Button } from '../ui';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface ExportData {
   headers: string[];
@@ -13,39 +16,35 @@ interface ExportButtonsProps {
 }
 
 export const ExportButtons = ({ data, className = "" }: ExportButtonsProps) => {
-  const exportToCSV = () => {
-    const csvContent = [
-      data.headers.join(','),
-      ...data.data.map(row => data.headers.map(header => row[header] || '').join(','))
-    ].join('\n');
-    
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${data.filename}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
   const exportToPDF = () => {
-    // Mock PDF export - would integrate with jsPDF in real implementation
-    console.log('Exporting to PDF:', data.filename);
-    alert('PDF export functionality would be implemented with jsPDF library');
+    const doc = new jsPDF();
+    
+    doc.setFontSize(16);
+    doc.text(data.filename.replace(/-/g, ' ').toUpperCase(), 14, 15);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 22);
+    
+    autoTable(doc, {
+      head: [data.headers],
+      body: data.data.map(row => data.headers.map(header => row[header] || '')),
+      startY: 28,
+      theme: 'grid',
+      headStyles: { fillColor: [59, 130, 246], fontSize: 10 },
+      styles: { fontSize: 9 },
+    });
+    
+    doc.save(`${data.filename}.pdf`);
   };
 
   const exportToExcel = () => {
-    // Mock Excel export - would integrate with xlsx library in real implementation
-    console.log('Exporting to Excel:', data.filename);
-    alert('Excel export functionality would be implemented with xlsx library');
+    const worksheet = XLSX.utils.json_to_sheet(data.data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Report');
+    XLSX.writeFile(workbook, `${data.filename}.xlsx`);
   };
 
   return (
     <div className={`flex gap-2 ${className}`}>
-      <Button size="sm" variant="secondary" onClick={exportToCSV}>
-        <FileText className="h-4 w-4 mr-1" />
-        CSV
-      </Button>
       <Button size="sm" variant="secondary" onClick={exportToPDF}>
         <FileText className="h-4 w-4 mr-1" />
         PDF

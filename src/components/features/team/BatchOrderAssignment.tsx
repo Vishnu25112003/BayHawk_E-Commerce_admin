@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, Button } from '../../ui';
 import { CheckSquare, Square, Package, MapPin, Clock, User } from 'lucide-react';
 
@@ -35,6 +35,18 @@ export function BatchOrderAssignment({ agents, orders, onAssign, onCancel }: Bat
 
   const availableAgents = agents.filter(a => a.status === 'available' || a.status === 'delivering');
 
+  const selectedAgentData = useMemo(() => 
+    availableAgents.find(a => a.id === selectedAgent),
+    [selectedAgent, availableAgents]
+  );
+
+  const partnerPricing = useMemo(() => {
+    if (!selectedAgentData || selectedAgentData.agentType !== 'partner') return null;
+    const pricePerOrder = selectedAgentData.pricePerOrder || 50;
+    const totalAmount = pricePerOrder * selectedOrders.length;
+    return { pricePerOrder, totalAmount };
+  }, [selectedAgentData, selectedOrders.length]);
+
   return (
     <div className="space-y-4">
       <div>
@@ -47,11 +59,23 @@ export function BatchOrderAssignment({ agents, orders, onAssign, onCancel }: Bat
           <option value="">Choose an agent...</option>
           {availableAgents.map(agent => (
             <option key={agent.id} value={agent.id}>
-              {agent.name} - {agent.vehicleType} ({agent.currentOrders} orders)
+              {agent.name} - {agent.vehicleType} ({agent.currentOrders} orders) - {agent.agentType === 'partner' ? '🤝 Partner' : '👤 Employee'}
             </option>
           ))}
         </select>
       </div>
+
+      {partnerPricing && (
+        <Card className="p-3 bg-orange-50 border-orange-200">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-700">Partner Pricing:</span>
+            <div className="text-right">
+              <div className="text-gray-600">₹{partnerPricing.pricePerOrder} × {selectedOrders.length} orders</div>
+              <div className="text-orange-600 font-semibold">Total: ₹{partnerPricing.totalAmount}</div>
+            </div>
+          </div>
+        </Card>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">

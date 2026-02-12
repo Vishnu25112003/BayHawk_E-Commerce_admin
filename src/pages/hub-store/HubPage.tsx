@@ -209,10 +209,13 @@ function HubForm({ hub, onSave, onCancel }: HubFormProps) {
     dailyOrders: hub?.capacity.dailyOrders || 0,
     staff: hub?.capacity.staff || 0,
     deliveryRadius: hub?.deliveryRadius || undefined,
+    deliveryType: hub?.selectedZones && hub.selectedZones.length > 0 ? 'zones' : 'radius',
+    selectedZones: hub?.selectedZones || [],
     latitude: hub?.location.latitude || 0,
     longitude: hub?.location.longitude || 0,
     isActive: hub?.isActive ?? true,
-    assignAllSlots: true,
+    assignAllSlots: hub?.deliverySlots ? false : true,
+    deliverySlots: hub?.deliverySlots || [],
   });
 
   const weekDays = [
@@ -256,8 +259,10 @@ function HubForm({ hub, onSave, onCancel }: HubFormProps) {
         dailyOrders: formData.dailyOrders,
         staff: formData.staff,
       },
-      deliveryRadius: formData.deliveryRadius,
+      deliveryRadius: formData.deliveryType === 'radius' ? formData.deliveryRadius : undefined,
+      selectedZones: formData.deliveryType === 'zones' ? formData.selectedZones : undefined,
       isActive: formData.isActive,
+      deliverySlots: formData.assignAllSlots ? undefined : formData.deliverySlots,
     };
     onSave(hubData);
   };
@@ -499,12 +504,12 @@ function HubForm({ hub, onSave, onCancel }: HubFormProps) {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Delivery Slots Assignment
           </label>
-          <div className="flex gap-4">
+          <div className="flex gap-4 mb-3">
             <label className="flex items-center gap-2">
               <input
                 type="radio"
                 checked={formData.assignAllSlots}
-                onChange={() => setFormData(prev => ({ ...prev, assignAllSlots: true }))}
+                onChange={() => setFormData(prev => ({ ...prev, assignAllSlots: true, deliverySlots: [] }))}
                 className="rounded-full border-gray-300"
               />
               <span className="text-sm text-gray-700">Assign All Slots</span>
@@ -519,9 +524,48 @@ function HubForm({ hub, onSave, onCancel }: HubFormProps) {
               <span className="text-sm text-gray-700">Partially Select Slots</span>
             </label>
           </div>
+          
           {!formData.assignAllSlots && (
-            <p className="text-xs text-gray-500 mt-2">
-              You can configure specific delivery slots after creating the hub
+            <div className="bg-white border rounded-lg p-3 mt-3">
+              <p className="text-xs text-gray-600 mb-3">Select specific delivery time slots:</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {[
+                  { id: '6-9', label: '6 AM - 9 AM', value: '06:00-09:00' },
+                  { id: '9-12', label: '9 AM - 12 PM', value: '09:00-12:00' },
+                  { id: '12-15', label: '12 PM - 3 PM', value: '12:00-15:00' },
+                  { id: '15-18', label: '3 PM - 6 PM', value: '15:00-18:00' },
+                  { id: '18-21', label: '6 PM - 9 PM', value: '18:00-21:00' },
+                  { id: '21-24', label: '9 PM - 12 AM', value: '21:00-24:00' }
+                ].map(slot => (
+                  <label key={slot.id} className="flex items-center gap-2 p-2 border rounded hover:bg-gray-50 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.deliverySlots?.includes(slot.value) || false}
+                      onChange={(e) => {
+                        const slots = formData.deliverySlots || [];
+                        if (e.target.checked) {
+                          setFormData(prev => ({ ...prev, deliverySlots: [...slots, slot.value] }));
+                        } else {
+                          setFormData(prev => ({ ...prev, deliverySlots: slots.filter(s => s !== slot.value) }));
+                        }
+                      }}
+                      className="rounded border-gray-300"
+                    />
+                    <span className="text-sm">{slot.label}</span>
+                  </label>
+                ))}
+              </div>
+              {formData.deliverySlots && formData.deliverySlots.length > 0 && (
+                <p className="text-xs text-green-600 mt-2">
+                  ✓ {formData.deliverySlots.length} slot(s) selected
+                </p>
+              )}
+            </div>
+          )}
+          
+          {formData.assignAllSlots && (
+            <p className="text-xs text-blue-600 mt-2">
+              ✓ All delivery slots will be available (6 AM - 12 AM)
             </p>
           )}
         </div>
@@ -576,25 +620,104 @@ function HubForm({ hub, onSave, onCancel }: HubFormProps) {
       {/* Configuration */}
       <div className="border rounded-lg p-4 bg-gray-50">
         <h3 className="font-semibold mb-3">Configuration</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Input
             label="Hub ID"
             value={hub?.id || 'Auto-generated'}
             disabled
             placeholder="Auto-generated"
           />
-          <Input
-            label="Delivery Radius (km)"
-            type="number"
-            value={formData.deliveryRadius || ''}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                deliveryRadius: parseInt(e.target.value) || undefined,
-              }))
-            }
-            placeholder="5"
-          />
+        </div>
+        
+        {/* Delivery Configuration */}
+        <div className="border-t pt-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Delivery Configuration
+          </label>
+          <div className="flex gap-4 mb-3">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                checked={formData.deliveryType === 'radius'}
+                onChange={() => setFormData(prev => ({ ...prev, deliveryType: 'radius', selectedZones: [] }))}
+                className="rounded-full border-gray-300"
+              />
+              <span className="text-sm text-gray-700">Fixed Radius</span>
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                checked={formData.deliveryType === 'zones'}
+                onChange={() => setFormData(prev => ({ ...prev, deliveryType: 'zones', deliveryRadius: undefined }))}
+                className="rounded-full border-gray-300"
+              />
+              <span className="text-sm text-gray-700">Selected Zones</span>
+            </label>
+          </div>
+
+          {formData.deliveryType === 'radius' && (
+            <div>
+              <Input
+                label="Delivery Radius (km)"
+                type="number"
+                value={formData.deliveryRadius || ''}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    deliveryRadius: parseInt(e.target.value) || undefined,
+                  }))
+                }
+                placeholder="5"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Hub will deliver within this radius from its location
+              </p>
+            </div>
+          )}
+
+          {formData.deliveryType === 'zones' && (
+            <div className="bg-white border rounded-lg p-3">
+              <p className="text-xs text-gray-600 mb-3">Select delivery zones:</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {[
+                  { id: 'zone-1', name: 'Anna Nagar', code: 'AN' },
+                  { id: 'zone-2', name: 'T. Nagar', code: 'TN' },
+                  { id: 'zone-3', name: 'Velachery', code: 'VL' },
+                  { id: 'zone-4', name: 'Adyar', code: 'AD' },
+                  { id: 'zone-5', name: 'Mylapore', code: 'MY' },
+                  { id: 'zone-6', name: 'Nungambakkam', code: 'NG' },
+                  { id: 'zone-7', name: 'Porur', code: 'PR' },
+                  { id: 'zone-8', name: 'Tambaram', code: 'TB' },
+                  { id: 'zone-9', name: 'Chrompet', code: 'CH' }
+                ].map(zone => (
+                  <label key={zone.id} className="flex items-center gap-2 p-2 border rounded hover:bg-gray-50 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.selectedZones?.includes(zone.id) || false}
+                      onChange={(e) => {
+                        const zones = formData.selectedZones || [];
+                        if (e.target.checked) {
+                          setFormData(prev => ({ ...prev, selectedZones: [...zones, zone.id] }));
+                        } else {
+                          setFormData(prev => ({ ...prev, selectedZones: zones.filter(z => z !== zone.id) }));
+                        }
+                      }}
+                      className="rounded border-gray-300"
+                    />
+                    <div>
+                      <p className="text-sm font-medium">{zone.name}</p>
+                      <p className="text-xs text-gray-500">{zone.code}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+              {formData.selectedZones && formData.selectedZones.length > 0 && (
+                <p className="text-xs text-green-600 mt-2">
+                  ✓ {formData.selectedZones.length} zone(s) selected
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -763,25 +886,6 @@ export function HubPage() {
 
       {/* Stats */}
       <HubStats hubs={hubs} />
-
-      {/* Create/Edit Form */}
-      {(showCreateModal || editingHub) && (
-        <Card>
-          <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">
-              {editingHub ? "Edit Hub" : "Create New Hub"}
-            </h2>
-            <HubForm
-              hub={editingHub}
-              onSave={handleSaveHub}
-              onCancel={() => {
-                setShowCreateModal(false);
-                setEditingHub(undefined);
-              }}
-            />
-          </div>
-        </Card>
-      )}
 
       {/* Filters */}
       <Card className="p-3 sm:p-4">
@@ -1133,6 +1237,26 @@ export function HubPage() {
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* Create/Edit Hub Modal */}
+      <Modal
+        isOpen={showCreateModal || !!editingHub}
+        onClose={() => {
+          setShowCreateModal(false);
+          setEditingHub(undefined);
+        }}
+        title={editingHub ? "Edit Hub" : "Create New Hub"}
+        size="xl"
+      >
+        <HubForm
+          hub={editingHub}
+          onSave={handleSaveHub}
+          onCancel={() => {
+            setShowCreateModal(false);
+            setEditingHub(undefined);
+          }}
+        />
       </Modal>
     </div>
   );

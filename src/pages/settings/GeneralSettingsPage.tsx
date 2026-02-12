@@ -221,11 +221,11 @@ export function GeneralSettingsPage() {
           ].map((schedule) => (
             <div
               key={schedule.day}
-              className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-lg"
+              className="flex flex-col gap-3 p-3 sm:p-4 bg-gray-50 rounded-lg"
             >
-              <div className="w-full sm:w-24 flex justify-between sm:block">
+              <div className="flex items-center justify-between">
                 <span className="font-medium text-sm">{schedule.day}</span>
-                <div className="flex items-center gap-2 sm:hidden">
+                <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={schedule.enabled}
@@ -234,28 +234,20 @@ export function GeneralSettingsPage() {
                   <span className="text-sm text-gray-600">Open</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2 flex-1 flex-wrap">
+              <div className="flex items-center gap-2">
                 <Input
                   type="time"
                   value={schedule.open}
-                  className="w-28 sm:w-32"
+                  className="flex-1"
                   disabled={!schedule.enabled}
                 />
                 <span className="text-gray-500 text-sm">to</span>
                 <Input
                   type="time"
                   value={schedule.close}
-                  className="w-28 sm:w-32"
+                  className="flex-1"
                   disabled={!schedule.enabled}
                 />
-              </div>
-              <div className="hidden sm:flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={schedule.enabled}
-                  className="rounded"
-                />
-                <span className="text-sm text-gray-600">Open</span>
               </div>
             </div>
           ))}

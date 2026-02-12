@@ -318,8 +318,28 @@ export function OrdersList({
     {
       key: 'totalAmount',
       label: 'Amount',
-      render: (value: number) => (
-        <span className="font-semibold text-gray-900">{formatCurrency(value)}</span>
+      render: (value: number, order: Order) => (
+        <div>
+          <span className="font-semibold text-gray-900">{formatCurrency(value)}</span>
+          {order.paymentStatus && (
+            <div className="mt-1">
+              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${
+                order.paymentStatus === 'paid' ? 'bg-green-100 text-green-700 border-green-200' :
+                order.paymentStatus === 'partial' ? 'bg-orange-100 text-orange-700 border-orange-200' :
+                order.paymentStatus === 'pending' ? 'bg-yellow-100 text-yellow-700 border-yellow-200' :
+                order.paymentStatus === 'refunded' ? 'bg-purple-100 text-purple-700 border-purple-200' :
+                order.paymentStatus === 'failed' ? 'bg-red-100 text-red-700 border-red-200' :
+                'bg-gray-100 text-gray-700 border-gray-200'
+              }`}>
+                {order.paymentStatus === 'paid' ? 'Paid' :
+                 order.paymentStatus === 'partial' ? 'Partial' :
+                 order.paymentStatus === 'pending' ? 'Unpaid' :
+                 order.paymentStatus === 'refunded' ? 'Refunded' :
+                 order.paymentStatus === 'failed' ? 'Failed' : order.paymentStatus}
+              </span>
+            </div>
+          )}
+        </div>
       )
     },
     {
