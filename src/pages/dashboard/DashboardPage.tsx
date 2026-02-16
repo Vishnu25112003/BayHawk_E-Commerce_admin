@@ -155,19 +155,48 @@ export function DashboardPage() {
     );
   }
 
-  // Redirect employee roles to their specific dashboards
-  if (user?.role === 'hub_procurement' || user?.role === 'store_procurement') {
-    window.location.href = '/procurement-dashboard';
+  // Redirect employee roles to their main work pages
+  if (user?.role === 'hub_procurement') {
+    window.location.href = '/hub/procurement/purchases';
     return null;
   }
   
-  if (user?.role === 'hub_packing' || user?.role === 'store_packing') {
-    window.location.href = '/packing-dashboard';
+  if (user?.role === 'store_procurement') {
+    window.location.href = '/store/procurement/purchases';
     return null;
   }
   
-  if (user?.role === 'hub_delivery' || user?.role === 'store_delivery') {
-    window.location.href = '/delivery-dashboard';
+  if (user?.role === 'hub_cutting_cleaning') {
+    window.location.href = '/hub/cutting/management';
+    return null;
+  }
+  
+  if (user?.role === 'store_cutting_cleaning') {
+    window.location.href = '/store/cutting/management';
+    return null;
+  }
+  
+  if (user?.role === 'hub_packing') {
+    window.location.href = '/hub/packing/management';
+    return null;
+  }
+  
+  if (user?.role === 'store_packing') {
+    window.location.href = '/store/packing/management';
+    return null;
+  }
+  
+  if (user?.role === 'hub_dispatch') {
+    return null;
+  }
+  
+  if (user?.role === 'hub_delivery') {
+    window.location.href = '/hub/orders';
+    return null;
+  }
+  
+  if (user?.role === 'store_delivery') {
+    window.location.href = '/store/orders';
     return null;
   }
 

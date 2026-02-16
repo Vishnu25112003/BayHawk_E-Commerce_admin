@@ -1,4 +1,4 @@
-export type UserRole = 'super_admin' | 'hub_admin' | 'store_admin' | 'hub_main_admin' | 'hub_procurement' | 'hub_packing' | 'hub_delivery' | 'store_main_admin' | 'store_procurement' | 'store_packing' | 'store_delivery';
+export type UserRole = 'super_admin' | 'hub_admin' | 'store_admin' | 'hub_main_admin' | 'hub_procurement' | 'hub_cutting_cleaning' | 'hub_packing' | 'hub_dispatch' | 'hub_delivery' | 'store_main_admin' | 'store_procurement' | 'store_cutting_cleaning' | 'store_packing' | 'store_dispatch' | 'store_delivery';
 export type LoginType = 'hub' | 'store' | 'super_admin';
 export type ModuleType = 'hub' | 'store' | 'both';
 

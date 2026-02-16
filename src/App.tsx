@@ -5,15 +5,17 @@ import { Layout } from './components/layout/Layout';
 import { ProtectedRoute as ProtectedRouteComponent } from './components/ProtectedRoute';
 import { ProcurementRoute } from './components/ProcurementRoute';
 import { PackingRoute } from './components/PackingRoute';
-import { DeliveryRoute } from './components/DeliveryRoute';
+import DispatchRoute from './components/DispatchRoute';
 import { MultiRoleRoute } from './components/MultiRoleRoute';
+import { ProcurementOrCuttingRoute } from './components/ProcurementOrCuttingRoute';
 import { PERMISSIONS } from './utils/rbac';
 import { ProcurementReportsPage } from './pages/reports/ProcurementReportsPage';
+import { PurchaseManagementPage } from './pages/procurement/PurchaseManagementPage';
+import { CuttingManagementPage } from './pages/cutting/CuttingManagementPage';
+import { PackingManagementPage } from './pages/packing/PackingManagementPage';
+import DispatchManagement from './pages/dispatch/DispatchManagement';
 import { LoginPage } from './pages/dashboard/auth/LoginPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
-import ProcurementDashboard from './pages/dashboard/ProcurementDashboard';
-import PackingDashboard from './pages/dashboard/PackingDashboard';
-import DeliveryDashboard from './pages/dashboard/DeliveryDashboard';
 import { OrdersPage } from './pages/orders/OrdersPage';
 import { ManualOrderPage } from './pages/orders/ManualOrderPage';
 import { PreOrderPage } from './pages/orders/PreOrderPage';
@@ -43,6 +45,7 @@ import { SalesReportPage } from './pages/reports/SalesReportPage';
 import { PackingReportPage } from './pages/reports/PackingReportPage';
 import { DeliveryReportPage } from './pages/reports/DeliveryReportPage';
 import { StockReportPage } from './pages/reports/StockReportPage';
+import { DeliveryAgentPage, DeliveryAdminPage } from './pages/delivery';
 import { CustomerReportPage } from './pages/reports/CustomerReportPage';
 import { ProductDemandForecastPage } from './pages/reports/ProductDemandForecastPage';
 import { ProductTrendAnalysisPage } from './pages/reports/ProductTrendAnalysisPage';
@@ -65,6 +68,7 @@ import PackingPage from './pages/other/PackingPage';
 import { SettingsPage } from './pages/settings/SettingsPage';
 import AuditLogsPage from './pages/audit/AuditLogsPage';
 import { LabelingPage } from './pages/labeling/LabelingPage';
+import { RoleBasedRedirect } from './components/RoleBasedRedirect';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -77,19 +81,36 @@ function AppRoutes() {
   return (
     <RollbackProvider>
       <Routes>
-        <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+        <Route path="/login" element={isAuthenticated ? <RoleBasedRedirect /> : <LoginPage />} />
         <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route index element={<RoleBasedRedirect />} />
         <Route path="dashboard" element={<DashboardPage />} />
         
-        {/* Role-specific Dashboards */}
-        <Route path="procurement-dashboard" element={<ProcurementRoute><ProcurementDashboard /></ProcurementRoute>} />
-        <Route path="packing-dashboard" element={<PackingRoute><PackingDashboard /></PackingRoute>} />
-        <Route path="delivery-dashboard" element={<DeliveryRoute><DeliveryDashboard /></DeliveryRoute>} />
+        {/* Procurement Purchase Management */}
+        <Route path="hub/procurement/purchases" element={<ProcurementRoute><PurchaseManagementPage /></ProcurementRoute>} />
+        <Route path="store/procurement/purchases" element={<ProcurementRoute><PurchaseManagementPage /></ProcurementRoute>} />
         
-        {/* Hub Products Routes - Procurement Accessible */}
+        {/* Cutting & Cleaning Management */}
+        <Route path="hub/cutting/management" element={<ProcurementOrCuttingRoute><CuttingManagementPage /></ProcurementOrCuttingRoute>} />
+        <Route path="store/cutting/management" element={<ProcurementOrCuttingRoute><CuttingManagementPage /></ProcurementOrCuttingRoute>} />
+        
+        {/* Packing Management */}
+        <Route path="hub/packing/management" element={<PackingRoute><PackingManagementPage /></PackingRoute>} />
+        <Route path="store/packing/management" element={<PackingRoute><PackingManagementPage /></PackingRoute>} />
+        
+        {/* Dispatch Management */}
+        <Route path="hub/dispatch/management" element={<DispatchRoute><DispatchManagement /></DispatchRoute>} />
+        <Route path="store/dispatch/management" element={<DispatchRoute><DispatchManagement /></DispatchRoute>} />
+        
+        {/* Delivery Management */}
+        <Route path="hub/delivery/agent" element={<MultiRoleRoute allowedRoles={['hub_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
+        <Route path="hub/delivery/admin" element={<MultiRoleRoute allowedRoles={['hub_main_admin']}><DeliveryAdminPage /></MultiRoleRoute>} />
+        <Route path="store/delivery/agent" element={<MultiRoleRoute allowedRoles={['store_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
+        <Route path="store/delivery/admin" element={<MultiRoleRoute allowedRoles={['store_main_admin']}><DeliveryAdminPage /></MultiRoleRoute>} />
+        
+        {/* Hub Products Routes - Main Admin Only */}
         <Route path="hub/products/categories" element={<ProcurementRoute><CategoriesPage /></ProcurementRoute>} />
-        <Route path="hub/products/cutting-types" element={<ProcurementRoute><CuttingTypePage /></ProcurementRoute>} />
+        <Route path="hub/products/cutting-types" element={<ProtectedRouteComponent><CuttingTypePage /></ProtectedRouteComponent>} />
         <Route path="hub/products/stock" element={<ProcurementRoute><StockManagementPage /></ProcurementRoute>} />
         <Route path="hub/products/approval" element={<ProtectedRouteComponent permission="PRODUCT_APPROVAL"><ProductApprovalPage /></ProtectedRouteComponent>} />
         <Route path="hub/products/recipes" element={<ProcurementRoute><RecipesPage /></ProcurementRoute>} />
@@ -149,9 +170,9 @@ function AppRoutes() {
         <Route path="hub/settings/advertisement" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><AdvertisementPage /></ProtectedRouteComponent>} />
         <Route path="hub/settings/*" element={<ProtectedRouteComponent permission="HUB_TEAM_MANAGE"><SettingsPage /></ProtectedRouteComponent>} />
         
-        {/* Store Products Routes - Procurement Accessible */}
+        {/* Store Products Routes - Main Admin Only */}
         <Route path="store/products/categories" element={<ProcurementRoute><CategoriesPage /></ProcurementRoute>} />
-        <Route path="store/products/cutting-types" element={<ProcurementRoute><CuttingTypePage /></ProcurementRoute>} />
+        <Route path="store/products/cutting-types" element={<ProtectedRouteComponent><CuttingTypePage /></ProtectedRouteComponent>} />
         <Route path="store/products/stock" element={<ProcurementRoute><StockManagementPage /></ProcurementRoute>} />
         <Route path="store/products/approval" element={<ProtectedRouteComponent permission="PRODUCT_APPROVAL"><ProductApprovalPage /></ProtectedRouteComponent>} />
         <Route path="store/products/recipes" element={<ProcurementRoute><RecipesPage /></ProcurementRoute>} />
@@ -260,7 +281,7 @@ function AppRoutes() {
         <Route path="orders/manual" element={<ManualOrderPage />} />
         <Route path="orders/pre-orders" element={<PreOrderPage />} />
         <Route path="products/categories" element={<CategoriesPage />} />
-        <Route path="products/cutting-types" element={<CuttingTypePage />} />
+        <Route path="products/cutting-types" element={<ProtectedRouteComponent><CuttingTypePage /></ProtectedRouteComponent>} />
         <Route path="products/stock" element={<StockManagementPage />} />
         <Route path="products/approval" element={<ProductApprovalPage />} />
         <Route path="scratch-card" element={<ScratchCardPage />} />
@@ -303,7 +324,7 @@ function AppRoutes() {
         <Route path="marketing/*" element={<MarketingPage />} />
         <Route path="settings/*" element={<SettingsPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<RoleBasedRedirect />} />
     </Routes>
     </RollbackProvider>
   );

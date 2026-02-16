@@ -75,9 +75,17 @@ export const PERMISSIONS = {
   PROCUREMENT_VIEW: 'procurement_view',
   PROCUREMENT_MANAGE: 'procurement_manage',
   
+  // Cutting & Cleaning
+  CUTTING_CLEANING_VIEW: 'cutting_cleaning_view',
+  CUTTING_CLEANING_MANAGE: 'cutting_cleaning_manage',
+  
   // Packing
   PACKING_VIEW: 'packing_view',
   PACKING_MANAGE: 'packing_manage',
+  
+  // Dispatch
+  DISPATCH_VIEW: 'dispatch_view',
+  DISPATCH_MANAGE: 'dispatch_manage',
   
   // Delivery
   DELIVERY_VIEW: 'delivery_view',
@@ -135,8 +143,12 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
       PERMISSIONS.HUB_AUDIT_LOGS,
       PERMISSIONS.PROCUREMENT_VIEW,
       PERMISSIONS.PROCUREMENT_MANAGE,
+      PERMISSIONS.CUTTING_CLEANING_VIEW,
+      PERMISSIONS.CUTTING_CLEANING_MANAGE,
       PERMISSIONS.PACKING_VIEW,
       PERMISSIONS.PACKING_MANAGE,
+      PERMISSIONS.DISPATCH_VIEW,
+      PERMISSIONS.DISPATCH_MANAGE,
       PERMISSIONS.DELIVERY_VIEW,
       PERMISSIONS.DELIVERY_MANAGE,
     ],
@@ -151,33 +163,26 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
     color: 'bg-green-500',
     icon: 'Package',
     permissions: [
-      // Products & Stock - Full Access
+      // Products - View and Manage Only
       PERMISSIONS.HUB_PRODUCTS_VIEW,
       PERMISSIONS.HUB_PRODUCTS_MANAGE,
-      PERMISSIONS.HUB_STOCK_VIEW,
-      PERMISSIONS.HUB_STOCK_MANAGE,
-      PERMISSIONS.HUB_CATEGORIES_VIEW,
-      PERMISSIONS.HUB_CATEGORIES_MANAGE,
-      PERMISSIONS.HUB_RECIPES_VIEW,
-      PERMISSIONS.HUB_RECIPES_MANAGE,
       PERMISSIONS.PROCUREMENT_VIEW,
       PERMISSIONS.PROCUREMENT_MANAGE,
-      
-      // Marketing - Full Access
-      PERMISSIONS.HUB_MARKETING_VIEW,
-      PERMISSIONS.HUB_MARKETING_MANAGE,
-      PERMISSIONS.HUB_SCRATCH_CARD,
-      PERMISSIONS.HUB_SPIN_WHEEL, 
-      PERMISSIONS.HUB_FLASH_SALE,
-      PERMISSIONS.HUB_SUBSCRIPTION,
-      PERMISSIONS.HUB_OFFER_NOTIFICATION,
-      PERMISSIONS.HUB_COUPON,
-      PERMISSIONS.HUB_IN_APP_CURRENCY,
-      PERMISSIONS.HUB_REFERRAL,
-      
-      // Reports - Procurement Related Only
-      PERMISSIONS.HUB_REPORTS_STOCK,
-      PERMISSIONS.HUB_REPORTS_PROCUREMENT,
+    ],
+  },
+  
+  hub_cutting_cleaning: {
+    id: 'hub_cutting_cleaning',
+    name: 'hub_cutting_cleaning',
+    displayName: 'Cutting & Cleaning Employee',
+    description: 'Handle cutting and cleaning operations',
+    moduleType: 'hub',
+    color: 'bg-teal-500',
+    icon: 'Scissors',
+    permissions: [
+      PERMISSIONS.CUTTING_CLEANING_VIEW,
+      PERMISSIONS.CUTTING_CLEANING_MANAGE,
+      PERMISSIONS.HUB_PRODUCTS_VIEW,
     ],
   },
   
@@ -199,9 +204,30 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
       // Labeling - Full Access
       'HUB_LABELING_VIEW',
       'HUB_LABELING_MANAGE',
+    ],
+  },
+  
+  hub_dispatch: {
+    id: 'hub_dispatch',
+    name: 'hub_dispatch',
+    displayName: 'Dispatch Employee',
+    description: 'Handle order dispatch and coordination',
+    moduleType: 'hub',
+    color: 'bg-indigo-500',
+    icon: 'Send',
+    permissions: [
+      // Orders - View and Edit
+      PERMISSIONS.HUB_ORDERS_VIEW,
+      PERMISSIONS.HUB_ORDERS_EDIT,
+      PERMISSIONS.DISPATCH_VIEW,
+      PERMISSIONS.DISPATCH_MANAGE,
       
-      // Reports - Packing Related Only
-      PERMISSIONS.HUB_REPORTS_PACKING,
+      // Delivery - View and Assign
+      PERMISSIONS.DELIVERY_VIEW,
+      PERMISSIONS.DELIVERY_ASSIGN,
+      
+      // Team - View Delivery Agents
+      PERMISSIONS.HUB_DELIVERY_AGENTS_VIEW,
     ],
   },
   
@@ -221,9 +247,6 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
       // Team - Limited Access
       PERMISSIONS.HUB_TEAM_VIEW,
       PERMISSIONS.HUB_DELIVERY_AGENTS_VIEW,
-      
-      // Reports - Delivery Related Only
-      PERMISSIONS.HUB_REPORTS_DELIVERY,
     ],
   },
   
@@ -268,8 +291,12 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
       PERMISSIONS.HUB_REPORTS_PROCUREMENT,
       PERMISSIONS.PROCUREMENT_VIEW,
       PERMISSIONS.PROCUREMENT_MANAGE,
+      PERMISSIONS.CUTTING_CLEANING_VIEW,
+      PERMISSIONS.CUTTING_CLEANING_MANAGE,
       PERMISSIONS.PACKING_VIEW,
       PERMISSIONS.PACKING_MANAGE,
+      PERMISSIONS.DISPATCH_VIEW,
+      PERMISSIONS.DISPATCH_MANAGE,
       PERMISSIONS.DELIVERY_VIEW,
       PERMISSIONS.DELIVERY_MANAGE,
     ],
@@ -284,31 +311,25 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
     color: 'bg-green-500',
     icon: 'Package',
     permissions: [
-      // Products & Stock - Full Access
+      // Products - View and Manage Only
       PERMISSIONS.STORE_PRODUCTS_VIEW,
-      PERMISSIONS.STORE_STOCK_MANAGE,
-      PERMISSIONS.HUB_CATEGORIES_VIEW,
-      PERMISSIONS.HUB_CATEGORIES_MANAGE,
-      PERMISSIONS.HUB_RECIPES_VIEW,
-      PERMISSIONS.HUB_RECIPES_MANAGE,
       PERMISSIONS.PROCUREMENT_VIEW,
       PERMISSIONS.PROCUREMENT_MANAGE,
-      
-      // Marketing - Full Access
-      PERMISSIONS.HUB_MARKETING_VIEW,
-      PERMISSIONS.HUB_MARKETING_MANAGE,
-      PERMISSIONS.HUB_SCRATCH_CARD,
-      PERMISSIONS.HUB_SPIN_WHEEL,
-      PERMISSIONS.HUB_FLASH_SALE,
-      PERMISSIONS.HUB_SUBSCRIPTION,
-      PERMISSIONS.HUB_OFFER_NOTIFICATION,
-      PERMISSIONS.HUB_COUPON,
-      PERMISSIONS.HUB_IN_APP_CURRENCY,
-      PERMISSIONS.HUB_REFERRAL,
-      
-      // Reports - Procurement Related Only
-      PERMISSIONS.HUB_REPORTS_STOCK,
-      PERMISSIONS.HUB_REPORTS_PROCUREMENT,
+    ],
+  },
+  
+  store_cutting_cleaning: {
+    id: 'store_cutting_cleaning',
+    name: 'store_cutting_cleaning',
+    displayName: 'Cutting & Cleaning Employee',
+    description: 'Handle store cutting and cleaning operations',
+    moduleType: 'store',
+    color: 'bg-teal-500',
+    icon: 'Scissors',
+    permissions: [
+      PERMISSIONS.CUTTING_CLEANING_VIEW,
+      PERMISSIONS.CUTTING_CLEANING_MANAGE,
+      PERMISSIONS.STORE_PRODUCTS_VIEW,
     ],
   },
   
@@ -329,9 +350,29 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
       // Labeling - Full Access
       'HUB_LABELING_VIEW',
       'HUB_LABELING_MANAGE',
+    ],
+  },
+  
+  store_dispatch: {
+    id: 'store_dispatch',
+    name: 'store_dispatch',
+    displayName: 'Dispatch Employee',
+    description: 'Handle store order dispatch and coordination',
+    moduleType: 'store',
+    color: 'bg-indigo-500',
+    icon: 'Send',
+    permissions: [
+      // Orders - View and Edit
+      PERMISSIONS.STORE_ORDERS_VIEW,
+      PERMISSIONS.DISPATCH_VIEW,
+      PERMISSIONS.DISPATCH_MANAGE,
       
-      // Reports - Packing Related Only
-      PERMISSIONS.HUB_REPORTS_PACKING,
+      // Delivery - View and Assign
+      PERMISSIONS.DELIVERY_VIEW,
+      PERMISSIONS.DELIVERY_ASSIGN,
+      
+      // Team - View Delivery Agents
+      PERMISSIONS.STORE_DELIVERY_AGENTS_VIEW,
     ],
   },
   
@@ -351,9 +392,6 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
       // Team - Limited Access
       PERMISSIONS.STORE_TEAM_VIEW,
       PERMISSIONS.STORE_DELIVERY_AGENTS_VIEW,
-      
-      // Reports - Delivery Related Only
-      PERMISSIONS.HUB_REPORTS_DELIVERY,
     ],
   },
 };

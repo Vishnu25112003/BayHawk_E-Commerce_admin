@@ -61,7 +61,7 @@ export const teamMemberSchema = z.object({
   email: z.string().email('Invalid email'),
   phone: z.string().regex(/^\+91\s?\d{10}$/, 'Invalid phone number'),
   department: z.string().min(1, 'Select department'),
-  role: z.enum(['hub_main_admin', 'hub_procurement', 'hub_packing', 'hub_delivery', 'store_main_admin', 'store_procurement', 'store_packing', 'store_delivery']),
+  role: z.enum(['hub_main_admin', 'hub_procurement', 'hub_cutting_cleaning', 'hub_packing', 'hub_dispatch', 'hub_delivery', 'store_main_admin', 'store_procurement', 'store_cutting_cleaning', 'store_packing', 'store_dispatch', 'store_delivery']),
   locationId: z.string().min(1, 'Select location'),
 });
 

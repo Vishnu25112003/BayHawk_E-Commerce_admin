@@ -9,6 +9,11 @@ import {
   Tag,
   Home,
   Play,
+  ShoppingBag,
+  Scissors,
+  PackageCheck,
+  Send,
+  Truck,
 } from "lucide-react";
 import type { LoginType, UserRole } from "../types";
 
@@ -29,6 +34,7 @@ export const HUB_MENU: MenuItem[] = [
     icon: Home,
     path: "/dashboard",
     module: "hub",
+    requiredRoles: ["hub_main_admin"],
   },
   {
     id: "hub-orders",
@@ -36,7 +42,7 @@ export const HUB_MENU: MenuItem[] = [
     icon: ShoppingCart,
     path: "/hub/orders",
     module: "hub",
-    requiredRoles: ["hub_main_admin", "hub_packing", "hub_delivery"], // Allow delivery access to orders
+    requiredRoles: ["hub_main_admin"],
     children: [
       {
         id: "hub-all-orders",
@@ -44,7 +50,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/orders",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_packing", "hub_delivery"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-manual-order",
@@ -88,6 +94,7 @@ export const HUB_MENU: MenuItem[] = [
     icon: Package,
     path: "/hub/products",
     module: "hub",
+    requiredRoles: ["hub_main_admin"],
     children: [
       {
         id: "hub-all-products",
@@ -95,7 +102,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/products",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-stock",
@@ -103,7 +110,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/products/stock",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-categories",
@@ -111,7 +118,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/products/categories",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-cutting-types",
@@ -119,7 +126,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/products/cutting-types",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-recipes",
@@ -127,9 +134,49 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/products/recipes",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
     ],
+  },
+  {
+    id: "hub-procurement",
+    label: "Procurement",
+    icon: ShoppingBag,
+    path: "/hub/procurement/purchases",
+    module: "hub",
+    requiredRoles: ["hub_procurement"],
+  },
+  {
+    id: "hub-cutting",
+    label: "Cutting & Cleaning",
+    icon: Scissors,
+    path: "/hub/cutting/management",
+    module: "hub",
+    requiredRoles: ["hub_cutting_cleaning"],
+  },
+  {
+    id: "hub-packing",
+    label: "Packing",
+    icon: PackageCheck,
+    path: "/hub/packing/management",
+    module: "hub",
+    requiredRoles: ["hub_packing"],
+  },
+  {
+    id: "hub-dispatch",
+    label: "Dispatch",
+    icon: Send,
+    path: "/hub/dispatch/management",
+    module: "hub",
+    requiredRoles: ["hub_dispatch"],
+  },
+  {
+    id: "hub-delivery",
+    label: "Delivery",
+    icon: Truck,
+    path: "/hub/delivery/agent",
+    module: "hub",
+    requiredRoles: ["hub_delivery"],
   },
   {
     id: "hub-labeling",
@@ -137,7 +184,7 @@ export const HUB_MENU: MenuItem[] = [
     icon: Tag,
     path: "/hub/labeling",
     module: "hub",
-    requiredRoles: ["hub_main_admin", "hub_packing"], // Allow packing access to labeling
+    requiredRoles: ["hub_main_admin"],
   },
   {
     id: "hub-marketing",
@@ -145,7 +192,7 @@ export const HUB_MENU: MenuItem[] = [
     icon: Megaphone,
     path: "/hub/marketing",
     module: "hub",
-    requiredRoles: ["hub_main_admin", "hub_procurement"], // Allow procurement access
+    requiredRoles: ["hub_main_admin"],
     children: [
       {
         id: "hub-scratch-card",
@@ -153,7 +200,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/scratch-card",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-spin-wheel",
@@ -161,7 +208,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/spin-wheel",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-flash-sale",
@@ -169,7 +216,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/flash-sale",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-subscription",
@@ -177,7 +224,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/subscription",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-offer-notification",
@@ -185,7 +232,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/offer-notification",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-coupon",
@@ -193,7 +240,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/coupon",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-in-app-currency",
@@ -201,7 +248,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/in-app-currency",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-referral",
@@ -209,7 +256,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/referral",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
     ],
   },
@@ -219,6 +266,7 @@ export const HUB_MENU: MenuItem[] = [
     icon: BarChart3,
     path: "/hub/reports",
     module: "hub",
+    requiredRoles: ["hub_main_admin"],
     children: [
       {
         id: "hub-sales-reports",
@@ -234,7 +282,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/reports/packing",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_packing"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-delivery-reports",
@@ -242,7 +290,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/reports/delivery",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_delivery"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-stock-reports",
@@ -250,7 +298,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/reports/stock",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-procurement-reports",
@@ -258,7 +306,7 @@ export const HUB_MENU: MenuItem[] = [
         icon: null,
         path: "/hub/reports/procurement",
         module: "hub",
-        requiredRoles: ["hub_main_admin", "hub_procurement"],
+        requiredRoles: ["hub_main_admin"],
       },
       {
         id: "hub-customer-reports",
@@ -287,6 +335,7 @@ export const STORE_MENU: MenuItem[] = [
     icon: Home,
     path: "/dashboard",
     module: "store",
+    requiredRoles: ["store_main_admin"],
   },
   {
     id: "store-orders",
@@ -294,7 +343,7 @@ export const STORE_MENU: MenuItem[] = [
     icon: ShoppingCart,
     path: "/store/orders",
     module: "store",
-    requiredRoles: ["store_main_admin", "store_packing", "store_delivery"], // Allow delivery access to orders
+    requiredRoles: ["store_main_admin"],
     children: [
       {
         id: "store-all-orders",
@@ -302,7 +351,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/orders",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_packing", "store_delivery"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-manual-order",
@@ -346,6 +395,7 @@ export const STORE_MENU: MenuItem[] = [
     icon: Package,
     path: "/store/products",
     module: "store",
+    requiredRoles: ["store_main_admin"],
     children: [
       {
         id: "store-all-products",
@@ -353,7 +403,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/products",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-stock",
@@ -361,7 +411,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/products/stock",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-categories",
@@ -369,7 +419,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/products/categories",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-cutting-types",
@@ -377,7 +427,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/products/cutting-types",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-recipes",
@@ -385,9 +435,49 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/products/recipes",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
     ],
+  },
+  {
+    id: "store-procurement",
+    label: "Procurement",
+    icon: ShoppingBag,
+    path: "/store/procurement/purchases",
+    module: "store",
+    requiredRoles: ["store_procurement"],
+  },
+  {
+    id: "store-cutting",
+    label: "Cutting & Cleaning",
+    icon: Scissors,
+    path: "/store/cutting/management",
+    module: "store",
+    requiredRoles: ["store_cutting_cleaning"],
+  },
+  {
+    id: "store-packing",
+    label: "Packing",
+    icon: PackageCheck,
+    path: "/store/packing/management",
+    module: "store",
+    requiredRoles: ["store_packing"],
+  },
+  {
+    id: "store-dispatch",
+    label: "Dispatch",
+    icon: Send,
+    path: "/store/dispatch/management",
+    module: "store",
+    requiredRoles: ["store_dispatch"],
+  },
+  {
+    id: "store-delivery",
+    label: "Delivery",
+    icon: Truck,
+    path: "/store/delivery/agent",
+    module: "store",
+    requiredRoles: ["store_delivery"],
   },
   {
     id: "store-labeling",
@@ -395,7 +485,7 @@ export const STORE_MENU: MenuItem[] = [
     icon: Tag,
     path: "/store/labeling",
     module: "store",
-    requiredRoles: ["store_main_admin", "store_packing"], // Allow packing access to labeling
+    requiredRoles: ["store_main_admin"],
   },
   {
     id: "store-marketing",
@@ -403,7 +493,7 @@ export const STORE_MENU: MenuItem[] = [
     icon: Megaphone,
     path: "/store/marketing",
     module: "store",
-    requiredRoles: ["store_main_admin", "store_procurement"], // Allow procurement access
+    requiredRoles: ["store_main_admin"],
     children: [
       {
         id: "store-scratch-card",
@@ -411,7 +501,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/scratch-card",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-spin-wheel",
@@ -419,7 +509,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/spin-wheel",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-flash-sale",
@@ -427,7 +517,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/flash-sale",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-subscription",
@@ -435,7 +525,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/subscription",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-offer-notification",
@@ -443,7 +533,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/offer-notification",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-coupon",
@@ -451,7 +541,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/coupon",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-in-app-currency",
@@ -459,7 +549,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/in-app-currency",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-referral",
@@ -467,7 +557,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/referral",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
     ],
   },
@@ -477,6 +567,7 @@ export const STORE_MENU: MenuItem[] = [
     icon: BarChart3,
     path: "/store/reports",
     module: "store",
+    requiredRoles: ["store_main_admin"],
     children: [
       {
         id: "store-sales-reports",
@@ -492,7 +583,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/reports/packing",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_packing"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-delivery-reports",
@@ -500,7 +591,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/reports/delivery",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_delivery"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-stock-reports",
@@ -508,7 +599,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/reports/stock",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-procurement-reports",
@@ -516,7 +607,7 @@ export const STORE_MENU: MenuItem[] = [
         icon: null,
         path: "/store/reports/procurement",
         module: "store",
-        requiredRoles: ["store_main_admin", "store_procurement"],
+        requiredRoles: ["store_main_admin"],
       },
       {
         id: "store-customer-reports",
