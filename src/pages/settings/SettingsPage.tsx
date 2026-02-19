@@ -12,7 +12,8 @@ import {
   Settings as SettingsIcon,
   CheckCircle,
   AlertTriangle,
-  Play
+  Play,
+  Tag
 } from 'lucide-react';
 
 const settingsCategories = [
@@ -24,7 +25,8 @@ const settingsCategories = [
     path: '/settings',
     hubPath: '/hub/settings',
     storePath: '/store/settings',
-    status: 'complete'
+    status: 'complete',
+    superAdminOnly: false
   },
   {
     id: 'delivery-slots',
@@ -34,7 +36,8 @@ const settingsCategories = [
     path: '/settings/delivery-slots',
     hubPath: '/hub/settings/delivery-slots',
     storePath: '/store/settings/delivery-slots',
-    status: 'complete'
+    status: 'complete',
+    superAdminOnly: false
   },
   {
     id: 'shipping-charges',
@@ -44,7 +47,8 @@ const settingsCategories = [
     path: '/settings/shipping-charges',
     hubPath: '/hub/settings/shipping-charges',
     storePath: '/store/settings/shipping-charges',
-    status: 'complete'
+    status: 'complete',
+    superAdminOnly: false
   },
   {
     id: 'integrations',
@@ -54,7 +58,8 @@ const settingsCategories = [
     path: '/settings/integrations',
     hubPath: '/hub/settings/integrations',
     storePath: '/store/settings/integrations',
-    status: 'warning'
+    status: 'warning',
+    superAdminOnly: false
   },
   {
     id: 'weather',
@@ -64,7 +69,8 @@ const settingsCategories = [
     path: '/settings/weather',
     hubPath: '/hub/settings/weather',
     storePath: '/store/settings/weather',
-    status: 'complete'
+    status: 'complete',
+    superAdminOnly: false
   },
   {
     id: 'notifications',
@@ -74,7 +80,8 @@ const settingsCategories = [
     path: '/settings/notification',
     hubPath: '/hub/settings/notification',
     storePath: '/store/settings/notification',
-    status: 'complete'
+    status: 'complete',
+    superAdminOnly: false
   },
   {
     id: 'legal',
@@ -84,7 +91,8 @@ const settingsCategories = [
     path: '/settings/legal',
     hubPath: '/hub/settings/legal',
     storePath: '/store/settings/legal',
-    status: 'incomplete'
+    status: 'incomplete',
+    superAdminOnly: false
   },
   {
     id: 'advertisement',
@@ -94,7 +102,19 @@ const settingsCategories = [
     path: '/settings/advertisement',
     hubPath: '/hub/settings/advertisement',
     storePath: '/store/settings/advertisement',
-    status: 'complete'
+    status: 'complete',
+    superAdminOnly: false
+  },
+  {
+    id: 'offer-templates',
+    title: 'Offer Templates',
+    description: 'Manage carousel and promotional offer templates',
+    icon: Tag,
+    path: '/settings/offer-templates',
+    hubPath: '/hub/settings/offer-templates',
+    storePath: '/store/settings/offer-templates',
+    status: 'complete',
+    superAdminOnly: true
   }
 ];
 
@@ -110,6 +130,14 @@ export function SettingsPage() {
   };
 
   const currentModule = getCurrentModule();
+
+  // Filter settings based on module
+  const filteredSettings = settingsCategories.filter(setting => {
+    if (setting.superAdminOnly && currentModule !== 'super_admin') {
+      return false;
+    }
+    return true;
+  });
 
   const handleSettingClick = (setting: typeof settingsCategories[0]) => {
     let targetPath = setting.path;
@@ -151,14 +179,14 @@ export function SettingsPage() {
         <div className="flex items-center gap-2">
           <SettingsIcon className="h-5 w-5 text-gray-400" />
           <span className="text-sm text-gray-500">
-            {settingsCategories.filter(s => s.status === 'complete').length} of {settingsCategories.length} configured
+            {filteredSettings.filter(s => s.status === 'complete').length} of {filteredSettings.length} configured
           </span>
         </div>
       </div>
 
       {/* Settings Overview */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {settingsCategories.map(setting => {
+        {filteredSettings.map(setting => {
           const StatusIcon = getStatusIcon(setting.status);
           const statusColor = getStatusColor(setting.status);
           
@@ -256,7 +284,7 @@ export function SettingsPage() {
         </div>
 
         <div className="space-y-3">
-          {settingsCategories.map(setting => {
+          {filteredSettings.map(setting => {
             const StatusIcon = getStatusIcon(setting.status);
             const statusColor = getStatusColor(setting.status);
             
@@ -282,14 +310,14 @@ export function SettingsPage() {
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600">Overall Progress</span>
             <span className="font-medium">
-              {Math.round((settingsCategories.filter(s => s.status === 'complete').length / settingsCategories.length) * 100)}% Complete
+              {Math.round((filteredSettings.filter(s => s.status === 'complete').length / filteredSettings.length) * 100)}% Complete
             </span>
           </div>
           <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
             <div 
               className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
               style={{ 
-                width: `${(settingsCategories.filter(s => s.status === 'complete').length / settingsCategories.length) * 100}%` 
+                width: `${(filteredSettings.filter(s => s.status === 'complete').length / filteredSettings.length) * 100}%` 
               }}
             ></div>
           </div>

@@ -944,6 +944,13 @@ export const SUPER_ADMIN_MENU: MenuItem[] = [
         path: "/settings/advertisement",
         module: "both",
       },
+      {
+        id: "offer-templates",
+        label: "Offer Templates",
+        icon: Tag,
+        path: "/settings/offer-templates",
+        module: "both",
+      },
     ],
   },
 ];

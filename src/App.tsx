@@ -59,6 +59,7 @@ import { NotificationCustomizationPage } from './pages/settings/NotificationCust
 import { WeatherCustomizationPage } from './pages/settings/WeatherCustomizationPage';
 import { LegalPage } from './pages/settings/LegalPage';
 import { AdvertisementPage } from './pages/settings/AdvertisementPage';
+import { OfferTemplatesPage } from './pages/settings/OfferTemplatesPage';
 import { MarketingPage } from './pages/marketing/MarketingPage';
 import { RecipesPage } from './pages/products/RecipesPage';
 import { MembershipPage } from './pages/other/MembershipPage';
@@ -318,6 +319,7 @@ function AppRoutes() {
         <Route path="settings/notification" element={<NotificationCustomizationPage />} />
         <Route path="settings/legal" element={<LegalPage />} />
         <Route path="settings/advertisement" element={<AdvertisementPage />} />
+        <Route path="settings/offer-templates" element={<OfferTemplatesPage />} />
         <Route path="orders/*" element={<OrdersPage />} />
         <Route path="products/*" element={<ProductsPage />} />
         <Route path="team/*" element={<TeamPage />} />
