@@ -104,8 +104,10 @@ function AppRoutes() {
         <Route path="store/dispatch/management" element={<DispatchRoute><DispatchManagement /></DispatchRoute>} />
         
         {/* Delivery Management */}
+        <Route path="hub/delivery/management" element={<MultiRoleRoute allowedRoles={['hub_main_admin', 'hub_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
         <Route path="hub/delivery/agent" element={<MultiRoleRoute allowedRoles={['hub_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
         <Route path="hub/delivery/admin" element={<MultiRoleRoute allowedRoles={['hub_main_admin']}><DeliveryAdminPage /></MultiRoleRoute>} />
+        <Route path="store/delivery/management" element={<MultiRoleRoute allowedRoles={['store_main_admin', 'store_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
         <Route path="store/delivery/agent" element={<MultiRoleRoute allowedRoles={['store_delivery']}><DeliveryAgentPage /></MultiRoleRoute>} />
         <Route path="store/delivery/admin" element={<MultiRoleRoute allowedRoles={['store_main_admin']}><DeliveryAdminPage /></MultiRoleRoute>} />
         

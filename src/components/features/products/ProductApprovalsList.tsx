@@ -7,10 +7,19 @@ interface ProductRequest {
   productName: string;
   productNameTa: string;
   category: string;
+  hsnNumber: string;
+  variant: string;
+  fishSize: string;
+  maxSize: string;
+  basePriceMin: number;
+  basePriceMax: number;
+  fishCountMin: number;
+  fishCountMax: number;
   description: string;
   price: number;
   unit: string;
   images: string[];
+  primaryImageIndex: number;
   requestedBy: string;
   requestedByRole: string;
   requestDate: string;
@@ -18,11 +27,61 @@ interface ProductRequest {
   status: 'pending' | 'approved' | 'rejected';
   priority: 'low' | 'medium' | 'high';
   reason?: string;
-  specifications: {
-    weight?: string;
-    freshness?: string;
-    origin?: string;
-    packaging?: string;
+  isBestSeller: boolean;
+  isRareProduct: boolean;
+  isActive: boolean;
+  productType: 'fresh' | 'frozen' | 'processed' | '';
+  season: string;
+  metaTitle: string;
+  metaDescription: string;
+  variants: Array<{
+    id: string;
+    type: string;
+    size: string;
+    grossWeight: string;
+    netWeight: string;
+    pieces: string;
+    serves: string;
+    skuNumber: string;
+    actualPrice: number;
+    salesPrice: number;
+    stock: number;
+    igst: number;
+    cgst: number;
+    sgst: number;
+    cuttingTypeId?: string;
+    cuttingTypeName?: string;
+  }>;
+  dayBasedPricing?: {
+    enabled: boolean;
+    dayPrices: Array<{
+      day: string;
+      price: number;
+      enabled: boolean;
+    }>;
+  };
+  productTags?: string[];
+  nutrition?: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    fiber: number;
+    sugar: number;
+    sodium: number;
+    cholesterol: number;
+    vitamins: {
+      vitaminA: number;
+      vitaminC: number;
+      vitaminD: number;
+      vitaminB12: number;
+    };
+    minerals: {
+      calcium: number;
+      iron: number;
+      potassium: number;
+      magnesium: number;
+    };
   };
 }
 
@@ -304,20 +363,28 @@ export function ProductApprovalsList({
                     </div>
                   </div>
 
-                  {/* Product Specifications */}
-                  {Object.keys(request.specifications).length > 0 && (
-                    <div className="mb-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
-                      <p className="text-xs font-semibold text-purple-900 mb-2">Product Specifications</p>
-                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                        {Object.entries(request.specifications).map(([key, value]) => value && (
-                          <div key={key} className="bg-white p-2 rounded border border-purple-100">
-                            <p className="text-xs text-gray-600 capitalize mb-1">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
-                            <p className="text-sm font-semibold text-gray-900">{value}</p>
-                          </div>
-                        ))}
+                  {/* Product Details */}
+                  <div className="mb-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                    <p className="text-xs font-semibold text-purple-900 mb-2">Product Details</p>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                      <div className="bg-white p-2 rounded border border-purple-100">
+                        <p className="text-xs text-gray-600 mb-1">HSN Number</p>
+                        <p className="text-sm font-semibold text-gray-900">{request.hsnNumber}</p>
+                      </div>
+                      <div className="bg-white p-2 rounded border border-purple-100">
+                        <p className="text-xs text-gray-600 mb-1">Variant</p>
+                        <p className="text-sm font-semibold text-gray-900">{request.variant}</p>
+                      </div>
+                      <div className="bg-white p-2 rounded border border-purple-100">
+                        <p className="text-xs text-gray-600 mb-1">Product Type</p>
+                        <p className="text-sm font-semibold text-gray-900 capitalize">{request.productType}</p>
+                      </div>
+                      <div className="bg-white p-2 rounded border border-purple-100">
+                        <p className="text-xs text-gray-600 mb-1">Season</p>
+                        <p className="text-sm font-semibold text-gray-900">{request.season}</p>
                       </div>
                     </div>
-                  )}
+                  </div>
 
                   {/* Rejection Reason */}
                   {request.status === 'rejected' && request.reason && (

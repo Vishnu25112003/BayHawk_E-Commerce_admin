@@ -229,22 +229,34 @@ export default function DeliveryAgentPage() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Package className="w-8 h-8 text-indigo-600" />
-          <div>
-            <h1 className="text-2xl font-bold">My Deliveries</h1>
-            <p className="text-sm text-gray-600">Delivery Person: {user?.name}</p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="w-full py-6">
+        <div className="space-y-6">
+          {/* Header Section */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <Package className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-900">Delivery Management</h1>
+                    <p className="text-sm text-gray-600 mt-1">Delivery Person: {user?.name}</p>
+                  </div>
+                </div>
+                <p className="text-base text-gray-600">
+                  Manage and track your assigned deliveries
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center gap-2 mb-4">
           <Filter className="w-5 h-5 text-gray-600" />
-          <h2 className="font-semibold">Filters</h2>
+          <h2 className="text-lg font-semibold">Filters</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
@@ -302,7 +314,10 @@ export default function DeliveryAgentPage() {
       </div>
 
       {/* Delivery Table */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">My Deliveries</h3>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b">
@@ -440,21 +455,26 @@ export default function DeliveryAgentPage() {
       </div>
 
       {/* Export Buttons */}
-      <div className="flex gap-3">
-        <button
-          onClick={exportCSV}
-          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-        >
-          <Download className="w-4 h-4" />
-          Export CSV
-        </button>
-        <button
-          onClick={exportPDF}
-          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-        >
-          <Download className="w-4 h-4" />
-          Export PDF
-        </button>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Export Data</h3>
+        <div className="flex gap-3">
+          <button
+            onClick={exportCSV}
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          >
+            <Download className="w-4 h-4" />
+            Export CSV
+          </button>
+          <button
+            onClick={exportPDF}
+            className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+          >
+            <Download className="w-4 h-4" />
+            Export PDF
+          </button>
+        </div>
+      </div>
+        </div>
       </div>
     </div>
   );

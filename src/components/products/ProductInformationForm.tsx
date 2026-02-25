@@ -119,6 +119,14 @@ export function ProductInformationForm({ data, onChange }: ProductInformationFor
 
   const availableCategories = getAvailableCategories();
 
+  // Check if selected category is a fish category
+  const isFishCategory = () => {
+    const selectedCategory = mockCategories.find(cat => cat.id === data.category);
+    return selectedCategory?.applicableFor === 'hub';
+  };
+
+  const showAllFields = isFishCategory();
+
   return (
     <Card>
       <div className="flex items-center gap-2 mb-4">
@@ -211,171 +219,233 @@ export function ProductInformationForm({ data, onChange }: ProductInformationFor
         </div>
       </div>
 
-      {/* Second Row: Variant, Fish Size, Max */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-3 mb-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Variant
-          </label>
-          <input
-            type="text"
-            value={data.variant}
-            onChange={(e) => onChange('variant', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Medium"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Fish Size
-          </label>
-          <input
-            type="text"
-            value={data.fishSize}
-            onChange={(e) => onChange('fishSize', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="1 kg"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Max
-          </label>
-          <input
-            type="text"
-            value={data.maxSize}
-            onChange={(e) => onChange('maxSize', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="2 kg"
-          />
-        </div>
-      </div>
-
-      {/* Third Row: Base Price and Fish Count */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 mb-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Base Price (₹) *
-          </label>
-          <div className="grid grid-cols-2 gap-2">
+      {/* Conditional Fields - Show only for Fish Categories */}
+      {showAllFields && (
+        <>
+          {/* Second Row: Variant, Fish Size, Max */}
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-3 mb-4">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Min</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Variant
+              </label>
               <input
-                type="number"
-                value={data.basePriceMin}
-                onChange={(e) => onChange('basePriceMin', Number(e.target.value))}
+                type="text"
+                value={data.variant}
+                onChange={(e) => onChange('variant', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="1299"
+                placeholder="Medium"
               />
             </div>
+
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Max</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Fish Size
+              </label>
               <input
-                type="number"
-                value={data.basePriceMax}
-                onChange={(e) => onChange('basePriceMax', Number(e.target.value))}
+                type="text"
+                value={data.fishSize}
+                onChange={(e) => onChange('fishSize', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="1299"
+                placeholder="1 kg"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Max
+              </label>
+              <input
+                type="text"
+                value={data.maxSize}
+                onChange={(e) => onChange('maxSize', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="2 kg"
               />
             </div>
           </div>
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Fish Count
-          </label>
-          <div className="grid grid-cols-2 gap-2">
+          {/* Third Row: Base Price and Fish Count */}
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 mb-4">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Min</label>
-              <input
-                type="number"
-                value={data.fishCountMin}
-                onChange={(e) => onChange('fishCountMin', Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="1"
-              />
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Base Price (₹) *
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Min</label>
+                  <input
+                    type="number"
+                    value={data.basePriceMin}
+                    onChange={(e) => onChange('basePriceMin', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="1299"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Max</label>
+                  <input
+                    type="number"
+                    value={data.basePriceMax}
+                    onChange={(e) => onChange('basePriceMax', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="1299"
+                  />
+                </div>
+              </div>
             </div>
+
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Max</label>
-              <input
-                type="number"
-                value={data.fishCountMax}
-                onChange={(e) => onChange('fishCountMax', Number(e.target.value))}
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Fish Count
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Min</label>
+                  <input
+                    type="number"
+                    value={data.fishCountMin}
+                    onChange={(e) => onChange('fishCountMin', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Max</label>
+                  <input
+                    type="number"
+                    value={data.fishCountMax}
+                    onChange={(e) => onChange('fishCountMax', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="2"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Fourth Row: Product Type and Season */}
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Product Type *
+              </label>
+              <select
+                value={data.productType}
+                onChange={(e) => onChange('productType', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="2"
+              >
+                <option value="">Select Type</option>
+                <option value="fresh">Fresh</option>
+                <option value="frozen">Frozen</option>
+                <option value="processed">Processed</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Season
+              </label>
+              <input
+                type="text"
+                value={data.season}
+                onChange={(e) => onChange('season', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="April - December"
               />
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Fourth Row: Product Type and Season */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 mb-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Product Type *
-          </label>
-          <select
-            value={data.productType}
-            onChange={(e) => onChange('productType', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select Type</option>
-            <option value="fresh">Fresh</option>
-            <option value="frozen">Frozen</option>
-            <option value="processed">Processed</option>
-          </select>
-        </div>
+          {/* Fifth Row: SEO Meta Tags */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Meta Title Tag *
+              </label>
+              <input
+                type="text"
+                value={data.metaTitle}
+                onChange={(e) => onChange('metaTitle', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Fresh Seer Fish - Premium Quality | BayHawk"
+                maxLength={60}
+              />
+              <p className="text-xs text-gray-500 mt-1">{data.metaTitle.length}/60 characters</p>
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Season
-          </label>
-          <input
-            type="text"
-            value={data.season}
-            onChange={(e) => onChange('season', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="April - December"
-          />
-        </div>
-      </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Meta Description *
+              </label>
+              <textarea
+                value={data.metaDescription}
+                onChange={(e) => onChange('metaDescription', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Buy fresh seer fish online. Premium quality, cleaned and delivered to your doorstep. Rich in omega-3 and protein."
+                rows={3}
+                maxLength={160}
+              />
+              <p className="text-xs text-gray-500 mt-1">{data.metaDescription.length}/160 characters</p>
+            </div>
+          </div>
+        </>
+      )}
 
-      {/* Fifth Row: SEO Meta Tags */}
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Meta Title Tag *
-          </label>
-          <input
-            type="text"
-            value={data.metaTitle}
-            onChange={(e) => onChange('metaTitle', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Fresh Seer Fish - Premium Quality | BayHawk"
-            maxLength={60}
-          />
-          <p className="text-xs text-gray-500 mt-1">{data.metaTitle.length}/60 characters</p>
-        </div>
+      {/* Basic Fields - Show for Non-Fish Categories */}
+      {!showAllFields && data.category && (
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 mb-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Base Price (₹) *
+            </label>
+            <input
+              type="number"
+              value={data.basePriceMin}
+              onChange={(e) => onChange('basePriceMin', Number(e.target.value))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="299"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Meta Description *
-          </label>
-          <textarea
-            value={data.metaDescription}
-            onChange={(e) => onChange('metaDescription', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Buy fresh seer fish online. Premium quality, cleaned and delivered to your doorstep. Rich in omega-3 and protein."
-            rows={3}
-            maxLength={160}
-          />
-          <p className="text-xs text-gray-500 mt-1">{data.metaDescription.length}/160 characters</p>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Variant
+            </label>
+            <input
+              type="text"
+              value={data.variant}
+              onChange={(e) => onChange('variant', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="500g, 1kg, etc."
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Weight/Quantity
+            </label>
+            <input
+              type="text"
+              value={data.fishSize}
+              onChange={(e) => onChange('fishSize', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="500g"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Unit
+            </label>
+            <input
+              type="text"
+              value={data.maxSize}
+              onChange={(e) => onChange('maxSize', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="kg, pieces, dozen"
+            />
+          </div>
         </div>
-      </div>
+      )}
     </Card>
   );
 }

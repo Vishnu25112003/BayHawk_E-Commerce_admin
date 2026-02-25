@@ -55,7 +55,7 @@ export function Sidebar({ isMobile, isSidebarOpen, toggleSidebar }: SidebarProps
             {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
           </button>
           {isExpanded && (
-            <div className="ml-8 mt-1 space-y-1">
+            <div className="ml-4 mt-1 space-y-1">
               {item.children.map(child => (
                 <NavLink
                   key={child.id}
@@ -69,8 +69,8 @@ export function Sidebar({ isMobile, isSidebarOpen, toggleSidebar }: SidebarProps
                     }
                   `}
                 >
-                  <span className="w-2 h-2 rounded-full bg-current opacity-50"></span>
-                  {child.label}
+                  {child.icon ? <child.icon size={18} /> : <span className="w-2 h-2 rounded-full bg-current opacity-50"></span>}
+                  <span>{child.label}</span>
                 </NavLink>
               ))}
             </div>

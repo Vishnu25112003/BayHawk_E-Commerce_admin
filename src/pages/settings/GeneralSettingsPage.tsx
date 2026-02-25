@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card, Button, Input, Select } from "../../components/ui";
-import { Save, Upload, Building, Mail, FileText, Calendar } from "lucide-react";
+import { Save, Upload, Building, Mail, FileText, Calendar, ScrollText, Plus, Trash2, Eye } from "lucide-react";
 
 export function GeneralSettingsPage() {
   const [businessInfo, setBusinessInfo] = useState({
@@ -16,6 +16,67 @@ export function GeneralSettingsPage() {
     licenseNumber: "",
     validityDate: "",
   });
+
+  const [termsAndConditions, setTermsAndConditions] = useState({
+    enabled: true,
+    version: "1.0",
+    lastUpdated: new Date().toISOString().split('T')[0],
+    sections: [
+      {
+        id: '1',
+        title: 'Acceptance of Terms',
+        content: 'By accessing and using BayHawk services, you accept and agree to be bound by the terms and provision of this agreement.',
+        order: 1
+      },
+      {
+        id: '2',
+        title: 'Product Information',
+        content: 'We strive to provide accurate product information. However, we do not warrant that product descriptions or other content is accurate, complete, reliable, current, or error-free.',
+        order: 2
+      },
+      {
+        id: '3',
+        title: 'Pricing and Payment',
+        content: 'All prices are in Indian Rupees (INR) and are subject to change without notice. Payment must be made at the time of order placement.',
+        order: 3
+      }
+    ]
+  });
+
+  const [showPreview, setShowPreview] = useState(false);
+
+  const addSection = () => {
+    const newSection = {
+      id: Date.now().toString(),
+      title: '',
+      content: '',
+      order: termsAndConditions.sections.length + 1
+    };
+    setTermsAndConditions(prev => ({
+      ...prev,
+      sections: [...prev.sections, newSection]
+    }));
+  };
+
+  const removeSection = (id: string) => {
+    if (termsAndConditions.sections.length <= 1) {
+      alert('At least one section is required');
+      return;
+    }
+    setTermsAndConditions(prev => ({
+      ...prev,
+      sections: prev.sections.filter(s => s.id !== id)
+    }));
+  };
+
+  const updateSection = (id: string, field: 'title' | 'content', value: string) => {
+    setTermsAndConditions(prev => ({
+      ...prev,
+      sections: prev.sections.map(s => 
+        s.id === id ? { ...s, [field]: value } : s
+      )
+    }));
+  };
 
   return (
     <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 md:p-6">
@@ -297,6 +358,135 @@ export function GeneralSettingsPage() {
             <Input label="PIN Code" placeholder="600001" />
           </div>
         </div>
+      </Card>
+
+      {/* Terms and Conditions */}
+      <Card>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-indigo-50 p-2">
+              <ScrollText className="h-5 w-5 text-indigo-600" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold">Terms and Conditions</h2>
+              <p className="text-sm text-gray-600">Customize your terms and conditions</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="secondary" size="sm" onClick={() => setShowPreview(!showPreview)}>
+              <Eye className="h-4 w-4 mr-2" />
+              {showPreview ? 'Hide' : 'Preview'}
+            </Button>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={termsAndConditions.enabled}
+                onChange={(e) => setTermsAndConditions({ ...termsAndConditions, enabled: e.target.checked })}
+                className="rounded"
+              />
+              <span className="text-sm font-medium">Enabled</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Version and Last Updated */}
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 mb-6">
+          <Input
+            label="Version"
+            value={termsAndConditions.version}
+            onChange={(e) => setTermsAndConditions({ ...termsAndConditions, version: e.target.value })}
+            placeholder="1.0"
+          />
+          <Input
+            label="Last Updated"
+            type="date"
+            value={termsAndConditions.lastUpdated}
+            onChange={(e) => setTermsAndConditions({ ...termsAndConditions, lastUpdated: e.target.value })}
+          />
+        </div>
+
+        {/* Sections */}
+        <div className="space-y-4 mb-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-gray-900">Content Sections</h3>
+            <Button size="sm" onClick={addSection}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Section
+            </Button>
+          </div>
+
+          {termsAndConditions.sections.map((section, index) => (
+            <div key={section.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold text-gray-600">Section {index + 1}</span>
+                <button
+                  onClick={() => removeSection(section.id)}
+                  className="text-red-600 hover:text-red-700 p-1"
+                  disabled={termsAndConditions.sections.length === 1}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                <Input
+                  label="Section Title"
+                  value={section.title}
+                  onChange={(e) => updateSection(section.id, 'title', e.target.value)}
+                  placeholder="e.g., Acceptance of Terms"
+                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Section Content
+                  </label>
+                  <textarea
+                    value={section.content}
+                    onChange={(e) => updateSection(section.id, 'content', e.target.value)}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    rows={4}
+                    placeholder="Enter the content for this section..."
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Preview Modal */}
+        {showPreview && (
+          <div className="border-2 border-indigo-200 rounded-lg p-6 bg-indigo-50">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">Preview</h3>
+              <button onClick={() => setShowPreview(false)} className="text-gray-500 hover:text-gray-700">
+                ✕
+              </button>
+            </div>
+            
+            <div className="bg-white rounded-lg p-6 max-h-96 overflow-y-auto">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Terms and Conditions</h2>
+                <p className="text-sm text-gray-600">Version {termsAndConditions.version} | Last Updated: {new Date(termsAndConditions.lastUpdated).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+              </div>
+
+              <div className="space-y-6">
+                {termsAndConditions.sections.map((section, index) => (
+                  <div key={section.id}>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      {index + 1}. {section.title}
+                    </h3>
+                    <p className="text-gray-700 leading-relaxed">{section.content}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <p className="text-sm text-gray-600 text-center">
+                  © {new Date().getFullYear()} {businessInfo.name}. All rights reserved.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );

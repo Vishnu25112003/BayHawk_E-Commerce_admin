@@ -8,10 +8,19 @@ interface ProductRequest {
   productName: string;
   productNameTa: string;
   category: string;
+  hsnNumber: string;
+  variant: string;
+  fishSize: string;
+  maxSize: string;
+  basePriceMin: number;
+  basePriceMax: number;
+  fishCountMin: number;
+  fishCountMax: number;
   description: string;
   price: number;
   unit: string;
   images: string[];
+  primaryImageIndex: number;
   requestedBy: string;
   requestedByRole: string;
   requestDate: string;
@@ -19,11 +28,61 @@ interface ProductRequest {
   status: 'pending' | 'approved' | 'rejected';
   priority: 'low' | 'medium' | 'high';
   reason?: string;
-  specifications: {
-    weight?: string;
-    freshness?: string;
-    origin?: string;
-    packaging?: string;
+  isBestSeller: boolean;
+  isRareProduct: boolean;
+  isActive: boolean;
+  productType: 'fresh' | 'frozen' | 'processed' | '';
+  season: string;
+  metaTitle: string;
+  metaDescription: string;
+  variants: Array<{
+    id: string;
+    type: string;
+    size: string;
+    grossWeight: string;
+    netWeight: string;
+    pieces: string;
+    serves: string;
+    skuNumber: string;
+    actualPrice: number;
+    salesPrice: number;
+    stock: number;
+    igst: number;
+    cgst: number;
+    sgst: number;
+    cuttingTypeId?: string;
+    cuttingTypeName?: string;
+  }>;
+  dayBasedPricing?: {
+    enabled: boolean;
+    dayPrices: Array<{
+      day: string;
+      price: number;
+      enabled: boolean;
+    }>;
+  };
+  productTags?: string[];
+  nutrition?: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    fiber: number;
+    sugar: number;
+    sodium: number;
+    cholesterol: number;
+    vitamins: {
+      vitaminA: number;
+      vitaminC: number;
+      vitaminD: number;
+      vitaminB12: number;
+    };
+    minerals: {
+      calcium: number;
+      iron: number;
+      potassium: number;
+      magnesium: number;
+    };
   };
 }
 
@@ -33,135 +92,194 @@ const mockRequests: ProductRequest[] = [
     id: 'HR001',
     productName: 'Premium Tuna',
     productNameTa: 'பிரீமியம் சூரை',
-    category: 'Fish',
-    description: 'Fresh premium tuna fish, ideal for sashimi and grilling',
+    category: '1',
+    hsnNumber: '0302',
+    variant: 'Large',
+    fishSize: '2-5 kg',
+    maxSize: '5 kg',
+    basePriceMin: 800,
+    basePriceMax: 900,
+    fishCountMin: 1,
+    fishCountMax: 2,
+    description: 'Fresh premium tuna fish, ideal for sashimi and grilling. Caught daily from deep sea waters.',
     price: 850,
     unit: 'kg',
-    images: ['/api/placeholder/300/200'],
+    images: ['/api/placeholder/300/200', '/api/placeholder/300/200', '/api/placeholder/300/200'],
+    primaryImageIndex: 0,
     requestedBy: 'Ravi Kumar',
     requestedByRole: 'Hub Manager',
     requestDate: '2024-01-08',
     sourceType: 'hub',
     status: 'pending',
     priority: 'high',
-    specifications: {
-      weight: '2-5 kg per piece',
-      freshness: 'Caught within 24 hours',
-      origin: 'Bay of Bengal',
-      packaging: 'Ice packed'
+    isBestSeller: true,
+    isRareProduct: false,
+    isActive: true,
+    productType: 'fresh',
+    season: 'Year-round',
+    metaTitle: 'Premium Tuna - Fresh Seafood | BayHawk',
+    metaDescription: 'Buy fresh premium tuna online. Perfect for sashimi and grilling. Caught daily, delivered fresh.',
+    variants: [
+      {
+        id: 'v1',
+        type: 'Whole Fish',
+        size: 'Large',
+        grossWeight: '3-5 kg',
+        netWeight: '2.5-4.5 kg',
+        pieces: '1 piece',
+        serves: '6-8',
+        skuNumber: 'TUNA-L-001',
+        actualPrice: 900,
+        salesPrice: 850,
+        stock: 25,
+        igst: 0,
+        cgst: 0,
+        sgst: 0,
+        cuttingTypeId: '1',
+        cuttingTypeName: 'Whole Fish'
+      },
+      {
+        id: 'v2',
+        type: 'Steaks',
+        size: 'Medium',
+        grossWeight: '500g',
+        netWeight: '450g',
+        pieces: '4-5 pieces',
+        serves: '2-3',
+        skuNumber: 'TUNA-S-001',
+        actualPrice: 950,
+        salesPrice: 900,
+        stock: 40,
+        igst: 0,
+        cgst: 0,
+        sgst: 0,
+        cuttingTypeId: '3',
+        cuttingTypeName: 'Fish Steaks'
+      }
+    ],
+    dayBasedPricing: {
+      enabled: true,
+      dayPrices: [
+        { day: 'monday', price: 850, enabled: true },
+        { day: 'tuesday', price: 850, enabled: true },
+        { day: 'wednesday', price: 820, enabled: true },
+        { day: 'thursday', price: 850, enabled: true },
+        { day: 'friday', price: 900, enabled: true },
+        { day: 'saturday', price: 900, enabled: true },
+        { day: 'sunday', price: 880, enabled: true }
+      ]
+    },
+    productTags: ['Fresh', 'Premium', 'Sashimi Grade', 'High Protein'],
+    nutrition: {
+      calories: 144,
+      protein: 23,
+      carbs: 0,
+      fat: 5,
+      fiber: 0,
+      sugar: 0,
+      sodium: 39,
+      cholesterol: 38,
+      vitamins: {
+        vitaminA: 16,
+        vitaminC: 0,
+        vitaminD: 5,
+        vitaminB12: 9
+      },
+      minerals: {
+        calcium: 8,
+        iron: 1,
+        potassium: 252,
+        magnesium: 50
+      }
     }
   },
-  {
-    id: 'HR002',
-    productName: 'King Prawns',
-    productNameTa: 'கிங் இறால்',
-    category: 'Prawns',
-    description: 'Large king prawns, perfect for special occasions',
-    price: 1200,
-    unit: 'kg',
-    images: ['/api/placeholder/300/200'],
-    requestedBy: 'Suresh Babu',
-    requestedByRole: 'Procurement Head',
-    requestDate: '2024-01-07',
-    sourceType: 'hub',
-    status: 'approved',
-    priority: 'medium',
-    specifications: {
-      weight: '15-20 pieces per kg',
-      freshness: 'Live/Fresh',
-      origin: 'Coastal waters',
-      packaging: 'Chilled transport'
-    }
-  },
-  {
-    id: 'HR003',
-    productName: 'Sea Bass',
-    productNameTa: 'கடல் பாஸ்',
-    category: 'Fish',
-    description: 'Fresh sea bass, excellent for steaming and frying',
-    price: 650,
-    unit: 'kg',
-    images: ['/api/placeholder/300/200'],
-    requestedBy: 'Muthu Raja',
-    requestedByRole: 'Quality Manager',
-    requestDate: '2024-01-06',
-    sourceType: 'hub',
-    status: 'rejected',
-    priority: 'low',
-    reason: 'Seasonal availability issues',
-    specifications: {
-      weight: '500g-1kg per piece',
-      freshness: 'Daily catch',
-      origin: 'Local fishermen',
-      packaging: 'Fresh ice'
-    }
-  },
-
-  // Store Requests
   {
     id: 'SR001',
     productName: 'Organic Chicken',
     productNameTa: 'இயற்கை கோழி',
-    category: 'Chicken',
-    description: 'Free-range organic chicken, antibiotic-free',
+    category: '5',
+    hsnNumber: '0207',
+    variant: 'Whole Bird',
+    fishSize: '1-1.5 kg',
+    maxSize: '1.5 kg',
+    basePriceMin: 300,
+    basePriceMax: 350,
+    fishCountMin: 0,
+    fishCountMax: 0,
+    description: 'Free-range organic chicken, antibiotic-free. Raised naturally on organic farms.',
     price: 320,
     unit: 'kg',
-    images: ['/api/placeholder/300/200'],
+    images: ['/api/placeholder/300/200', '/api/placeholder/300/200'],
+    primaryImageIndex: 0,
     requestedBy: 'Priya Sharma',
     requestedByRole: 'Store Manager',
     requestDate: '2024-01-08',
     sourceType: 'store',
     status: 'pending',
     priority: 'high',
-    specifications: {
-      weight: '1-1.5 kg per bird',
-      freshness: 'Slaughtered same day',
-      origin: 'Local organic farms',
-      packaging: 'Vacuum sealed'
-    }
-  },
-  {
-    id: 'SR002',
-    productName: 'Goat Curry Cut',
-    productNameTa: 'ஆட்டு கறி துண்டுகள்',
-    category: 'Mutton',
-    description: 'Fresh goat meat cut for curry preparation',
-    price: 750,
-    unit: 'kg',
-    images: ['/api/placeholder/300/200'],
-    requestedBy: 'Arun Kumar',
-    requestedByRole: 'Meat Specialist',
-    requestDate: '2024-01-07',
-    sourceType: 'store',
-    status: 'approved',
-    priority: 'medium',
-    specifications: {
-      weight: 'Mixed cuts 200-300g pieces',
-      freshness: 'Fresh daily',
-      origin: 'Certified suppliers',
-      packaging: 'Hygienic packing'
-    }
-  },
-  {
-    id: 'SR003',
-    productName: 'Farm Eggs',
-    productNameTa: 'பண்ணை முட்டை',
-    category: 'Egg',
-    description: 'Fresh farm eggs from free-range hens',
-    price: 8,
-    unit: 'piece',
-    images: ['/api/placeholder/300/200'],
-    requestedBy: 'Lakshmi Devi',
-    requestedByRole: 'Store Assistant',
-    requestDate: '2024-01-06',
-    sourceType: 'store',
-    status: 'pending',
-    priority: 'low',
-    specifications: {
-      weight: '50-60g per egg',
-      freshness: 'Laid within 2 days',
-      origin: 'Local poultry farms',
-      packaging: 'Cardboard trays'
+    isBestSeller: false,
+    isRareProduct: false,
+    isActive: true,
+    productType: 'fresh',
+    season: 'Year-round',
+    metaTitle: 'Organic Chicken - Antibiotic Free | BayHawk',
+    metaDescription: 'Buy organic free-range chicken online. Antibiotic-free, naturally raised. Fresh delivery.',
+    variants: [
+      {
+        id: 'v1',
+        type: 'Whole Bird',
+        size: 'Medium',
+        grossWeight: '1.2 kg',
+        netWeight: '1 kg',
+        pieces: '1 bird',
+        serves: '4-5',
+        skuNumber: 'CHKN-W-001',
+        actualPrice: 350,
+        salesPrice: 320,
+        stock: 50,
+        igst: 0,
+        cgst: 0,
+        sgst: 0
+      },
+      {
+        id: 'v2',
+        type: 'Curry Cut',
+        size: 'Medium',
+        grossWeight: '500g',
+        netWeight: '480g',
+        pieces: '8-10 pieces',
+        serves: '2-3',
+        skuNumber: 'CHKN-C-001',
+        actualPrice: 340,
+        salesPrice: 320,
+        stock: 60,
+        igst: 0,
+        cgst: 0,
+        sgst: 0
+      }
+    ],
+    productTags: ['Organic', 'Antibiotic Free', 'Free Range'],
+    nutrition: {
+      calories: 165,
+      protein: 31,
+      carbs: 0,
+      fat: 3.6,
+      fiber: 0,
+      sugar: 0,
+      sodium: 82,
+      cholesterol: 85,
+      vitamins: {
+        vitaminA: 0,
+        vitaminC: 0,
+        vitaminD: 0,
+        vitaminB12: 0.3
+      },
+      minerals: {
+        calcium: 11,
+        iron: 0.9,
+        potassium: 220,
+        magnesium: 25
+      }
     }
   }
 ];
@@ -394,119 +512,308 @@ export function ProductApprovalPage() {
           <Modal
             isOpen={showViewModal}
             onClose={() => setShowViewModal(false)}
-            title="Product Request Details"
+            title="Complete Product Details"
             size="xl"
           >
             {selectedRequest && (
-              <div className="space-y-6 max-h-[70vh] overflow-y-auto">
+              <div className="space-y-6 max-h-[75vh] overflow-y-auto">
                 {/* Product Images */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {selectedRequest.images.map((img, idx) => (
-                    <img 
-                      key={idx}
-                      src={img} 
-                      alt={`${selectedRequest.productName} ${idx + 1}`}
-                      className="w-full h-32 object-cover rounded-lg bg-gray-100 border"
-                    />
-                  ))}
-                </div>
+                <Card className="p-4">
+                  <h4 className="font-semibold text-gray-900 mb-3">Product Images</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {selectedRequest.images.map((img, idx) => (
+                      <div key={idx} className="relative">
+                        <img 
+                          src={img} 
+                          alt={`${selectedRequest.productName} ${idx + 1}`}
+                          className="w-full h-32 object-cover rounded-lg bg-gray-100 border"
+                        />
+                        {idx === selectedRequest.primaryImageIndex && (
+                          <Badge variant="bg-blue-600 text-white" className="absolute top-2 left-2 text-xs">Primary</Badge>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </Card>
                 
-                {/* Product Header */}
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-100">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{selectedRequest.productName}</h3>
-                      <p className="text-lg text-gray-700 mb-3">{selectedRequest.productNameTa}</p>
-                      <p className="text-gray-600 leading-relaxed">{selectedRequest.description}</p>
+                {/* Basic Product Information */}
+                <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+                  <h4 className="font-semibold text-gray-900 mb-4">Basic Information</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-900">{selectedRequest.productName}</h3>
+                      <p className="text-lg text-gray-700 mt-1">{selectedRequest.productNameTa}</p>
+                    </div>
+                    <p className="text-gray-600 leading-relaxed">{selectedRequest.description}</p>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      <Badge variant={selectedRequest.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                        selectedRequest.status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                        {selectedRequest.status.toUpperCase()}
+                      </Badge>
+                      <Badge variant={selectedRequest.priority === 'high' ? 'bg-red-100 text-red-800' : 
+                        selectedRequest.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}>
+                        {selectedRequest.priority.toUpperCase()} Priority
+                      </Badge>
+                      {selectedRequest.isBestSeller && <Badge variant="bg-orange-100 text-orange-800">Best Seller</Badge>}
+                      {selectedRequest.isRareProduct && <Badge variant="bg-purple-100 text-purple-800">Rare Product</Badge>}
+                      {selectedRequest.isActive && <Badge variant="bg-green-100 text-green-800">Active</Badge>}
+                      <Badge variant={selectedRequest.sourceType === 'hub' ? 'bg-blue-100 text-blue-800' : 'bg-teal-100 text-teal-800'}>
+                        {selectedRequest.sourceType.toUpperCase()}
+                      </Badge>
                     </div>
                   </div>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant={selectedRequest.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                      selectedRequest.status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
-                      {selectedRequest.status.charAt(0).toUpperCase() + selectedRequest.status.slice(1)}
-                    </Badge>
-                    <Badge variant={selectedRequest.priority === 'high' ? 'bg-red-100 text-red-800' : 
-                      selectedRequest.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}>
-                      {selectedRequest.priority.charAt(0).toUpperCase() + selectedRequest.priority.slice(1)} Priority
-                    </Badge>
-                    <Badge variant="bg-blue-100 text-blue-800">
-                      {selectedRequest.category}
-                    </Badge>
-                    <Badge variant={selectedRequest.sourceType === 'hub' ? 'bg-purple-100 text-purple-800' : 'bg-orange-100 text-orange-800'}>
-                      {selectedRequest.sourceType.toUpperCase()}
-                    </Badge>
-                  </div>
+                </Card>
+
+                {/* Product Details Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="p-4">
+                    <h4 className="font-semibold text-gray-900 mb-3">Product Details</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600">Category:</span>
+                        <span className="font-semibold">{selectedRequest.category}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600">HSN Number:</span>
+                        <span className="font-semibold">{selectedRequest.hsnNumber}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600">Variant:</span>
+                        <span className="font-semibold">{selectedRequest.variant}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600">Product Type:</span>
+                        <span className="font-semibold capitalize">{selectedRequest.productType}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600">Season:</span>
+                        <span className="font-semibold">{selectedRequest.season}</span>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="p-4">
+                    <h4 className="font-semibold text-gray-900 mb-3">Size & Weight</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600">Fish Size:</span>
+                        <span className="font-semibold">{selectedRequest.fishSize}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b">
+                        <span className="text-gray-600">Max Size:</span>
+                        <span className="font-semibold">{selectedRequest.maxSize}</span>
+                      </div>
+                      {selectedRequest.fishCountMin > 0 && (
+                        <>
+                          <div className="flex justify-between py-2 border-b">
+                            <span className="text-gray-600">Fish Count Min:</span>
+                            <span className="font-semibold">{selectedRequest.fishCountMin}</span>
+                          </div>
+                          <div className="flex justify-between py-2 border-b">
+                            <span className="text-gray-600">Fish Count Max:</span>
+                            <span className="font-semibold">{selectedRequest.fishCountMax}</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </Card>
                 </div>
-                
+
                 {/* Pricing Information */}
                 <Card className="p-6 bg-green-50 border-green-200">
-                  <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <span className="text-green-600">💰</span> Pricing Details
-                  </h4>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Price per Unit</p>
-                      <p className="text-3xl font-bold text-green-600">₹{selectedRequest.price}</p>
+                  <h4 className="font-semibold text-gray-900 mb-4">Pricing Information</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-white p-4 rounded-lg border">
+                      <p className="text-sm text-gray-600 mb-1">Base Price Min</p>
+                      <p className="text-2xl font-bold text-green-600">₹{selectedRequest.basePriceMin}</p>
                     </div>
-                    <div className="text-right">
+                    <div className="bg-white p-4 rounded-lg border">
+                      <p className="text-sm text-gray-600 mb-1">Base Price Max</p>
+                      <p className="text-2xl font-bold text-green-600">₹{selectedRequest.basePriceMax}</p>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border">
                       <p className="text-sm text-gray-600 mb-1">Unit</p>
                       <p className="text-xl font-semibold text-gray-900">{selectedRequest.unit}</p>
                     </div>
                   </div>
                 </Card>
-                
-                {/* Request Information */}
-                <Card className="p-6">
-                  <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <span>📋</span> Request Information
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <div className="flex justify-between py-2 border-b">
-                        <span className="text-gray-600 font-medium">Request ID:</span>
-                        <span className="font-semibold text-blue-600">{selectedRequest.id}</span>
+
+                {/* Product Variants */}
+                <Card className="p-6 bg-purple-50 border-purple-200">
+                  <h4 className="font-semibold text-gray-900 mb-4">Product Variants ({selectedRequest.variants.length})</h4>
+                  <div className="space-y-4">
+                    {selectedRequest.variants.map((variant, idx) => (
+                      <div key={variant.id} className="bg-white p-4 rounded-lg border">
+                        <div className="flex items-center justify-between mb-3">
+                          <h5 className="font-semibold text-gray-900">Variant {idx + 1}: {variant.type}</h5>
+                          <Badge variant="bg-blue-100 text-blue-800">{variant.size}</Badge>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                          <div>
+                            <p className="text-gray-600">Gross Weight</p>
+                            <p className="font-semibold">{variant.grossWeight}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">Net Weight</p>
+                            <p className="font-semibold">{variant.netWeight}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">Pieces</p>
+                            <p className="font-semibold">{variant.pieces}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">Serves</p>
+                            <p className="font-semibold">{variant.serves}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">SKU Number</p>
+                            <p className="font-semibold">{variant.skuNumber}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">Actual Price</p>
+                            <p className="font-semibold text-green-600">₹{variant.actualPrice}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">Sales Price</p>
+                            <p className="font-semibold text-blue-600">₹{variant.salesPrice}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">Stock</p>
+                            <p className="font-semibold">{variant.stock} units</p>
+                          </div>
+                          {variant.cuttingTypeName && (
+                            <div className="col-span-2">
+                              <p className="text-gray-600">Cutting Type</p>
+                              <p className="font-semibold">{variant.cuttingTypeName}</p>
+                            </div>
+                          )}
+                          <div>
+                            <p className="text-gray-600">IGST</p>
+                            <p className="font-semibold">{variant.igst}%</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">CGST</p>
+                            <p className="font-semibold">{variant.cgst}%</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">SGST</p>
+                            <p className="font-semibold">{variant.sgst}%</p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex justify-between py-2 border-b">
-                        <span className="text-gray-600 font-medium">Requested By:</span>
-                        <span className="font-semibold">{selectedRequest.requestedBy}</span>
+                    ))}
+                  </div>
+                </Card>
+
+                {/* Day-Based Pricing */}
+                {selectedRequest.dayBasedPricing?.enabled && (
+                  <Card className="p-6 bg-orange-50 border-orange-200">
+                    <h4 className="font-semibold text-gray-900 mb-4">Day-Based Pricing</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {selectedRequest.dayBasedPricing.dayPrices.filter(d => d.enabled).map(day => (
+                        <div key={day.day} className="bg-white p-3 rounded-lg border text-center">
+                          <p className="text-sm text-gray-600 capitalize mb-1">{day.day}</p>
+                          <p className="text-lg font-bold text-orange-600">₹{day.price}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                )}
+
+                {/* Product Tags */}
+                {selectedRequest.productTags && selectedRequest.productTags.length > 0 && (
+                  <Card className="p-4">
+                    <h4 className="font-semibold text-gray-900 mb-3">Product Tags</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedRequest.productTags.map((tag, idx) => (
+                        <Badge key={idx} variant="bg-gray-100 text-gray-800">{tag}</Badge>
+                      ))}
+                    </div>
+                  </Card>
+                )}
+
+                {/* Nutrition Information */}
+                {selectedRequest.nutrition && (
+                  <Card className="p-6 bg-teal-50 border-teal-200">
+                    <h4 className="font-semibold text-gray-900 mb-4">Nutrition Information (per 100g)</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                      <div className="bg-white p-3 rounded-lg border">
+                        <p className="text-sm text-gray-600">Calories</p>
+                        <p className="text-lg font-bold">{selectedRequest.nutrition.calories} kcal</p>
                       </div>
-                      <div className="flex justify-between py-2 border-b">
-                        <span className="text-gray-600 font-medium">Role:</span>
-                        <span className="font-semibold">{selectedRequest.requestedByRole}</span>
+                      <div className="bg-white p-3 rounded-lg border">
+                        <p className="text-sm text-gray-600">Protein</p>
+                        <p className="text-lg font-bold">{selectedRequest.nutrition.protein}g</p>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border">
+                        <p className="text-sm text-gray-600">Carbs</p>
+                        <p className="text-lg font-bold">{selectedRequest.nutrition.carbs}g</p>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border">
+                        <p className="text-sm text-gray-600">Fat</p>
+                        <p className="text-lg font-bold">{selectedRequest.nutrition.fat}g</p>
                       </div>
                     </div>
-                    <div className="space-y-3">
-                      <div className="flex justify-between py-2 border-b">
-                        <span className="text-gray-600 font-medium">Request Date:</span>
-                        <span className="font-semibold">{new Date(selectedRequest.requestDate).toLocaleDateString('en-IN', { 
-                          year: 'numeric', month: 'long', day: 'numeric' 
-                        })}</span>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="font-semibold text-gray-900 mb-2">Vitamins</p>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between"><span>Vitamin A:</span><span>{selectedRequest.nutrition.vitamins.vitaminA}%</span></div>
+                          <div className="flex justify-between"><span>Vitamin C:</span><span>{selectedRequest.nutrition.vitamins.vitaminC}%</span></div>
+                          <div className="flex justify-between"><span>Vitamin D:</span><span>{selectedRequest.nutrition.vitamins.vitaminD}%</span></div>
+                          <div className="flex justify-between"><span>Vitamin B12:</span><span>{selectedRequest.nutrition.vitamins.vitaminB12}%</span></div>
+                        </div>
                       </div>
-                      <div className="flex justify-between py-2 border-b">
-                        <span className="text-gray-600 font-medium">Source Type:</span>
-                        <span className="font-semibold capitalize">{selectedRequest.sourceType}</span>
+                      <div>
+                        <p className="font-semibold text-gray-900 mb-2">Minerals</p>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between"><span>Calcium:</span><span>{selectedRequest.nutrition.minerals.calcium}%</span></div>
+                          <div className="flex justify-between"><span>Iron:</span><span>{selectedRequest.nutrition.minerals.iron}%</span></div>
+                          <div className="flex justify-between"><span>Potassium:</span><span>{selectedRequest.nutrition.minerals.potassium}mg</span></div>
+                          <div className="flex justify-between"><span>Magnesium:</span><span>{selectedRequest.nutrition.minerals.magnesium}mg</span></div>
+                        </div>
                       </div>
-                      <div className="flex justify-between py-2 border-b">
-                        <span className="text-gray-600 font-medium">Category:</span>
-                        <span className="font-semibold">{selectedRequest.category}</span>
-                      </div>
+                    </div>
+                  </Card>
+                )}
+
+                {/* SEO Information */}
+                <Card className="p-6 bg-indigo-50 border-indigo-200">
+                  <h4 className="font-semibold text-gray-900 mb-4">SEO Information</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Meta Title</p>
+                      <p className="font-semibold text-gray-900">{selectedRequest.metaTitle}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Meta Description</p>
+                      <p className="text-gray-700">{selectedRequest.metaDescription}</p>
                     </div>
                   </div>
                 </Card>
-                
-                {/* Product Specifications */}
-                <Card className="p-6 bg-blue-50 border-blue-200">
-                  <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <span>📊</span> Product Specifications
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.entries(selectedRequest.specifications).map(([key, value]) => (
-                      <div key={key} className="bg-white p-4 rounded-lg border">
-                        <p className="text-sm text-gray-600 capitalize mb-1">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
-                        <p className="font-semibold text-gray-900">{value}</p>
-                      </div>
-                    ))}
+
+                {/* Request Information */}
+                <Card className="p-6 bg-gray-50">
+                  <h4 className="font-semibold text-gray-900 mb-4">Request Information</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-gray-600">Request ID:</span>
+                      <span className="font-semibold text-blue-600">{selectedRequest.id}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-gray-600">Requested By:</span>
+                      <span className="font-semibold">{selectedRequest.requestedBy}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-gray-600">Role:</span>
+                      <span className="font-semibold">{selectedRequest.requestedByRole}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-gray-600">Request Date:</span>
+                      <span className="font-semibold">{new Date(selectedRequest.requestDate).toLocaleDateString('en-IN', { 
+                        year: 'numeric', month: 'long', day: 'numeric' 
+                      })}</span>
+                    </div>
                   </div>
                 </Card>
                 
@@ -524,35 +831,37 @@ export function ProductApprovalPage() {
                 )}
                 
                 {/* Action Buttons */}
-                {selectedRequest.status === 'pending' && (
-                  <div className="flex gap-3 pt-4 border-t">
-                    <Button 
-                      variant="secondary"
-                      onClick={() => setShowViewModal(false)}
-                      className="flex-1"
-                    >
-                      Close
-                    </Button>
-                    <Button 
-                      onClick={() => {
-                        setShowViewModal(false);
-                        handleReject(selectedRequest);
-                      }}
-                      className="flex-1 bg-red-600 hover:bg-red-700"
-                    >
-                      Reject
-                    </Button>
-                    <Button 
-                      onClick={() => {
-                        setShowViewModal(false);
-                        handleApprove(selectedRequest);
-                      }}
-                      className="flex-1 bg-green-600 hover:bg-green-700"
-                    >
-                      Approve
-                    </Button>
-                  </div>
-                )}
+                <div className="flex gap-3 pt-4 border-t sticky bottom-0 bg-white">
+                  <Button 
+                    variant="secondary"
+                    onClick={() => setShowViewModal(false)}
+                    className="flex-1"
+                  >
+                    Close
+                  </Button>
+                  {selectedRequest.status === 'pending' && (
+                    <>
+                      <Button 
+                        onClick={() => {
+                          setShowViewModal(false);
+                          handleReject(selectedRequest);
+                        }}
+                        className="flex-1 bg-red-600 hover:bg-red-700"
+                      >
+                        Reject
+                      </Button>
+                      <Button 
+                        onClick={() => {
+                          setShowViewModal(false);
+                          handleApprove(selectedRequest);
+                        }}
+                        className="flex-1 bg-green-600 hover:bg-green-700"
+                      >
+                        Approve
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
             )}
       </Modal>
