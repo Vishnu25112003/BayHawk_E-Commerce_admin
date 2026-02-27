@@ -28,6 +28,8 @@ export function IntegrationsPage() {
     { id: 'google-tag-manager', name: 'Google Tag Manager', description: 'Event tracking setup', icon: BarChart3, connected: false, status: 'inactive', category: 'analytics' },
     { id: 'rank-math', name: 'Rank Math', description: 'On-page optimization', icon: Globe, connected: false, status: 'inactive', category: 'analytics' },
     { id: 'robots-txt', name: 'Robots.txt Configuration', description: 'Search engine crawling rules', icon: Globe, connected: false, status: 'inactive', category: 'analytics' },
+    { id: 'bing-webmaster', name: 'Bing Webmaster', description: 'Bing search engine optimization and monitoring', icon: Globe, connected: false, status: 'inactive', category: 'analytics' },
+    { id: 'microsoft-clarity', name: 'Microsoft Clarity', description: 'Free user behavior analytics and heatmaps', icon: BarChart3, connected: false, status: 'inactive', category: 'analytics' },
     // Location
     { id: 'google-maps', name: 'Google Maps', description: 'Location services and route optimization', icon: MapPin, connected: true, status: 'active', category: 'location', config: { apiKey: 'AIza****' } },
     // Communication

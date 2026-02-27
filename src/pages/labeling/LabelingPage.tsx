@@ -217,6 +217,8 @@ export function LabelingPage() {
     selectedOrders: [] as string[]
   });
 
+  const [slipType, setSlipType] = useState<'delivery' | 'packing'>('delivery');
+
   // Mock Orders Data
   const mockOrders = [
     { id: 'ORD-001', date: '2024-02-10', customer: 'Rajesh Kumar', invoice: 'INV-2024-001', product: 'Fresh Salmon', amount: 850 },
@@ -546,11 +548,31 @@ export function LabelingPage() {
 
               {activeTab === "print" && (
                 <div className="space-y-6">
+                  {/* Slip Type Selector */}
+                  <div className="flex gap-2 mb-4">
+                    <Button
+                      variant={slipType === 'delivery' ? 'primary' : 'secondary'}
+                      onClick={() => setSlipType('delivery')}
+                      className="flex-1"
+                    >
+                      <Truck className="mr-2 h-4 w-4" />
+                      Delivery Slips
+                    </Button>
+                    <Button
+                      variant={slipType === 'packing' ? 'primary' : 'secondary'}
+                      onClick={() => setSlipType('packing')}
+                      className="flex-1"
+                    >
+                      <Package className="mr-2 h-4 w-4" />
+                      Packing Slips
+                    </Button>
+                  </div>
+
                   {/* Filters */}
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <h3 className="font-semibold mb-4 flex items-center gap-2">
                       <Calendar className="h-5 w-5 text-blue-600" />
-                      Filter Orders for Printing
+                      Filter Orders for {slipType === 'delivery' ? 'Delivery' : 'Packing'} Slips
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <Input
@@ -619,10 +641,10 @@ export function LabelingPage() {
                         <Button
                           size="sm"
                           disabled={printFilters.selectedOrders.length === 0}
-                          onClick={() => alert(`Printing ${printFilters.selectedOrders.length} delivery slips...`)}
+                          onClick={() => alert(`Printing ${printFilters.selectedOrders.length} ${slipType} slips...`)}
                         >
                           <Printer className="mr-2 h-4 w-4" />
-                          Print Selected
+                          Print {slipType === 'delivery' ? 'Delivery' : 'Packing'} Slips
                         </Button>
                       </div>
                     </div>
@@ -678,7 +700,7 @@ export function LabelingPage() {
                                 variant="ghost"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  alert(`Printing delivery slip for ${order.id}...`);
+                                  alert(`Printing ${slipType} slip for ${order.id}...`);
                                 }}
                               >
                                 <Printer className="h-4 w-4" />

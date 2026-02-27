@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, Button, Input, Select } from '../../components/ui';
-import { Save, Truck, MapPin, Plus, Edit, Trash2, Calculator, Zap } from 'lucide-react';
+import { Save, Truck, MapPin, Plus, Edit, Trash2, Calculator, Zap, CloudRain } from 'lucide-react';
 
 interface ShippingZone {
   id: string;
@@ -24,7 +24,9 @@ export function ShippingChargesPage() {
     weightBasedChargesEnabled: true,
     surgeChargesEnabled: false,
     surgeCharge: 50,
-    surgeChargeDescription: 'Mon-Sat, day delivery'
+    surgeChargeDescription: 'Mon-Sat, day delivery',
+    weatherAlertAutoEnable: false,
+    weatherAlertSurgeCharge: 50
   });
 
   const [zones, setZones] = useState<ShippingZone[]>([
@@ -303,6 +305,48 @@ export function ShippingChargesPage() {
                       })}
                       placeholder="e.g., Mon-Sat, day delivery"
                     />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-medium mb-3 flex items-center gap-2">
+              <CloudRain className="h-5 w-5 text-blue-600" />
+              Weather Alert Auto-Enable Surge
+            </h3>
+            <div className="space-y-3">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={globalSettings.weatherAlertAutoEnable}
+                  onChange={(e) => setGlobalSettings({
+                    ...globalSettings,
+                    weatherAlertAutoEnable: e.target.checked
+                  })}
+                  className="rounded"
+                />
+                <span className="text-sm font-medium">Auto-enable surge charge on weather alerts</span>
+              </label>
+              {globalSettings.weatherAlertAutoEnable && (
+                <div className="pl-6 space-y-3">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p className="text-xs text-blue-700 mb-3">
+                      When weather alerts are triggered (heavy rain, storms, floods), surge charges will automatically activate with the predefined value below.
+                    </p>
+                    <Input
+                      label="Weather Alert Surge Charge (₹)"
+                      type="number"
+                      value={globalSettings.weatherAlertSurgeCharge}
+                      onChange={(e) => setGlobalSettings({
+                        ...globalSettings,
+                        weatherAlertSurgeCharge: parseInt(e.target.value)
+                      })}
+                    />
+                    <p className="text-xs text-gray-500 mt-2">
+                      This charge will be applied automatically when weather conditions affect delivery operations
+                    </p>
                   </div>
                 </div>
               )}
