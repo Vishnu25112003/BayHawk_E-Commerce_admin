@@ -51,6 +51,10 @@ export interface Order {
   promoCode?: string;
   discountAmount?: number;
   deliveryCharges?: number;
+  surgeCharges?: number;
+  surgeChargesReason?: string;
+  additionalCharges?: number;
+  additionalChargesReason?: string;
   gstAmount?: number;
   subtotalAmount?: number;
   source: 'app' | 'website' | 'whatsapp' | 'instagram' | 'facebook';
@@ -69,6 +73,7 @@ export interface Order {
   hubId?: string;
   storeId?: string;
   deliveryAgentId?: string;
+  packedPhotos?: string[];
   thirdPartyDelivery?: {
     service: 'porter' | 'rapido' | 'swiggy' | 'other';
     personName: string;

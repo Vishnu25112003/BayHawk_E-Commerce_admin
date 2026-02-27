@@ -15,8 +15,8 @@ import {
   StatsGrid
 } from '../../components/ui';
 import { StatusBadge } from '../../components/common';
-import { OrdersList, OrderDetails, ThirdPartyDeliveryModal, BatchDeliveryAssignmentModal } from '../../components/features/orders';
-import { ShoppingCart, Fish, Store, Package, TrendingUp, Clock, CheckCircle, Printer, Download, MapPin, Tag, Truck, Receipt } from 'lucide-react';
+import { OrdersList, OrderDetails, ThirdPartyDeliveryModal, BatchDeliveryAssignmentModal, DeliveryPartnerAssignment, OrderLocationSwitch, AddressSelector, PackedPhotoUpload, SurgeCharges, RefundRecordModal, RefundHistory } from '../../components/features/orders';
+import { ShoppingCart, Fish, Store, Package, TrendingUp, Clock, CheckCircle, Printer, Download, MapPin, Tag, Truck, Receipt, RotateCcw } from 'lucide-react';
 import { ordersApi } from '../../utils/api';
 import { createOrderSchema, type CreateOrderInput } from '../../utils/validations';
 import { useOrderUpdates, useNewOrders, type OrderUpdateEvent, type NewOrderEvent } from '../../utils/socket';
@@ -38,6 +38,7 @@ export function OrdersPage() {
   const [thirdPartyOrderId, setThirdPartyOrderId] = useState<string>('');
   const [showBatchDeliveryModal, setShowBatchDeliveryModal] = useState(false);
   const [batchOrderIds, setBatchOrderIds] = useState<string[]>([]);
+  const [showRefundModal, setShowRefundModal] = useState(false);
   const [dateFilter, setDateFilter] = useState({ startDate: '', endDate: '' });
   const { isLoading, withLoading } = useLoading(true);
 
@@ -507,11 +508,33 @@ export function OrdersPage() {
       if (selectedOrder?.id === orderId) {
         const updatedOrder = orders.find(o => o.id === orderId);
         if (updatedOrder) {
+          const newPaidAmount = (updatedOrder.paidAmount || 0) + paymentData.amount;
+          const newPendingAmount = Math.max(0, updatedOrder.totalAmount - newPaidAmount);
+          const newPaymentStatus = newPendingAmount <= 0 ? 'paid' : (newPaidAmount > 0 ? 'partial' : 'pending');
+          
           setSelectedOrder({
             ...updatedOrder,
-            paidAmount: (updatedOrder.paidAmount || 0) + paymentData.amount,
-            pendingAmount: Math.max(0, updatedOrder.totalAmount - ((updatedOrder.paidAmount || 0) + paymentData.amount)),
-            paymentStatus: updatedOrder.totalAmount - ((updatedOrder.paidAmount || 0) + paymentData.amount) <= 0 ? 'paid' : 'partial',
+            paidAmount: newPaidAmount,
+            pendingAmount: newPendingAmount,
+            paymentStatus: newPaymentStatus as Order['paymentStatus'],
+            paymentRecords: [...(updatedOrder.paymentRecords || []), paymentRecord]
+          });
+        }
+      }
+
+      // Update editingOrder if it's the same order
+      if (editingOrder?.id === orderId) {
+        const updatedOrder = orders.find(o => o.id === orderId);
+        if (updatedOrder) {
+          const newPaidAmount = (updatedOrder.paidAmount || 0) + paymentData.amount;
+          const newPendingAmount = Math.max(0, updatedOrder.totalAmount - newPaidAmount);
+          const newPaymentStatus = newPendingAmount <= 0 ? 'paid' : (newPaidAmount > 0 ? 'partial' : 'pending');
+          
+          setEditingOrder({
+            ...updatedOrder,
+            paidAmount: newPaidAmount,
+            pendingAmount: newPendingAmount,
+            paymentStatus: newPaymentStatus as Order['paymentStatus'],
             paymentRecords: [...(updatedOrder.paymentRecords || []), paymentRecord]
           });
         }
@@ -520,6 +543,149 @@ export function OrdersPage() {
       console.log('Payment recorded successfully');
     } catch (error) {
       console.error('Failed to record payment:', error);
+      throw error;
+    }
+  };
+
+  const handleAssignDeliveryPartner = async (orderId: string, agentId: string) => {
+    try {
+      setOrders(prev => prev.map(order => 
+        order.id === orderId ? { ...order, deliveryAgentId: agentId } : order
+      ));
+      
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder({ ...selectedOrder, deliveryAgentId: agentId });
+      }
+      
+      if (editingOrder?.id === orderId) {
+        setEditingOrder({ ...editingOrder, deliveryAgentId: agentId });
+      }
+      
+      console.log(`Assigned delivery partner ${agentId} to order ${orderId}`);
+    } catch (error) {
+      console.error('Failed to assign delivery partner:', error);
+      throw error;
+    }
+  };
+
+  const handleSwitchLocation = async (orderId: string, type: 'hub' | 'store', locationId: string) => {
+    try {
+      const updates: Partial<Order> = {
+        moduleType: type,
+        ...(type === 'hub' ? { hubId: locationId, storeId: undefined } : { storeId: locationId, hubId: undefined })
+      };
+      
+      setOrders(prev => prev.map(order => 
+        order.id === orderId ? { ...order, ...updates } : order
+      ));
+      
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder({ ...selectedOrder, ...updates });
+      }
+      
+      if (editingOrder?.id === orderId) {
+        setEditingOrder({ ...editingOrder, ...updates });
+      }
+      
+      console.log(`Switched order ${orderId} to ${type} ${locationId}`);
+    } catch (error) {
+      console.error('Failed to switch location:', error);
+      throw error;
+    }
+  };
+
+  const handleUpdateAddress = async (orderId: string, address: any) => {
+    try {
+      const shippingAddress = {
+        street: address.line1 + (address.line2 ? `, ${address.line2}` : ''),
+        city: address.city,
+        state: address.state,
+        zipCode: address.pincode,
+        country: 'India'
+      };
+      
+      setOrders(prev => prev.map(order => 
+        order.id === orderId ? { ...order, shippingAddress } : order
+      ));
+      
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder({ ...selectedOrder, shippingAddress });
+      }
+      
+      if (editingOrder?.id === orderId) {
+        setEditingOrder({ ...editingOrder, shippingAddress });
+      }
+      
+      console.log(`Updated address for order ${orderId}`);
+    } catch (error) {
+      console.error('Failed to update address:', error);
+      throw error;
+    }
+  };
+
+  const handleUploadPackedPhotos = async (orderId: string, photos: File[]) => {
+    try {
+      // In real implementation, upload photos to server and get URLs
+      const photoUrls = photos.map((_, idx) => `https://example.com/photos/${orderId}_${idx}.jpg`);
+      
+      setOrders(prev => prev.map(order => 
+        order.id === orderId 
+          ? { ...order, packedPhotos: [...(order.packedPhotos || []), ...photoUrls] }
+          : order
+      ));
+      
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder({ 
+          ...selectedOrder, 
+          packedPhotos: [...(selectedOrder.packedPhotos || []), ...photoUrls] 
+        });
+      }
+      
+      if (editingOrder?.id === orderId) {
+        setEditingOrder({ 
+          ...editingOrder, 
+          packedPhotos: [...(editingOrder.packedPhotos || []), ...photoUrls] 
+        });
+      }
+      
+      console.log(`Uploaded ${photos.length} photos for order ${orderId}`);
+    } catch (error) {
+      console.error('Failed to upload photos:', error);
+      throw error;
+    }
+  };
+
+  const handleUpdateSurgeCharges = async (orderId: string, charges: number, reason: string) => {
+    try {
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return;
+      
+      const updates: Partial<Order> = {
+        surgeCharges: charges,
+        surgeChargesReason: reason,
+        totalAmount: (order.subtotalAmount || order.totalAmount) + 
+                     (order.deliveryCharges || 0) + 
+                     charges + 
+                     (order.additionalCharges || 0) + 
+                     (order.gstAmount || 0) - 
+                     (order.discountAmount || 0)
+      };
+      
+      setOrders(prev => prev.map(o => 
+        o.id === orderId ? { ...o, ...updates } : o
+      ));
+      
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder({ ...selectedOrder, ...updates });
+      }
+      
+      if (editingOrder?.id === orderId) {
+        setEditingOrder({ ...editingOrder, ...updates });
+      }
+      
+      console.log(`Updated surge charges for order ${orderId}: ${charges}`);
+    } catch (error) {
+      console.error('Failed to update surge charges:', error);
       throw error;
     }
   };
@@ -578,6 +744,23 @@ export function OrdersPage() {
           const newNetAmount = updatedOrder.totalAmount - newRefundedAmount;
           
           setSelectedOrder({
+            ...updatedOrder,
+            refundedAmount: newRefundedAmount,
+            netAmount: Math.max(0, newNetAmount),
+            paymentStatus: newRefundedAmount >= updatedOrder.totalAmount ? 'refunded' : updatedOrder.paymentStatus,
+            refundRecords: [...(updatedOrder.refundRecords || []), refundRecord]
+          });
+        }
+      }
+
+      // Update editingOrder if it's the same order
+      if (editingOrder?.id === orderId) {
+        const updatedOrder = orders.find(o => o.id === orderId);
+        if (updatedOrder) {
+          const newRefundedAmount = (updatedOrder.refundedAmount || 0) + refundData.amount;
+          const newNetAmount = updatedOrder.totalAmount - newRefundedAmount;
+          
+          setEditingOrder({
             ...updatedOrder,
             refundedAmount: newRefundedAmount,
             netAmount: Math.max(0, newNetAmount),
@@ -1223,11 +1406,142 @@ export function OrdersPage() {
                           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
                           <option value="pending">Pending</option>
+                          <option value="partial">Partially Paid</option>
                           <option value="paid">Paid</option>
+                          <option value="refunded">Refunded</option>
+                          <option value="failed">Failed</option>
                         </select>
                       </div>
                     </div>
                   </div>
+
+                  {/* Payment Tracking */}
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-gray-900 mb-4">Payment Tracking</h3>
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="text-center p-3 bg-gray-50 rounded-lg">
+                          <p className="text-xs text-gray-600 mb-1">Total Amount</p>
+                          <p className="text-lg font-bold text-gray-900">{formatCurrency(editingOrder.totalAmount)}</p>
+                        </div>
+                        <div className="text-center p-3 bg-green-50 rounded-lg">
+                          <p className="text-xs text-gray-600 mb-1">Paid Amount</p>
+                          <p className="text-lg font-bold text-green-600">{formatCurrency(editingOrder.paidAmount || 0)}</p>
+                        </div>
+                        <div className="text-center p-3 bg-orange-50 rounded-lg">
+                          <p className="text-xs text-gray-600 mb-1">Pending Amount</p>
+                          <p className="text-lg font-bold text-orange-600">{formatCurrency((editingOrder.totalAmount - (editingOrder.paidAmount || 0)))}</p>
+                        </div>
+                      </div>
+                      
+                      {(editingOrder.totalAmount - (editingOrder.paidAmount || 0)) > 0 && (
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setSelectedOrder(editingOrder);
+                            setShowEditModal(false);
+                          }}
+                          className="w-full bg-blue-600 hover:bg-blue-700"
+                        >
+                          Record Payment
+                        </Button>
+                      )}
+                      
+                      {editingOrder.paymentRecords && editingOrder.paymentRecords.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-xs font-medium text-gray-700 mb-2">Payment History ({editingOrder.paymentRecords.length} records)</p>
+                          <div className="space-y-2 max-h-32 overflow-y-auto">
+                            {editingOrder.paymentRecords.map((record, idx) => (
+                              <div key={idx} className="text-xs bg-gray-50 p-2 rounded">
+                                <div className="flex justify-between">
+                                  <span className="font-medium">{formatCurrency(record.amount)}</span>
+                                  <span className="text-gray-600">{record.paymentMethod}</span>
+                                </div>
+                                <div className="text-gray-500 mt-1">{formatDateTime(record.receivedAt)}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Refund Tracking */}
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <RotateCcw className="h-5 w-5 text-red-600" />
+                      Refund Tracking
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="text-center p-3 bg-gray-50 rounded-lg">
+                          <p className="text-xs text-gray-600 mb-1">Original Amount</p>
+                          <p className="text-lg font-bold text-gray-900">{formatCurrency(editingOrder.totalAmount)}</p>
+                        </div>
+                        <div className="text-center p-3 bg-red-50 rounded-lg">
+                          <p className="text-xs text-gray-600 mb-1">Refunded Amount</p>
+                          <p className="text-lg font-bold text-red-600">{formatCurrency(editingOrder.refundedAmount || 0)}</p>
+                        </div>
+                        <div className="text-center p-3 bg-blue-50 rounded-lg">
+                          <p className="text-xs text-gray-600 mb-1">Net Amount</p>
+                          <p className="text-lg font-bold text-blue-600">{formatCurrency(editingOrder.totalAmount - (editingOrder.refundedAmount || 0))}</p>
+                        </div>
+                      </div>
+                      
+                      {(editingOrder.paidAmount || 0) > 0 && (
+                        <Button
+                          size="sm"
+                          variant="danger"
+                          onClick={() => setShowRefundModal(true)}
+                          className="w-full"
+                        >
+                          <RotateCcw className="h-4 w-4 mr-2" />
+                          Record Refund
+                        </Button>
+                      )}
+                      
+                      {editingOrder.refundRecords && editingOrder.refundRecords.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <RefundHistory refundRecords={editingOrder.refundRecords} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Assign Delivery Partner */}
+                  <DeliveryPartnerAssignment
+                    orderId={editingOrder.id}
+                    currentAgentId={editingOrder.deliveryAgentId}
+                    onAssign={(agentId) => handleAssignDeliveryPartner(editingOrder.id, agentId)}
+                  />
+
+                  {/* Switch Hub/Store Location */}
+                  <OrderLocationSwitch
+                    orderId={editingOrder.id}
+                    currentType={editingOrder.moduleType}
+                    currentLocationId={editingOrder.hubId || editingOrder.storeId}
+                    onSwitch={(type, locationId) => handleSwitchLocation(editingOrder.id, type, locationId)}
+                  />
+
+                  {/* Address Selector */}
+                  <AddressSelector
+                    customerId={editingOrder.customerId}
+                    currentAddress={editingOrder.shippingAddress as any}
+                    onSelect={(address) => handleUpdateAddress(editingOrder.id, address)}
+                  />
+
+                  {/* Upload Packed Photos */}
+                  <PackedPhotoUpload
+                    orderId={editingOrder.id}
+                    existingPhotos={editingOrder.packedPhotos || []}
+                    onUpload={(photos) => handleUploadPackedPhotos(editingOrder.id, photos)}
+                  />
+
+                  {/* Surge & Additional Charges */}
+                  <SurgeCharges
+                    currentCharges={editingOrder.surgeCharges || 0}
+                    onUpdate={(charges, reason) => handleUpdateSurgeCharges(editingOrder.id, charges, reason)}
+                  />
 
                   {/* Customer Information */}
                   <div className="bg-gray-50 rounded-lg p-4">
@@ -1899,6 +2213,11 @@ export function OrdersPage() {
                 setThirdPartyOrderId(selectedOrder.id);
                 setShowThirdPartyModal(true);
               }}
+              onAssignDeliveryPartner={(agentId) => handleAssignDeliveryPartner(selectedOrder.id, agentId)}
+              onSwitchLocation={(type, locationId) => handleSwitchLocation(selectedOrder.id, type, locationId)}
+              onUpdateAddress={(address) => handleUpdateAddress(selectedOrder.id, address)}
+              onUploadPackedPhotos={(photos) => handleUploadPackedPhotos(selectedOrder.id, photos)}
+              onUpdateSurgeCharges={(charges, reason) => handleUpdateSurgeCharges(selectedOrder.id, charges, reason)}
             />
           )}
         </Modal>
@@ -1925,6 +2244,19 @@ export function OrdersPage() {
           orderCount={batchOrderIds.length}
           agents={deliveryAgents}
         />
+
+        {/* Refund Record Modal */}
+        {editingOrder && (
+          <RefundRecordModal
+            isOpen={showRefundModal}
+            onClose={() => setShowRefundModal(false)}
+            order={editingOrder}
+            onSubmit={async (refundData) => {
+              await handleRefundRecord(editingOrder.id, refundData);
+              setShowRefundModal(false);
+            }}
+          />
+        )}
       </div>
     </LoadingWrapper>
   );

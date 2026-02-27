@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StatusBadge } from '../../common';
 import { Button } from '../../ui';
-import { PaymentRecordModal, PaymentHistory, RefundRecordModal, RefundHistory } from './';
+import { PaymentRecordModal, PaymentHistory, RefundRecordModal, RefundHistory, DeliveryPartnerAssignment, OrderLocationSwitch, AddressSelector, PackedPhotoUpload, SurgeCharges } from './';
 import { formatCurrency, formatDateTime } from '../../../utils/helpers';
 import { Printer, Download, MapPin, Tag, Truck, Receipt, CreditCard, Plus, AlertCircle, RotateCcw } from 'lucide-react';
 import type { Order } from '../../../types';
@@ -13,9 +13,14 @@ interface OrderDetailsProps {
   onPaymentRecord?: (paymentData: any) => Promise<void>;
   onRefundRecord?: (refundData: any) => Promise<void>;
   onAssignThirdParty?: () => void;
+  onAssignDeliveryPartner?: (agentId: string) => Promise<void>;
+  onSwitchLocation?: (type: 'hub' | 'store', locationId: string) => Promise<void>;
+  onUpdateAddress?: (address: any) => Promise<void>;
+  onUploadPackedPhotos?: (photos: File[]) => Promise<void>;
+  onUpdateSurgeCharges?: (charges: number, reason: string) => Promise<void>;
 }
 
-export function OrderDetails({ order, className = '', isEditing = false, onPaymentRecord, onRefundRecord, onAssignThirdParty }: OrderDetailsProps) {
+export function OrderDetails({ order, className = '', isEditing = false, onPaymentRecord, onRefundRecord, onAssignThirdParty, onAssignDeliveryPartner, onSwitchLocation, onUpdateAddress, onUploadPackedPhotos, onUpdateSurgeCharges }: OrderDetailsProps) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showRefundModal, setShowRefundModal] = useState(false);
 
@@ -120,6 +125,51 @@ export function OrderDetails({ order, className = '', isEditing = false, onPayme
         </div>
       </div>
 
+
+      {/* Assign Delivery Partner */}
+      {onAssignDeliveryPartner && (
+        <DeliveryPartnerAssignment
+          orderId={order.id}
+          currentAgentId={order.deliveryAgentId}
+          onAssign={onAssignDeliveryPartner}
+        />
+      )}
+
+      {/* Switch Hub/Store Location */}
+      {onSwitchLocation && (
+        <OrderLocationSwitch
+          orderId={order.id}
+          currentType={order.moduleType}
+          currentLocationId={order.hubId || order.storeId}
+          onSwitch={onSwitchLocation}
+        />
+      )}
+
+      {/* Address Selector */}
+      {onUpdateAddress && (
+        <AddressSelector
+          customerId={order.customerId}
+          currentAddress={order.shippingAddress as any}
+          onSelect={onUpdateAddress}
+        />
+      )}
+
+      {/* Upload Packed Photos */}
+      {onUploadPackedPhotos && (
+        <PackedPhotoUpload
+          orderId={order.id}
+          existingPhotos={order.packedPhotos || []}
+          onUpload={onUploadPackedPhotos}
+        />
+      )}
+
+      {/* Surge & Additional Charges */}
+      {onUpdateSurgeCharges && (
+        <SurgeCharges
+          currentCharges={order.surgeCharges || 0}
+          onUpdate={onUpdateSurgeCharges}
+        />
+      )}
       {/* Payment Tracking */}
       <div className="bg-white border border-gray-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-4">
