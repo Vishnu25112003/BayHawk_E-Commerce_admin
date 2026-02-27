@@ -1321,12 +1321,12 @@ export function OrdersPage() {
           size="xl"
         >
           {editingOrder && (
-            <div className="space-y-6">
+            <div className="space-y-4 max-h-[80vh] overflow-y-auto px-1">
               {/* Header with Print/Download Invoice */}
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">{editingOrder.id}</h2>
-                  <p className="text-gray-600">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{editingOrder.id}</h2>
+                  <p className="text-sm text-gray-600">
                     Placed on {formatDateTime(editingOrder.createdAt)}
                   </p>
                   {editingOrder.invoiceNumber && (
@@ -1337,7 +1337,7 @@ export function OrdersPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <StatusBadge status={editingOrder.status} />
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <Button
                       size="sm"
                       variant="secondary"
@@ -1345,7 +1345,7 @@ export function OrdersPage() {
                       className="flex items-center gap-2"
                     >
                       <Printer className="h-4 w-4" />
-                      Print Invoice
+                      <span className="hidden sm:inline">Print Invoice</span>
                     </Button>
                     <Button
                       size="sm"
@@ -1354,7 +1354,7 @@ export function OrdersPage() {
                       className="flex items-center gap-2"
                     >
                       <Download className="h-4 w-4" />
-                      Download Invoice
+                      <span className="hidden sm:inline">Download Invoice</span>
                     </Button>
                   </div>
                 </div>
@@ -1508,41 +1508,6 @@ export function OrdersPage() {
                     </div>
                   </div>
 
-                  {/* Assign Delivery Partner */}
-                  <DeliveryPartnerAssignment
-                    orderId={editingOrder.id}
-                    currentAgentId={editingOrder.deliveryAgentId}
-                    onAssign={(agentId) => handleAssignDeliveryPartner(editingOrder.id, agentId)}
-                  />
-
-                  {/* Switch Hub/Store Location */}
-                  <OrderLocationSwitch
-                    orderId={editingOrder.id}
-                    currentType={editingOrder.moduleType}
-                    currentLocationId={editingOrder.hubId || editingOrder.storeId}
-                    onSwitch={(type, locationId) => handleSwitchLocation(editingOrder.id, type, locationId)}
-                  />
-
-                  {/* Address Selector */}
-                  <AddressSelector
-                    customerId={editingOrder.customerId}
-                    currentAddress={editingOrder.shippingAddress as any}
-                    onSelect={(address) => handleUpdateAddress(editingOrder.id, address)}
-                  />
-
-                  {/* Upload Packed Photos */}
-                  <PackedPhotoUpload
-                    orderId={editingOrder.id}
-                    existingPhotos={editingOrder.packedPhotos || []}
-                    onUpload={(photos) => handleUploadPackedPhotos(editingOrder.id, photos)}
-                  />
-
-                  {/* Surge & Additional Charges */}
-                  <SurgeCharges
-                    currentCharges={editingOrder.surgeCharges || 0}
-                    onUpdate={(charges, reason) => handleUpdateSurgeCharges(editingOrder.id, charges, reason)}
-                  />
-
                   {/* Customer Information */}
                   <div className="bg-gray-50 rounded-lg p-4">
                     <h3 className="font-semibold text-gray-900 mb-4">Customer Information</h3>
@@ -1623,236 +1588,27 @@ export function OrdersPage() {
                     </div>
                   </div>
 
-                  {/* Billing & Shipping Address */}
-                  <div className="space-y-4">
-                    {/* Billing Address */}
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
-                      <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                        <Receipt className="h-5 w-5 text-blue-600" />
-                        Billing Address
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
-                          <input
-                            type="text"
-                            value={editingOrder.billingAddress?.street || ''}
-                            onChange={(e) => setEditingOrder({
-                              ...editingOrder,
-                              billingAddress: {
-                                ...editingOrder.billingAddress,
-                                street: e.target.value,
-                                city: editingOrder.billingAddress?.city || '',
-                                state: editingOrder.billingAddress?.state || '',
-                                zipCode: editingOrder.billingAddress?.zipCode || '',
-                                country: editingOrder.billingAddress?.country || 'India'
-                              }
-                            })}
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                          <input
-                            type="text"
-                            value={editingOrder.billingAddress?.city || ''}
-                            onChange={(e) => setEditingOrder({
-                              ...editingOrder,
-                              billingAddress: {
-                                ...editingOrder.billingAddress,
-                                street: editingOrder.billingAddress?.street || '',
-                                city: e.target.value,
-                                state: editingOrder.billingAddress?.state || '',
-                                zipCode: editingOrder.billingAddress?.zipCode || '',
-                                country: editingOrder.billingAddress?.country || 'India'
-                              }
-                            })}
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
-                          <input
-                            type="text"
-                            value={editingOrder.billingAddress?.state || ''}
-                            onChange={(e) => setEditingOrder({
-                              ...editingOrder,
-                              billingAddress: {
-                                ...editingOrder.billingAddress,
-                                street: editingOrder.billingAddress?.street || '',
-                                city: editingOrder.billingAddress?.city || '',
-                                state: e.target.value,
-                                zipCode: editingOrder.billingAddress?.zipCode || '',
-                                country: editingOrder.billingAddress?.country || 'India'
-                              }
-                            })}
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code</label>
-                          <input
-                            type="text"
-                            value={editingOrder.billingAddress?.zipCode || ''}
-                            onChange={(e) => setEditingOrder({
-                              ...editingOrder,
-                              billingAddress: {
-                                ...editingOrder.billingAddress,
-                                street: editingOrder.billingAddress?.street || '',
-                                city: editingOrder.billingAddress?.city || '',
-                                state: editingOrder.billingAddress?.state || '',
-                                zipCode: e.target.value,
-                                country: editingOrder.billingAddress?.country || 'India'
-                              }
-                            })}
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                          <input
-                            type="text"
-                            value={editingOrder.billingAddress?.country || 'India'}
-                            onChange={(e) => setEditingOrder({
-                              ...editingOrder,
-                              billingAddress: {
-                                ...editingOrder.billingAddress,
-                                street: editingOrder.billingAddress?.street || '',
-                                city: editingOrder.billingAddress?.city || '',
-                                state: editingOrder.billingAddress?.state || '',
-                                zipCode: editingOrder.billingAddress?.zipCode || '',
-                                country: e.target.value
-                              }
-                            })}
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                      </div>
-                    </div>
+                  {/* Assign Delivery Partner */}
+                  <DeliveryPartnerAssignment
+                    orderId={editingOrder.id}
+                    currentAgentId={editingOrder.deliveryAgentId}
+                    onAssign={(agentId) => handleAssignDeliveryPartner(editingOrder.id, agentId)}
+                  />
 
-                    {/* Shipping Address */}
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
-                      <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                        <MapPin className="h-5 w-5 text-green-600" />
-                        Shipping Address
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
-                          <input
-                            type="text"
-                            value={editingOrder.shippingAddress?.street || ''}
-                            onChange={(e) => setEditingOrder({
-                              ...editingOrder,
-                              shippingAddress: {
-                                ...editingOrder.shippingAddress,
-                                street: e.target.value,
-                                city: editingOrder.shippingAddress?.city || '',
-                                state: editingOrder.shippingAddress?.state || '',
-                                zipCode: editingOrder.shippingAddress?.zipCode || '',
-                                country: editingOrder.shippingAddress?.country || 'India'
-                              }
-                            })}
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                          <input
-                            type="text"
-                            value={editingOrder.shippingAddress?.city || ''}
-                            onChange={(e) => setEditingOrder({
-                              ...editingOrder,
-                              shippingAddress: {
-                                ...editingOrder.shippingAddress,
-                                street: editingOrder.shippingAddress?.street || '',
-                                city: e.target.value,
-                                state: editingOrder.shippingAddress?.state || '',
-                                zipCode: editingOrder.shippingAddress?.zipCode || '',
-                                country: editingOrder.shippingAddress?.country || 'India'
-                              }
-                            })}
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
-                          <input
-                            type="text"
-                            value={editingOrder.shippingAddress?.state || ''}
-                            onChange={(e) => setEditingOrder({
-                              ...editingOrder,
-                              shippingAddress: {
-                                ...editingOrder.shippingAddress,
-                                street: editingOrder.shippingAddress?.street || '',
-                                city: editingOrder.shippingAddress?.city || '',
-                                state: e.target.value,
-                                zipCode: editingOrder.shippingAddress?.zipCode || '',
-                                country: editingOrder.shippingAddress?.country || 'India'
-                              }
-                            })}
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code</label>
-                          <input
-                            type="text"
-                            value={editingOrder.shippingAddress?.zipCode || ''}
-                            onChange={(e) => setEditingOrder({
-                              ...editingOrder,
-                              shippingAddress: {
-                                ...editingOrder.shippingAddress,
-                                street: editingOrder.shippingAddress?.street || '',
-                                city: editingOrder.shippingAddress?.city || '',
-                                state: editingOrder.shippingAddress?.state || '',
-                                zipCode: e.target.value,
-                                country: editingOrder.shippingAddress?.country || 'India'
-                              }
-                            })}
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                          <input
-                            type="text"
-                            value={editingOrder.shippingAddress?.country || 'India'}
-                            onChange={(e) => setEditingOrder({
-                              ...editingOrder,
-                              shippingAddress: {
-                                ...editingOrder.shippingAddress,
-                                street: editingOrder.shippingAddress?.street || '',
-                                city: editingOrder.shippingAddress?.city || '',
-                                state: editingOrder.shippingAddress?.state || '',
-                                zipCode: editingOrder.shippingAddress?.zipCode || '',
-                                country: e.target.value
-                              }
-                            })}
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Switch Hub/Store Location */}
+                  <OrderLocationSwitch
+                    orderId={editingOrder.id}
+                    currentType={editingOrder.moduleType}
+                    currentLocationId={editingOrder.hubId || editingOrder.storeId}
+                    onSwitch={(type, locationId) => handleSwitchLocation(editingOrder.id, type, locationId)}
+                  />
 
-                  {/* Delivery Instructions */}
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <Truck className="h-5 w-5 text-yellow-600" />
-                      Delivery Instructions
-                    </h3>
-                    <textarea
-                      value={editingOrder.deliveryInstructions || ''}
-                      onChange={(e) => setEditingOrder({
-                        ...editingOrder,
-                        deliveryInstructions: e.target.value
-                      })}
-                      placeholder="Enter special delivery instructions..."
-                      rows={3}
-                      className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
+                  {/* Address Selector */}
+                  <AddressSelector
+                    customerId={editingOrder.customerId}
+                    currentAddress={editingOrder.shippingAddress as any}
+                    onSelect={(address) => handleUpdateAddress(editingOrder.id, address)}
+                  />
                 </div>
 
                 {/* Right Column */}
@@ -2170,6 +1926,250 @@ export function OrdersPage() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Upload Packed Photos */}
+                  <PackedPhotoUpload
+                    orderId={editingOrder.id}
+                    existingPhotos={editingOrder.packedPhotos || []}
+                    onUpload={(photos) => handleUploadPackedPhotos(editingOrder.id, photos)}
+                  />
+
+                  {/* Surge & Additional Charges */}
+                  <SurgeCharges
+                    currentCharges={editingOrder.surgeCharges || 0}
+                    onUpdate={(charges, reason) => handleUpdateSurgeCharges(editingOrder.id, charges, reason)}
+                  />
+
+                  {/* Billing & Shipping Address */}
+                  <div className="space-y-4">
+                    {/* Billing Address */}
+                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                      <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <Receipt className="h-5 w-5 text-blue-600" />
+                        Billing Address
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
+                          <input
+                            type="text"
+                            value={editingOrder.billingAddress?.street || ''}
+                            onChange={(e) => setEditingOrder({
+                              ...editingOrder,
+                              billingAddress: {
+                                ...editingOrder.billingAddress,
+                                street: e.target.value,
+                                city: editingOrder.billingAddress?.city || '',
+                                state: editingOrder.billingAddress?.state || '',
+                                zipCode: editingOrder.billingAddress?.zipCode || '',
+                                country: editingOrder.billingAddress?.country || 'India'
+                              }
+                            })}
+                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                          <input
+                            type="text"
+                            value={editingOrder.billingAddress?.city || ''}
+                            onChange={(e) => setEditingOrder({
+                              ...editingOrder,
+                              billingAddress: {
+                                ...editingOrder.billingAddress,
+                                street: editingOrder.billingAddress?.street || '',
+                                city: e.target.value,
+                                state: editingOrder.billingAddress?.state || '',
+                                zipCode: editingOrder.billingAddress?.zipCode || '',
+                                country: editingOrder.billingAddress?.country || 'India'
+                              }
+                            })}
+                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+                          <input
+                            type="text"
+                            value={editingOrder.billingAddress?.state || ''}
+                            onChange={(e) => setEditingOrder({
+                              ...editingOrder,
+                              billingAddress: {
+                                ...editingOrder.billingAddress,
+                                street: editingOrder.billingAddress?.street || '',
+                                city: editingOrder.billingAddress?.city || '',
+                                state: e.target.value,
+                                zipCode: editingOrder.billingAddress?.zipCode || '',
+                                country: editingOrder.billingAddress?.country || 'India'
+                              }
+                            })}
+                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code</label>
+                          <input
+                            type="text"
+                            value={editingOrder.billingAddress?.zipCode || ''}
+                            onChange={(e) => setEditingOrder({
+                              ...editingOrder,
+                              billingAddress: {
+                                ...editingOrder.billingAddress,
+                                street: editingOrder.billingAddress?.street || '',
+                                city: editingOrder.billingAddress?.city || '',
+                                state: editingOrder.billingAddress?.state || '',
+                                zipCode: e.target.value,
+                                country: editingOrder.billingAddress?.country || 'India'
+                              }
+                            })}
+                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                          <input
+                            type="text"
+                            value={editingOrder.billingAddress?.country || 'India'}
+                            onChange={(e) => setEditingOrder({
+                              ...editingOrder,
+                              billingAddress: {
+                                ...editingOrder.billingAddress,
+                                street: editingOrder.billingAddress?.street || '',
+                                city: editingOrder.billingAddress?.city || '',
+                                state: editingOrder.billingAddress?.state || '',
+                                zipCode: editingOrder.billingAddress?.zipCode || '',
+                                country: e.target.value
+                              }
+                            })}
+                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Shipping Address */}
+                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                      <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <MapPin className="h-5 w-5 text-green-600" />
+                        Shipping Address
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
+                          <input
+                            type="text"
+                            value={editingOrder.shippingAddress?.street || ''}
+                            onChange={(e) => setEditingOrder({
+                              ...editingOrder,
+                              shippingAddress: {
+                                ...editingOrder.shippingAddress,
+                                street: e.target.value,
+                                city: editingOrder.shippingAddress?.city || '',
+                                state: editingOrder.shippingAddress?.state || '',
+                                zipCode: editingOrder.shippingAddress?.zipCode || '',
+                                country: editingOrder.shippingAddress?.country || 'India'
+                              }
+                            })}
+                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                          <input
+                            type="text"
+                            value={editingOrder.shippingAddress?.city || ''}
+                            onChange={(e) => setEditingOrder({
+                              ...editingOrder,
+                              shippingAddress: {
+                                ...editingOrder.shippingAddress,
+                                street: editingOrder.shippingAddress?.street || '',
+                                city: e.target.value,
+                                state: editingOrder.shippingAddress?.state || '',
+                                zipCode: editingOrder.shippingAddress?.zipCode || '',
+                                country: editingOrder.shippingAddress?.country || 'India'
+                              }
+                            })}
+                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+                          <input
+                            type="text"
+                            value={editingOrder.shippingAddress?.state || ''}
+                            onChange={(e) => setEditingOrder({
+                              ...editingOrder,
+                              shippingAddress: {
+                                ...editingOrder.shippingAddress,
+                                street: editingOrder.shippingAddress?.street || '',
+                                city: editingOrder.shippingAddress?.city || '',
+                                state: e.target.value,
+                                zipCode: editingOrder.shippingAddress?.zipCode || '',
+                                country: editingOrder.shippingAddress?.country || 'India'
+                              }
+                            })}
+                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code</label>
+                          <input
+                            type="text"
+                            value={editingOrder.shippingAddress?.zipCode || ''}
+                            onChange={(e) => setEditingOrder({
+                              ...editingOrder,
+                              shippingAddress: {
+                                ...editingOrder.shippingAddress,
+                                street: editingOrder.shippingAddress?.street || '',
+                                city: editingOrder.shippingAddress?.city || '',
+                                state: editingOrder.shippingAddress?.state || '',
+                                zipCode: e.target.value,
+                                country: editingOrder.shippingAddress?.country || 'India'
+                              }
+                            })}
+                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                          <input
+                            type="text"
+                            value={editingOrder.shippingAddress?.country || 'India'}
+                            onChange={(e) => setEditingOrder({
+                              ...editingOrder,
+                              shippingAddress: {
+                                ...editingOrder.shippingAddress,
+                                street: editingOrder.shippingAddress?.street || '',
+                                city: editingOrder.shippingAddress?.city || '',
+                                state: editingOrder.shippingAddress?.state || '',
+                                zipCode: editingOrder.shippingAddress?.zipCode || '',
+                                country: e.target.value
+                              }
+                            })}
+                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Delivery Instructions */}
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <Truck className="h-5 w-5 text-yellow-600" />
+                      Delivery Instructions
+                    </h3>
+                    <textarea
+                      value={editingOrder.deliveryInstructions || ''}
+                      onChange={(e) => setEditingOrder({
+                        ...editingOrder,
+                        deliveryInstructions: e.target.value
+                      })}
+                      placeholder="Enter special delivery instructions..."
+                      rows={3}
+                      className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -2213,11 +2213,6 @@ export function OrdersPage() {
                 setThirdPartyOrderId(selectedOrder.id);
                 setShowThirdPartyModal(true);
               }}
-              onAssignDeliveryPartner={(agentId) => handleAssignDeliveryPartner(selectedOrder.id, agentId)}
-              onSwitchLocation={(type, locationId) => handleSwitchLocation(selectedOrder.id, type, locationId)}
-              onUpdateAddress={(address) => handleUpdateAddress(selectedOrder.id, address)}
-              onUploadPackedPhotos={(photos) => handleUploadPackedPhotos(selectedOrder.id, photos)}
-              onUpdateSurgeCharges={(charges, reason) => handleUpdateSurgeCharges(selectedOrder.id, charges, reason)}
             />
           )}
         </Modal>

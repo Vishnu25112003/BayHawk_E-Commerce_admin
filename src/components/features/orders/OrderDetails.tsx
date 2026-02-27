@@ -3,7 +3,7 @@ import { StatusBadge } from '../../common';
 import { Button } from '../../ui';
 import { PaymentRecordModal, PaymentHistory, RefundRecordModal, RefundHistory, DeliveryPartnerAssignment, OrderLocationSwitch, AddressSelector, PackedPhotoUpload, SurgeCharges } from './';
 import { formatCurrency, formatDateTime } from '../../../utils/helpers';
-import { Printer, Download, MapPin, Tag, Truck, Receipt, CreditCard, Plus, AlertCircle, RotateCcw } from 'lucide-react';
+import { Printer, Download, MapPin, Tag, Truck, Receipt, CreditCard, Plus, AlertCircle, RotateCcw, Package, Store, TrendingUp } from 'lucide-react';
 import type { Order } from '../../../types';
 
 interface OrderDetailsProps {
@@ -407,6 +407,94 @@ export function OrderDetails({ order, className = '', isEditing = false, onPayme
         </div>
       )}
 
+
+      {/* Delivery Partner Info - Display Only */}
+      {order.deliveryAgentId && (
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+            <Truck className="h-5 w-5 text-blue-600" />
+            Assigned Delivery Partner
+          </h3>
+          <p className="text-sm text-gray-600">Agent ID: <span className="font-medium text-gray-900">{order.deliveryAgentId}</span></p>
+        </div>
+      )}
+
+      {/* Hub/Store Location - Display Only */}
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+          {order.moduleType === 'hub' ? (
+            <Package className="h-5 w-5 text-purple-600" />
+          ) : (
+            <Store className="h-5 w-5 text-green-600" />
+          )}
+          Order Location
+        </h3>
+        <div className="grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <p className="text-gray-600">Type</p>
+            <p className="font-medium capitalize">{order.moduleType}</p>
+          </div>
+          <div>
+            <p className="text-gray-600">Location ID</p>
+            <p className="font-medium">{order.hubId || order.storeId || 'N/A'}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Packed Photos - Display Only */}
+      {order.packedPhotos && order.packedPhotos.length > 0 && (
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <Package className="h-5 w-5 text-indigo-600" />
+            Packed Photos ({order.packedPhotos.length})
+          </h3>
+          <div className="grid grid-cols-3 gap-2">
+            {order.packedPhotos.map((photo, index) => (
+              <div key={index} className="relative aspect-square">
+                <img
+                  src={photo}
+                  alt={`Packed ${index + 1}`}
+                  className="w-full h-full object-cover rounded-lg border border-gray-200"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Surge & Additional Charges - Display Only */}
+      {((order.surgeCharges && order.surgeCharges > 0) || (order.additionalCharges && order.additionalCharges > 0)) && (
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+          <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-orange-600" />
+            Additional Charges
+          </h3>
+          <div className="space-y-2 text-sm">
+            {order.surgeCharges && order.surgeCharges > 0 && (
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="font-medium text-gray-900">Surge Charges</p>
+                  {order.surgeChargesReason && (
+                    <p className="text-xs text-gray-600">{order.surgeChargesReason}</p>
+                  )}
+                </div>
+                <p className="font-bold text-orange-600">{formatCurrency(order.surgeCharges)}</p>
+              </div>
+            )}
+            {order.additionalCharges && order.additionalCharges > 0 && (
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="font-medium text-gray-900">Additional Charges</p>
+                  {order.additionalChargesReason && (
+                    <p className="text-xs text-gray-600">{order.additionalChargesReason}</p>
+                  )}
+                </div>
+                <p className="font-bold text-orange-600">{formatCurrency(order.additionalCharges)}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       {/* Order Items */}
       <div>
         <h3 className="font-semibold text-gray-900 mb-3">Order Items</h3>
