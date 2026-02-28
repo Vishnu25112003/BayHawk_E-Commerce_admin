@@ -1,42 +1,43 @@
 import { useState } from 'react';
 import { Card, Button, Input, Modal } from '../ui';
-import { Plus, Eye, Edit, Trash2, Copy, Clock, Bell, Users, Tag, Package } from 'lucide-react';
+import { Plus, Eye, Edit, Trash2, Copy, Clock, Bell, Users, Tag, Package, Search, Crown } from 'lucide-react';
+import type { Product } from '../../types';
 
 type FlashSaleType = 'discount_coupon' | 'product_sale' | 'members_only' | 'membership_subscription';
 
-interface Product {
-  id: string;
-  nameEnglish: string;
-  nameTamil: string;
-  descriptionEnglish: string;
-  descriptionTamil: string;
-  category: string;
-  weights: WeightOption[];
-  images: string[];
-  totalStock: number;
+interface FlashSaleProductConfig {
+  productId: string;
+  variantId: string;
+  discountPrice: number;
   flashOfferDetails: string;
 }
 
-interface WeightOption {
+interface MembershipBenefit {
   id: string;
-  weight: string;
-  unit: 'g' | 'kg' | 'ml' | 'l' | 'pcs';
-  originalPrice: number;
-  discountPrice: number;
-  stock: number;
+  type: string;
+  label: string;
+  value: string;
+  isEditable: boolean;
 }
 
 interface MembershipPlan {
+  id: string;
   name: string;
   duration: number;
-  totalPrice: number;
+  price: number;
   monthlyEquivalent: number;
-  benefits: string[];
-  welcomeCredit: number;
-  deliveryBenefits: string;
-  bonusPercentage: number;
-  priorityService: boolean;
-  surpriseRewards: string;
+  benefits: MembershipBenefit[];
+  welcomeWallet: number;
+  walletExpiry: number;
+  discountPercentage: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+interface FlashSaleMembershipConfig {
+  membershipPlanId: string;
+  discountPrice: number;
+  flashOfferDetails: string;
 }
 
 interface Notification {
@@ -58,13 +59,148 @@ interface FlashSale {
   couponCode?: string;
   discountValue?: number;
   discountType?: 'percentage' | 'fixed';
-  products?: Product[];
-  membershipPlan?: MembershipPlan;
+  selectedProducts?: FlashSaleProductConfig[];
+  selectedMembership?: FlashSaleMembershipConfig;
   notifications: Notification[];
   status: 'draft' | 'scheduled' | 'active' | 'ended';
   isActive: boolean;
   createdAt: string;
 }
+
+// Mock products data - in real app, fetch from API
+const mockProducts: Product[] = [
+  {
+    id: "1",
+    nameEn: "Seer Fish (Vanjaram)",
+    nameTa: "வஞ்சிரம்",
+    sku: "FISH-001",
+    category: "fish",
+    description: "Premium quality seer fish",
+    images: [],
+    variants: [
+      {
+        id: "v1",
+        type: "Whole Cleaned",
+        size: "Medium",
+        grossWeight: "1000-1250g",
+        netWeight: "800-1000g",
+        pieces: "1 piece",
+        serves: "3-4",
+        price: 1200,
+        stock: 25,
+        discount: 10,
+      },
+    ],
+    isBestSeller: true,
+    isRare: false,
+    isActive: true,
+    deliveryType: "next_day",
+    sourceType: "hub",
+    moduleType: "hub",
+    approvalStatus: "approved",
+  },
+  {
+    id: "2",
+    nameEn: "Tiger Prawns",
+    nameTa: "இறால்",
+    sku: "PRWN-001",
+    category: "prawns",
+    description: "Fresh tiger prawns",
+    images: [],
+    variants: [
+      {
+        id: "v2",
+        type: "Cleaned",
+        size: "Large",
+        grossWeight: "500g",
+        netWeight: "400g",
+        pieces: "15-20 pieces",
+        serves: "2-3",
+        price: 650,
+        stock: 15,
+      },
+    ],
+    isBestSeller: true,
+    isRare: false,
+    isActive: true,
+    deliveryType: "next_day",
+    sourceType: "hub",
+    moduleType: "hub",
+    approvalStatus: "approved",
+  },
+  {
+    id: "3",
+    nameEn: "Chicken Breast",
+    nameTa: "சிக்கன் மார்பு",
+    sku: "CHKN-001",
+    category: "chicken",
+    description: "Fresh chicken breast",
+    images: [],
+    variants: [
+      {
+        id: "v3",
+        type: "Boneless",
+        size: "Medium",
+        grossWeight: "500g",
+        netWeight: "450g",
+        pieces: "2-3 pieces",
+        serves: "2-3",
+        price: 280,
+        stock: 50,
+      },
+    ],
+    isBestSeller: false,
+    isRare: false,
+    isActive: true,
+    deliveryType: "same_day",
+    sourceType: "store",
+    moduleType: "store",
+    approvalStatus: "approved",
+  },
+];
+
+// Mock membership plans - in real app, fetch from API
+const mockMembershipPlans: MembershipPlan[] = [
+  {
+    id: '1',
+    name: 'Elite Membership',
+    duration: 365,
+    price: 1299,
+    monthlyEquivalent: 108,
+    benefits: [
+      { id: 'b1', type: 'free_delivery', label: 'Free Delivery', value: 'Above ₹349', isEditable: true },
+      { id: 'b2', type: 'no_surge', label: 'No Surge Pricing', value: 'During peak/rain time', isEditable: false },
+      { id: 'b3', type: 'welcome_wallet', label: 'Welcome Wallet Cash', value: '₹300 (60 days expiry)', isEditable: true },
+      { id: 'b4', type: 'extra_discount', label: 'Extra Discount', value: '10% on selected products', isEditable: true },
+      { id: 'b5', type: 'priority_order', label: 'Priority Processing', value: 'Faster order handling', isEditable: false },
+      { id: 'b6', type: 'faster_delivery', label: 'Faster Delivery', value: 'Express shipping', isEditable: false },
+      { id: 'b7', type: 'special_rewards', label: 'Special Rewards', value: 'Birthday & festival offers', isEditable: true }
+    ],
+    welcomeWallet: 300,
+    walletExpiry: 60,
+    discountPercentage: 10,
+    isActive: true,
+    createdAt: '2024-02-10'
+  },
+  {
+    id: '2',
+    name: 'Premium Membership',
+    duration: 180,
+    price: 699,
+    monthlyEquivalent: 116,
+    benefits: [
+      { id: 'b1', type: 'free_delivery', label: 'Free Delivery', value: 'Above ₹499', isEditable: true },
+      { id: 'b2', type: 'welcome_wallet', label: 'Welcome Wallet Cash', value: '₹150 (30 days expiry)', isEditable: true },
+      { id: 'b3', type: 'extra_discount', label: 'Extra Discount', value: '5% on selected products', isEditable: true },
+      { id: 'b4', type: 'special_rewards', label: 'Special Rewards', value: 'Festival offers', isEditable: true }
+    ],
+    welcomeWallet: 150,
+    walletExpiry: 30,
+    discountPercentage: 5,
+    isActive: true,
+    createdAt: '2024-02-10'
+  }
+];
 
 const dummySales: FlashSale[] = [
   {
@@ -95,22 +231,8 @@ const dummySales: FlashSale[] = [
     endTime: '2024-02-14T22:00',
     timerType: 'fixed',
     fixedDuration: 12,
-    products: [
-      { 
-        id: 'p1', 
-        nameEnglish: 'Fresh Chicken',
-        nameTamil: 'புதிய கோழி',
-        descriptionEnglish: 'Farm fresh chicken',
-        descriptionTamil: 'பண்ணை புதிய கோழி',
-        category: 'Chicken',
-        weights: [
-          { id: 'w1', weight: '500', unit: 'g', originalPrice: 150, discountPrice: 120, stock: 30 },
-          { id: 'w2', weight: '1', unit: 'kg', originalPrice: 280, discountPrice: 220, stock: 50 }
-        ],
-        images: [],
-        totalStock: 80,
-        flashOfferDetails: 'Limited time offer - Save up to 20%'
-      }
+    selectedProducts: [
+      { productId: '3', variantId: 'v3', discountPrice: 220, flashOfferDetails: 'Limited time offer - Save ₹60!' }
     ],
     notifications: [
       { type: 'before_start', minutes: 15, message: 'Chicken flash sale starts soon!', enabled: true },
@@ -138,7 +260,13 @@ export const FlashSaleConfig = () => {
     timerType: 'datetime' as 'fixed' | 'datetime' | 'recurring',
     fixedDuration: 12
   });
-  const [products, setProducts] = useState<Product[]>([]);
+  
+  const [selectedProducts, setSelectedProducts] = useState<FlashSaleProductConfig[]>([]);
+  const [selectedMembership, setSelectedMembership] = useState<FlashSaleMembershipConfig | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showProductSelector, setShowProductSelector] = useState(false);
+  const [showMembershipSelector, setShowMembershipSelector] = useState(false);
+  
   const [notifications, setNotifications] = useState<Notification[]>([
     { type: 'before_start', minutes: 15, message: 'Flash sale starting in 15 minutes!', enabled: true },
     { type: 'before_end', minutes: 15, message: 'Last 15 minutes! Hurry up!', enabled: true },
@@ -175,67 +303,64 @@ export const FlashSaleConfig = () => {
     return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-700';
   };
 
-  const addProduct = () => {
-    setProducts([...products, { 
-      id: `p${Date.now()}`, 
-      nameEnglish: '',
-      nameTamil: '',
-      descriptionEnglish: '',
-      descriptionTamil: '',
-      category: '',
-      weights: [{ id: 'w1', weight: '', unit: 'g', originalPrice: 0, discountPrice: 0, stock: 0 }],
-      images: [],
-      totalStock: 0,
-      flashOfferDetails: ''
-    }]);
-  };
+  const filteredProducts = mockProducts.filter(p => 
+    p.nameEn.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.nameTa.includes(searchTerm) ||
+    p.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const removeProduct = (id: string) => {
-    setProducts(products.filter(p => p.id !== id));
-  };
-
-  const updateProduct = (id: string, field: string, value: any) => {
-    setProducts(products.map(p => p.id === id ? { ...p, [field]: value } : p));
-  };
-
-  const addWeight = (productId: string) => {
-    setProducts(products.map(p => 
-      p.id === productId 
-        ? { ...p, weights: [...p.weights, { id: `w${Date.now()}`, weight: '', unit: 'g', originalPrice: 0, discountPrice: 0, stock: 0 }] }
-        : p
-    ));
-  };
-
-  const removeWeight = (productId: string, weightId: string) => {
-    setProducts(products.map(p => 
-      p.id === productId 
-        ? { ...p, weights: p.weights.filter(w => w.id !== weightId) }
-        : p
-    ));
-  };
-
-  const updateWeight = (productId: string, weightId: string, field: string, value: any) => {
-    setProducts(products.map(p => 
-      p.id === productId 
-        ? { ...p, weights: p.weights.map(w => w.id === weightId ? { ...w, [field]: value } : w) }
-        : p
-    ));
-  };
-
-  const handleImageUpload = (productId: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const imageUrls = Array.from(files).map(file => URL.createObjectURL(file));
-      setProducts(products.map(p => 
-        p.id === productId ? { ...p, images: [...p.images, ...imageUrls] } : p
-      ));
+  const addProductToFlashSale = (productId: string, variantId: string) => {
+    const exists = selectedProducts.find(p => p.productId === productId && p.variantId === variantId);
+    if (exists) {
+      alert('This product variant is already added!');
+      return;
+    }
+    
+    const product = mockProducts.find(p => p.id === productId);
+    const variant = product?.variants.find(v => v.id === variantId);
+    
+    if (product && variant) {
+      setSelectedProducts([...selectedProducts, {
+        productId,
+        variantId,
+        discountPrice: variant.price * 0.8, // Default 20% discount
+        flashOfferDetails: ''
+      }]);
     }
   };
 
-  const removeImage = (productId: string, imageUrl: string) => {
-    setProducts(products.map(p => 
-      p.id === productId ? { ...p, images: p.images.filter(img => img !== imageUrl) } : p
+  const removeProductFromFlashSale = (productId: string, variantId: string) => {
+    setSelectedProducts(selectedProducts.filter(p => !(p.productId === productId && p.variantId === variantId)));
+  };
+
+  const updateFlashSaleProduct = (productId: string, variantId: string, field: keyof FlashSaleProductConfig, value: any) => {
+    setSelectedProducts(selectedProducts.map(p => 
+      p.productId === productId && p.variantId === variantId 
+        ? { ...p, [field]: value } 
+        : p
     ));
+  };
+
+  const getProductDetails = (productId: string, variantId: string) => {
+    const product = mockProducts.find(p => p.id === productId);
+    const variant = product?.variants.find(v => v.id === variantId);
+    return { product, variant };
+  };
+
+  const getMembershipDetails = (membershipId: string) => {
+    return mockMembershipPlans.find(m => m.id === membershipId);
+  };
+
+  const selectMembership = (membershipId: string) => {
+    const membership = mockMembershipPlans.find(m => m.id === membershipId);
+    if (membership) {
+      setSelectedMembership({
+        membershipPlanId: membershipId,
+        discountPrice: membership.price * 0.85, // Default 15% discount
+        flashOfferDetails: ''
+      });
+      setShowMembershipSelector(false);
+    }
   };
 
   const handleCreate = (e: React.FormEvent) => {
@@ -249,7 +374,8 @@ export const FlashSaleConfig = () => {
       endTime: formData.endTime,
       timerType: formData.timerType,
       fixedDuration: formData.fixedDuration,
-      products: products.length > 0 ? products : undefined,
+      selectedProducts: selectedProducts.length > 0 ? selectedProducts : undefined,
+      selectedMembership: selectedMembership || undefined,
       notifications,
       status: 'draft',
       isActive: false,
@@ -263,8 +389,10 @@ export const FlashSaleConfig = () => {
 
   const resetForm = () => {
     setFormData({ name: '', description: '', startTime: '', endTime: '', timerType: 'datetime', fixedDuration: 12 });
-    setProducts([]);
+    setSelectedProducts([]);
+    setSelectedMembership(null);
     setSaleType('discount_coupon');
+    setSearchTerm('');
   };
 
   const handleView = (sale: FlashSale) => {
@@ -498,234 +626,272 @@ export const FlashSaleConfig = () => {
           {(saleType === 'product_sale' || saleType === 'members_only') && (
             <div className="border-t pt-4">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-900">Products</h3>
-                <Button type="button" size="sm" variant="secondary" onClick={addProduct}>
+                <h3 className="font-semibold text-gray-900">Select Products from Inventory</h3>
+                <Button type="button" size="sm" variant="secondary" onClick={() => setShowProductSelector(!showProductSelector)}>
                   <Plus className="h-4 w-4 mr-1" />
-                  Add Product
+                  {showProductSelector ? 'Hide Products' : 'Browse Products'}
                 </Button>
               </div>
 
-              <div className="space-y-6">
-                {products.map((product, pIdx) => (
-                  <div key={product.id} className="border-2 border-gray-200 rounded-lg p-4 bg-gray-50 space-y-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-semibold text-gray-900">Product {pIdx + 1}</h4>
-                      {products.length > 1 && (
-                        <button 
-                          type="button" 
-                          onClick={() => removeProduct(product.id)}
-                          className="text-red-600 text-sm flex items-center gap-1"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Remove Product
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Product Names */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input 
-                        label="Product Name (English)" 
-                        placeholder="Fresh Chicken"
-                        value={product.nameEnglish}
-                        onChange={(e) => updateProduct(product.id, 'nameEnglish', e.target.value)}
-                        required
-                      />
-                      <Input 
-                        label="Product Name (Tamil)" 
-                        placeholder="புதிய கோழி"
-                        value={product.nameTamil}
-                        onChange={(e) => updateProduct(product.id, 'nameTamil', e.target.value)}
-                        required
-                      />
-                    </div>
-
-                    {/* Descriptions */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Description (English)</label>
-                        <textarea 
-                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                          rows={2}
-                          placeholder="Farm fresh chicken"
-                          value={product.descriptionEnglish}
-                          onChange={(e) => updateProduct(product.id, 'descriptionEnglish', e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Description (Tamil)</label>
-                        <textarea 
-                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                          rows={2}
-                          placeholder="பண்ணை புதிய கோழி"
-                          value={product.descriptionTamil}
-                          onChange={(e) => updateProduct(product.id, 'descriptionTamil', e.target.value)}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Category */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                        <select 
-                          className="w-full rounded-lg border border-gray-300 px-3 py-2"
-                          value={product.category}
-                          onChange={(e) => updateProduct(product.id, 'category', e.target.value)}
-                        >
-                          <option value="">Select Category</option>
-                          <option value="Chicken">Chicken</option>
-                          <option value="Mutton">Mutton</option>
-                          <option value="Fish">Fish</option>
-                          <option value="Prawns">Prawns</option>
-                          <option value="Eggs">Eggs</option>
-                        </select>
-                      </div>
-                      <Input 
-                        label="Total Stock" 
-                        type="number"
-                        placeholder="100"
-                        value={product.totalStock}
-                        onChange={(e) => updateProduct(product.id, 'totalStock', Number(e.target.value))}
-                        required
-                      />
-                    </div>
-
-                    {/* Weight Options */}
-                    <div className="border-t pt-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <h5 className="font-medium text-sm">Weight & Pricing Options</h5>
-                        <Button type="button" size="sm" variant="secondary" onClick={() => addWeight(product.id)}>
-                          <Plus className="h-3 w-3 mr-1" />
-                          Add Weight
-                        </Button>
-                      </div>
-
-                      <div className="space-y-3">
-                        {product.weights.map((weight) => (
-                          <div key={weight.id} className="bg-white border rounded-lg p-3">
-                            <div className="grid grid-cols-5 gap-3 mb-2">
-                              <Input 
-                                label="Weight" 
-                                type="number"
-                                placeholder="500"
-                                value={weight.weight}
-                                onChange={(e) => updateWeight(product.id, weight.id, 'weight', e.target.value)}
-                              />
-                              <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Unit</label>
-                                <select 
-                                  className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
-                                  value={weight.unit}
-                                  onChange={(e) => updateWeight(product.id, weight.id, 'unit', e.target.value)}
-                                >
-                                  <option value="g">g</option>
-                                  <option value="kg">kg</option>
-                                  <option value="ml">ml</option>
-                                  <option value="l">l</option>
-                                  <option value="pcs">pcs</option>
-                                </select>
-                              </div>
-                              <Input 
-                                label="Original Price (₹)" 
-                                type="number"
-                                placeholder="250"
-                                value={weight.originalPrice}
-                                onChange={(e) => updateWeight(product.id, weight.id, 'originalPrice', Number(e.target.value))}
-                              />
-                              <Input 
-                                label="Discount Price (₹)" 
-                                type="number"
-                                placeholder="199"
-                                value={weight.discountPrice}
-                                onChange={(e) => updateWeight(product.id, weight.id, 'discountPrice', Number(e.target.value))}
-                              />
-                              <Input 
-                                label="Stock" 
-                                type="number"
-                                placeholder="50"
-                                value={weight.stock}
-                                onChange={(e) => updateWeight(product.id, weight.id, 'stock', Number(e.target.value))}
-                              />
-                            </div>
-                            {product.weights.length > 1 && (
-                              <button 
-                                type="button" 
-                                onClick={() => removeWeight(product.id, weight.id)}
-                                className="text-red-600 text-xs flex items-center gap-1"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                                Remove Weight
-                              </button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Image Upload */}
-                    <div className="border-t pt-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Product Images</label>
-                      <input 
-                        type="file" 
-                        accept="image/*"
-                        multiple
-                        onChange={(e) => handleImageUpload(product.id, e)}
-                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                      />
-                      {product.images.length > 0 && (
-                        <div className="flex gap-2 mt-3 flex-wrap">
-                          {product.images.map((img, idx) => (
-                            <div key={idx} className="relative">
-                              <img src={img} alt="" className="h-20 w-20 object-cover rounded border" />
-                              <button 
-                                type="button"
-                                onClick={() => removeImage(product.id, img)}
-                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Flash Offer Details */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Flash Offer Details</label>
-                      <textarea 
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                        rows={2}
-                        placeholder="Limited time offer - Save up to 20%"
-                        value={product.flashOfferDetails}
-                        onChange={(e) => updateProduct(product.id, 'flashOfferDetails', e.target.value)}
+              {/* Product Selector */}
+              {showProductSelector && (
+                <div className="mb-4 border rounded-lg p-4 bg-gray-50">
+                  <div className="mb-3">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Search products by name or category..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border rounded-lg"
                       />
                     </div>
                   </div>
-                ))}
-              </div>
+
+                  <div className="max-h-64 overflow-y-auto space-y-2">
+                    {filteredProducts.map((product) => (
+                      <div key={product.id} className="bg-white border rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <span className="font-medium text-gray-900">{product.nameEn}</span>
+                            <span className="text-sm text-gray-600 ml-2">({product.nameTa})</span>
+                            <span className="ml-2 text-xs bg-gray-100 px-2 py-1 rounded">{product.category}</span>
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          {product.variants.map((variant) => {
+                            const isAdded = selectedProducts.some(p => p.productId === product.id && p.variantId === variant.id);
+                            return (
+                              <div key={variant.id} className="flex items-center justify-between bg-gray-50 p-2 rounded text-sm">
+                                <div className="flex-1">
+                                  <span className="font-medium">{variant.type}</span>
+                                  <span className="text-gray-600 ml-2">{variant.netWeight}</span>
+                                  <span className="text-gray-600 ml-2">₹{variant.price}</span>
+                                  <span className="text-gray-500 ml-2">Stock: {variant.stock}</span>
+                                </div>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant={isAdded ? "secondary" : "primary"}
+                                  onClick={() => isAdded ? removeProductFromFlashSale(product.id, variant.id) : addProductToFlashSale(product.id, variant.id)}
+                                  disabled={isAdded}
+                                >
+                                  {isAdded ? 'Added' : 'Add'}
+                                </Button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Selected Products */}
+              {selectedProducts.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm text-gray-700">Selected Products ({selectedProducts.length})</h4>
+                  {selectedProducts.map((config) => {
+                    const { product, variant } = getProductDetails(config.productId, config.variantId);
+                    if (!product || !variant) return null;
+
+                    return (
+                      <div key={`${config.productId}-${config.variantId}`} className="border rounded-lg p-4 bg-white">
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <div className="font-medium text-gray-900">{product.nameEn} - {variant.type}</div>
+                            <div className="text-sm text-gray-600">{variant.netWeight} • Original: ₹{variant.price}</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeProductFromFlashSale(config.productId, config.variantId)}
+                            className="text-red-600 hover:bg-red-50 p-1 rounded"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Flash Sale Price (₹)</label>
+                            <input
+                              type="number"
+                              value={config.discountPrice}
+                              onChange={(e) => updateFlashSaleProduct(config.productId, config.variantId, 'discountPrice', Number(e.target.value))}
+                              className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                              required
+                            />
+                            <div className="text-xs text-green-600 mt-1">
+                              Save ₹{variant.price - config.discountPrice} ({Math.round((1 - config.discountPrice / variant.price) * 100)}% off)
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Flash Offer Details</label>
+                            <textarea
+                              value={config.flashOfferDetails}
+                              onChange={(e) => updateFlashSaleProduct(config.productId, config.variantId, 'flashOfferDetails', e.target.value)}
+                              className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                              rows={2}
+                              placeholder="e.g., Limited stock! Grab now!"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {selectedProducts.length === 0 && !showProductSelector && (
+                <div className="text-center py-8 text-gray-500">
+                  <Package className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+                  <p>No products selected. Click "Browse Products" to add products.</p>
+                </div>
+              )}
             </div>
           )}
 
           {/* Membership Plan */}
           {saleType === 'membership_subscription' && (
-            <div className="border-t pt-4 space-y-4">
-              <h3 className="font-semibold text-gray-900">Membership Plan Details</h3>
-              <Input label="Plan Name" placeholder="Premium Annual" required />
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="Duration (months)" type="number" placeholder="12" required />
-                <Input label="Total Price (₹)" type="number" placeholder="1999" required />
+            <div className="border-t pt-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-gray-900">Select Membership Plan</h3>
+                {!selectedMembership && (
+                  <Button type="button" size="sm" variant="secondary" onClick={() => setShowMembershipSelector(!showMembershipSelector)}>
+                    <Plus className="h-4 w-4 mr-1" />
+                    {showMembershipSelector ? 'Hide Plans' : 'Browse Plans'}
+                  </Button>
+                )}
               </div>
-              <Input label="Monthly Equivalent (₹)" type="number" placeholder="166" required />
-              <Input label="Welcome Wallet Credit (₹)" type="number" placeholder="200" />
-              <Input label="Delivery Benefits" placeholder="Free delivery on all orders" />
-              <Input label="Bonus Percentage (%)" type="number" placeholder="5" />
-              <Input label="Surprise Rewards" placeholder="Birthday special offers" />
-              <div className="flex items-center gap-2">
-                <input type="checkbox" className="rounded" />
-                <label className="text-sm">Priority Customer Service</label>
-              </div>
+
+              {/* Membership Selector */}
+              {showMembershipSelector && !selectedMembership && (
+                <div className="mb-4 border rounded-lg p-4 bg-gray-50">
+                  <div className="space-y-3">
+                    {mockMembershipPlans.map((plan) => (
+                      <div key={plan.id} className="bg-white border rounded-lg p-4 hover:border-blue-500 cursor-pointer" onClick={() => selectMembership(plan.id)}>
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Crown className="h-5 w-5 text-amber-600" />
+                              <span className="font-semibold text-gray-900">{plan.name}</span>
+                              <span className={`text-xs px-2 py-1 rounded ${plan.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                                {plan.isActive ? 'Active' : 'Inactive'}
+                              </span>
+                            </div>
+                            <div className="text-sm text-gray-600">{plan.duration} days • ₹{plan.monthlyEquivalent}/month equivalent</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-gray-900">₹{plan.price}</div>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-2 mb-3">
+                          <div className="text-sm">
+                            <span className="text-gray-600">Welcome Wallet:</span>
+                            <span className="font-medium ml-1">₹{plan.welcomeWallet}</span>
+                          </div>
+                          <div className="text-sm">
+                            <span className="text-gray-600">Extra Discount:</span>
+                            <span className="font-medium ml-1">{plan.discountPercentage}%</span>
+                          </div>
+                        </div>
+
+                        <div className="border-t pt-2">
+                          <div className="text-xs font-medium text-gray-700 mb-2">Benefits:</div>
+                          <div className="flex flex-wrap gap-1">
+                            {plan.benefits.slice(0, 4).map((benefit) => (
+                              <span key={benefit.id} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">
+                                {benefit.label}
+                              </span>
+                            ))}
+                            {plan.benefits.length > 4 && (
+                              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                                +{plan.benefits.length - 4} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Selected Membership */}
+              {selectedMembership && (
+                <div className="space-y-3">
+                  {(() => {
+                    const membership = getMembershipDetails(selectedMembership.membershipPlanId);
+                    if (!membership) return null;
+
+                    return (
+                      <div className="border rounded-lg p-4 bg-white">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Crown className="h-5 w-5 text-amber-600" />
+                              <span className="font-semibold text-gray-900">{membership.name}</span>
+                            </div>
+                            <div className="text-sm text-gray-600 mb-2">
+                              {membership.duration} days • Original Price: ₹{membership.price}
+                            </div>
+                            <div className="flex flex-wrap gap-1 mb-3">
+                              {membership.benefits.slice(0, 3).map((benefit) => (
+                                <span key={benefit.id} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">
+                                  {benefit.label}: {benefit.value}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedMembership(null)}
+                            className="text-red-600 hover:bg-red-50 p-1 rounded"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Flash Sale Price (₹)</label>
+                            <input
+                              type="number"
+                              value={selectedMembership.discountPrice}
+                              onChange={(e) => setSelectedMembership({ ...selectedMembership, discountPrice: Number(e.target.value) })}
+                              className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                              required
+                            />
+                            <div className="text-xs text-green-600 mt-1">
+                              Save ₹{membership.price - selectedMembership.discountPrice} ({Math.round((1 - selectedMembership.discountPrice / membership.price) * 100)}% off)
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Flash Offer Details</label>
+                            <textarea
+                              value={selectedMembership.flashOfferDetails}
+                              onChange={(e) => setSelectedMembership({ ...selectedMembership, flashOfferDetails: e.target.value })}
+                              className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                              rows={2}
+                              placeholder="e.g., Limited time! Join now and save big!"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+
+              {!selectedMembership && !showMembershipSelector && (
+                <div className="text-center py-8 text-gray-500">
+                  <Crown className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+                  <p>No membership plan selected. Click "Browse Plans" to select.</p>
+                </div>
+              )}
             </div>
           )}
 
@@ -818,40 +984,99 @@ export const FlashSaleConfig = () => {
               </div>
             </div>
 
-            {selectedSale.products && selectedSale.products.length > 0 && (
+            {selectedSale.selectedProducts && selectedSale.selectedProducts.length > 0 && (
               <div className="border-t pt-4">
                 <h3 className="font-semibold mb-3">Products</h3>
                 <div className="space-y-3">
-                  {selectedSale.products.map((product) => (
-                    <div key={product.id} className="bg-gray-50 p-4 rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <div>
-                          <span className="font-medium text-gray-900">{product.nameEnglish}</span>
-                          <span className="text-sm text-gray-600 ml-2">({product.nameTamil})</span>
-                        </div>
-                        <span className="text-sm text-gray-600">Stock: {product.totalStock}</span>
-                      </div>
-                      <p className="text-sm text-gray-600 mb-2">{product.descriptionEnglish}</p>
-                      <div className="space-y-2">
-                        {product.weights.map((weight) => (
-                          <div key={weight.id} className="flex items-center justify-between bg-white p-2 rounded text-sm">
-                            <span className="font-medium">{weight.weight}{weight.unit}</span>
-                            <div className="flex items-center gap-3">
-                              <span className="line-through text-gray-500">₹{weight.originalPrice}</span>
-                              <span className="font-medium text-green-600">₹{weight.discountPrice}</span>
-                              <span className="text-gray-600">Stock: {weight.stock}</span>
-                            </div>
+                  {selectedSale.selectedProducts.map((config) => {
+                    const { product, variant } = getProductDetails(config.productId, config.variantId);
+                    if (!product || !variant) return null;
+
+                    return (
+                      <div key={`${config.productId}-${config.variantId}`} className="bg-gray-50 p-4 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <span className="font-medium text-gray-900">{product.nameEn}</span>
+                            <span className="text-sm text-gray-600 ml-2">({product.nameTa})</span>
                           </div>
-                        ))}
+                          <span className="text-sm text-gray-600">Stock: {variant.stock}</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{product.description}</p>
+                        <div className="flex items-center justify-between bg-white p-2 rounded text-sm">
+                          <span className="font-medium">{variant.type} - {variant.netWeight}</span>
+                          <div className="flex items-center gap-3">
+                            <span className="line-through text-gray-500">₹{variant.price}</span>
+                            <span className="font-medium text-green-600">₹{config.discountPrice}</span>
+                            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                              {Math.round((1 - config.discountPrice / variant.price) * 100)}% OFF
+                            </span>
+                          </div>
+                        </div>
+                        {config.flashOfferDetails && (
+                          <div className="mt-2 text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                            {config.flashOfferDetails}
+                          </div>
+                        )}
                       </div>
-                      {product.flashOfferDetails && (
-                        <div className="mt-2 text-xs text-blue-600 bg-blue-50 p-2 rounded">
-                          {product.flashOfferDetails}
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {selectedSale.selectedMembership && (
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Membership Plan</h3>
+                {(() => {
+                  const membership = getMembershipDetails(selectedSale.selectedMembership.membershipPlanId);
+                  if (!membership) return null;
+
+                  return (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <Crown className="h-5 w-5 text-amber-600" />
+                          <span className="font-medium text-gray-900">{membership.name}</span>
+                        </div>
+                        <span className="text-sm text-gray-600">{membership.duration} days</span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between bg-white p-3 rounded mb-3">
+                        <div className="flex items-center gap-4">
+                          <div>
+                            <span className="text-xs text-gray-600">Original Price</span>
+                            <div className="line-through text-gray-500 font-medium">₹{membership.price}</div>
+                          </div>
+                          <div>
+                            <span className="text-xs text-gray-600">Flash Sale Price</span>
+                            <div className="font-bold text-green-600 text-lg">₹{selectedSale.selectedMembership.discountPrice}</div>
+                          </div>
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-medium">
+                            {Math.round((1 - selectedSale.selectedMembership.discountPrice / membership.price) * 100)}% OFF
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="mb-3">
+                        <div className="text-xs font-medium text-gray-700 mb-2">Benefits:</div>
+                        <div className="grid grid-cols-2 gap-2">
+                          {membership.benefits.map((benefit) => (
+                            <div key={benefit.id} className="bg-white p-2 rounded text-xs">
+                              <div className="font-medium text-gray-900">{benefit.label}</div>
+                              <div className="text-gray-600">{benefit.value}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {selectedSale.selectedMembership.flashOfferDetails && (
+                        <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                          {selectedSale.selectedMembership.flashOfferDetails}
                         </div>
                       )}
                     </div>
-                  ))}
-                </div>
+                  );
+                })()}
               </div>
             )}
 

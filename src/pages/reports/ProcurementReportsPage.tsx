@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   BarChart3,
   Package,
@@ -8,9 +9,12 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { canAccessProcurementReport } from "../../components/ProcurementRoute";
+import { ProductDemandForecast } from "../../components/reports/ProductDemandForecast";
+import { TaxGSTReports } from "../../components/reports/TaxGSTReports";
 
 export function ProcurementReportsPage() {
   const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('procurement');
 
   const procurementReports = [
     {
@@ -234,8 +238,50 @@ export function ProcurementReportsPage() {
         </p>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      {/* Tab Navigation */}
+      <div className="border-b mb-6">
+        <nav className="flex space-x-8">
+          <button
+            onClick={() => setActiveTab('procurement')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'procurement'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Procurement Reports
+          </button>
+          <button
+            onClick={() => setActiveTab('demand-forecast')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'demand-forecast'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Demand Forecast
+          </button>
+          <button
+            onClick={() => setActiveTab('tax-gst')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'tax-gst'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Tax & GST
+          </button>
+        </nav>
+      </div>
+
+      {activeTab === 'demand-forecast' ? (
+        <ProductDemandForecast />
+      ) : activeTab === 'tax-gst' ? (
+        <TaxGSTReports />
+      ) : (
+        <>
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center justify-between">
             <div>
@@ -555,6 +601,8 @@ export function ProcurementReportsPage() {
             You don't have access to any procurement reports at this time.
           </p>
         </div>
+      )}
+        </>
       )}
     </div>
   );

@@ -3,6 +3,8 @@ import { DashboardFilters } from '../../components/dashboard/DashboardFilters';
 import type { FilterOptions } from '../../components/dashboard/DashboardFilters';
 import { OrderReports } from '../../components/reports/OrderReports';
 import { RevenueReports } from '../../components/reports/RevenueReports';
+import { ProductDemandForecast } from '../../components/reports/ProductDemandForecast';
+import { TaxGSTReports } from '../../components/reports/TaxGSTReports';
 
 export function SalesReportPage() {
   const [filters, setFilters] = useState<FilterOptions>({});
@@ -51,11 +53,33 @@ export function SalesReportPage() {
           >
             Revenue Reports
           </button>
+          <button
+            onClick={() => setActiveTab('demand-forecast')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'demand-forecast'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Demand Forecast
+          </button>
+          <button
+            onClick={() => setActiveTab('tax-gst')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'tax-gst'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Tax & GST
+          </button>
         </nav>
       </div>
 
       {activeTab === 'orders' && <OrderReports />}
       {activeTab === 'revenue' && <RevenueReports />}
+      {activeTab === 'demand-forecast' && <ProductDemandForecast />}
+      {activeTab === 'tax-gst' && <TaxGSTReports />}
     </div>
   );
 }
