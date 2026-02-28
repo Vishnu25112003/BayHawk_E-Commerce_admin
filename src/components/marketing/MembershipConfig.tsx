@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, Button, Input, Modal } from '../ui';
-import { Plus, Edit, Crown, Gift, TrendingUp, Users, Wallet } from 'lucide-react';
+import { Plus, Edit, Crown, Gift, TrendingUp, Users, Wallet, Truck, Zap, DollarSign, Star, Sparkles, Shield } from 'lucide-react';
 
 interface MembershipBenefit {
   id: string;
@@ -44,18 +44,17 @@ interface Analytics {
 
 const dummyPlan: MembershipPlan = {
   id: '1',
-  name: 'Elite Membership',
+  name: 'Bay Hawk Elite',
   duration: 365,
   price: 1299,
   monthlyEquivalent: 108,
   benefits: [
-    { id: 'b1', type: 'free_delivery', label: 'Free Delivery', value: 'Above ₹349', isEditable: true },
-    { id: 'b2', type: 'no_surge', label: 'No Surge Pricing', value: 'During peak/rain time', isEditable: false },
-    { id: 'b3', type: 'welcome_wallet', label: 'Welcome Wallet Cash', value: '₹300 (60 days expiry)', isEditable: true },
-    { id: 'b4', type: 'extra_discount', label: 'Extra Discount', value: '10% on selected products', isEditable: true },
-    { id: 'b5', type: 'priority_order', label: 'Priority Processing', value: 'Faster order handling', isEditable: false },
-    { id: 'b6', type: 'faster_delivery', label: 'Faster Delivery', value: 'Express shipping', isEditable: false },
-    { id: 'b7', type: 'special_rewards', label: 'Special Rewards', value: 'Birthday & festival offers', isEditable: true }
+    { id: 'b1', type: 'free_delivery', label: 'Free Delivery from ₹349', value: 'Non-members pay delivery charges on every order', isEditable: true },
+    { id: 'b2', type: 'priority_order', label: 'Priority Processing & Faster Delivery', value: 'Get priority during busy hours', isEditable: false },
+    { id: 'b3', type: 'welcome_wallet', label: '₹300 Welcome Cash in Wallet', value: 'Ready to use on your next order', isEditable: true },
+    { id: 'b4', type: 'extra_discount', label: 'Save 10% Extra on Premium Cuts', value: 'Pomfret, tiger prawns, lobster & more', isEditable: true },
+    { id: 'b5', type: 'no_surge', label: 'Never Pay Surge Pricing', value: 'Same price in rain, weekends and peak hours', isEditable: false },
+    { id: 'b6', type: 'special_rewards', label: 'Little Surprises', value: 'On birthdays, anniversaries and festivals', isEditable: true }
   ],
   welcomeWallet: 300,
   walletExpiry: 60,
@@ -126,16 +125,35 @@ export const MembershipConfig = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Elite Membership System</h1>
-          <p className="text-gray-600 mt-1">Configure membership plans, benefits, and marketing</p>
+      {/* Header with Hook */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Bay Hawk Elite Membership</h1>
+            <p className="text-gray-600 mt-1">Configure membership plans, benefits, and marketing</p>
+          </div>
+          <Button onClick={() => setShowEditPlanModal(true)} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Edit className="h-4 w-4 mr-2" />
+            Edit Plan
+          </Button>
         </div>
-        <Button onClick={() => setShowEditPlanModal(true)} className="bg-blue-600 hover:bg-blue-700 text-white">
-          <Edit className="h-4 w-4 mr-2" />
-          Edit Plan
-        </Button>
+        
+        {/* Marketing Hook */}
+        <Card className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200">
+          <div className="flex items-start gap-4">
+            <div className="p-3 bg-amber-100 rounded-full">
+              <Shield className="h-8 w-8 text-amber-600" />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                "The Only Seafood Membership That Guarantees Your Price"
+              </h2>
+              <p className="text-gray-700">
+                Join Bay Hawk Elite and enjoy exclusive benefits designed for seafood lovers who value quality, savings, and convenience.
+              </p>
+            </div>
+          </div>
+        </Card>
       </div>
 
       {/* Analytics Dashboard */}
@@ -184,7 +202,7 @@ export const MembershipConfig = () => {
         </Card>
       </div>
 
-      {/* Current Plan */}
+      {/* Current Plan with Enhanced Benefits */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -211,7 +229,7 @@ export const MembershipConfig = () => {
           <div className="bg-emerald-50 p-4 rounded-lg">
             <p className="text-sm text-gray-600 mb-1">Extra Discount</p>
             <p className="text-xl font-bold text-emerald-700">{plan.discountPercentage}%</p>
-            <p className="text-xs text-gray-500">On selected products</p>
+            <p className="text-xs text-gray-500">On premium cuts</p>
           </div>
           <div className="bg-indigo-50 p-4 rounded-lg">
             <p className="text-sm text-gray-600 mb-1">Status</p>
@@ -222,24 +240,56 @@ export const MembershipConfig = () => {
         </div>
 
         <div>
-          <h3 className="font-semibold text-gray-900 mb-4">Member Benefits</h3>
-          <div className="grid grid-cols-2 gap-3">
-            {plan.benefits.map((benefit) => (
-              <div key={benefit.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-sm text-gray-900">{benefit.label}</p>
-                  <p className="text-xs text-gray-600">{benefit.value}</p>
+          <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <Star className="h-5 w-5 text-amber-500" />
+            Member Benefits
+          </h3>
+          <div className="space-y-3">
+            {plan.benefits.map((benefit) => {
+              const icons = {
+                free_delivery: Truck,
+                priority_order: Zap,
+                welcome_wallet: Wallet,
+                extra_discount: DollarSign,
+                no_surge: Shield,
+                special_rewards: Sparkles
+              };
+              const Icon = icons[benefit.type as keyof typeof icons] || Gift;
+              
+              const colors = {
+                free_delivery: 'bg-blue-50 border-blue-200',
+                priority_order: 'bg-purple-50 border-purple-200',
+                welcome_wallet: 'bg-green-50 border-green-200',
+                extra_discount: 'bg-emerald-50 border-emerald-200',
+                no_surge: 'bg-orange-50 border-orange-200',
+                special_rewards: 'bg-pink-50 border-pink-200'
+              };
+              const bgColor = colors[benefit.type as keyof typeof colors] || 'bg-gray-50 border-gray-200';
+
+              return (
+                <div key={benefit.id} className={`flex items-start gap-4 p-4 ${bgColor} border rounded-lg`}>
+                  <div className="p-2 bg-white rounded-lg shadow-sm">
+                    <Icon className="h-5 w-5 text-gray-700" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-900 mb-1">{benefit.label}</p>
+                        <p className="text-sm text-gray-600">{benefit.value}</p>
+                      </div>
+                      {benefit.isEditable && (
+                        <button 
+                          onClick={() => handleEditBenefit(benefit)}
+                          className="p-2 hover:bg-white rounded-lg text-blue-600 ml-2"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                {benefit.isEditable && (
-                  <button 
-                    onClick={() => handleEditBenefit(benefit)}
-                    className="p-2 hover:bg-gray-200 rounded-lg text-blue-600"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </Card>
